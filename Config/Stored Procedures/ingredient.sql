@@ -26,9 +26,22 @@ AS
     BEGIN
         SET NOCOUNT ON
     
-        SELECT id FROM Ingredient
+        SELECT id, nom FROM Ingredient
         WHERE nom LIKE '%'+@nom+'%';
     END
+GO
+
+CREATE OR ALTER PROCEDURE get_ingredient_modeles(
+    @id_ingredient INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON
+
+    SELECT Modele.id, Modele.nom FROM Modele_Ingredient
+    JOIN Modele on Modele.id = id_modele
+    WHERE id_ingredient = @id_ingredient;
+END
 GO
 
 CREATE OR ALTER PROCEDURE add_ingredient(
