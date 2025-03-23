@@ -15,7 +15,7 @@ public sealed class DatabaseConnector
 
     public void ConstructConnectionString()
     {
-        _connString = _source + _db + _credentials;
+        _connString = _source + _db + _credentials + _encryption;
         SqlConnection temp = new SqlConnection(_connString);
         temp.Open();
         temp.Close();
@@ -38,7 +38,7 @@ public sealed class DatabaseConnector
         set => _db = "Initial Catalog=" + value + ";";
     }
 
-    private string _credentials = "";
+    private string _credentials = "Integrated Security=false;";
 
     public string Credentials
     {
@@ -58,6 +58,13 @@ public sealed class DatabaseConnector
             }
         }
     }
+
+    private string _encryption = "Encrypt=True";
+
+    public bool Encryption
+    {
+        set => _encryption = "Encrypt=" + (value ? "True" : "False") + ";";
+    }
     
     public ConnectionType Type = ConnectionType.Password;
 
@@ -69,12 +76,28 @@ public sealed class DatabaseConnector
             conn.Open();
             cmd.Connection = conn;
             SqlDataReader result = cmd.ExecuteReader();
-            conn.Close();
             return result;
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 
+    public void SendNonQueryRequest(SqlCommand cmd)
+    {
+        try
+        {
+            using SqlConnection conn = new SqlConnection(_connString);
+            conn.Open();
+
+            cmd.Connection = conn;
+            cmd.ExecuteNonQuery();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
             throw;
         }
     }
