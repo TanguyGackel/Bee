@@ -1,6 +1,20 @@
 namespace MS_Test.Models;
 
-public class Test
+internal class Test
 {
+    internal Test()
+    {
+        name = "";
+        description = "";
+        type = "";
+    }
+
+    internal int id;
+    internal string name;
+    internal string description;
+    internal string type;
+    internal bool valide;
+    
+    
     
 }

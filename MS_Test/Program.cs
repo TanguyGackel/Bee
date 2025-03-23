@@ -22,9 +22,10 @@ internal class Program
         db.Credentials = "";
         db.Source = "local";
         db.DB = "BeeDB";
+        db.Encryption = false;
         db.ConstructConnectionString();
 
-        List<Freezbee> f = Freezbee.GetFreezbeeByGamme("amme2");
+        List<Test> test = Freezbee.GetFreezbeeTestById(2);
 
     }
 }
