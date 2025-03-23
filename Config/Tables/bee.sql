@@ -20,7 +20,7 @@ CREATE TABLE Modele (
     id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     nom VARCHAR(64) NOT NULL UNIQUE,
     description VARCHAR(1024) NOT NULL DEFAULT 'No description',
-    pUHT INT NOT NULL,
+    pUHT INT NOT NULL CHECK(pUHT > 0),
     gamme VARCHAR(64) NOT NULL
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE Modele_Ingredient (
     id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     id_modele INT NOT NULL,
     id_ingredient INT NOT NULL,
-    grammage INT NOT NULL,
+    grammage INT NOT NULL CHECK(grammage > 0),
     FOREIGN KEY (id_modele) REFERENCES Modele(id),
     FOREIGN KEY (id_ingredient) REFERENCES Ingredient(id)
 );
