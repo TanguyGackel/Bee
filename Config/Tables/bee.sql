@@ -63,11 +63,13 @@ CREATE TABLE ProcedeFabrication (
 
 CREATE TABLE Etape (
     id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    nom VARCHAR(64) NOT NULL,
     description VARCHAR(1024) NOT NULL DEFAULT 'No description'
 );
 
 CREATE TABLE Test(
     id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    nom VARCHAR(64) NOT NULL,
     description VARCHAR(1024) NOT NULL DEFAULT 'No description',
     type VARCHAR(16) NOT NULL CHECK (type IN('None', 'Fonctionnel', 'Industriel')) DEFAULT 'None',
     valide BIT NOT NULL DEFAULT 0
