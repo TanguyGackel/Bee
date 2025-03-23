@@ -25,7 +25,8 @@ internal class Program
         db.Encryption = false;
         db.ConstructConnectionString();
 
-        List<Test> test = Freezbee.GetFreezbeeTestById(2);
+
+        List<ProcedeFabrication> procede =  Test.GetTestProcedeById(2);
 
     }
 }
