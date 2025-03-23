@@ -46,6 +46,11 @@ internal class Test
 
     internal static Test? GetTestById(int idTest)
     {
+        if (idTest < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idTest), idTest, "Value should be >= 0" );
+        }
+        
         SqlCommand cmd = new SqlCommand("get_tests_by_id");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_test", idTest);
@@ -97,6 +102,11 @@ internal class Test
 
     internal static void UpdateTest(int idTest, bool validate)
     {
+        if (idTest < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idTest), idTest, "Value should be >= 0" );
+        }
+        
         SqlCommand cmd = new SqlCommand("update_test");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_test", idTest);
@@ -109,6 +119,11 @@ internal class Test
 
     internal static List<ProcedeFabrication> GetTestProcedeById(int idTest)
     {
+        if (idTest < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idTest), idTest, "Value should be >= 0" );
+        }
+        
         SqlCommand cmd = new SqlCommand("get_procede_test");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_test", idTest);

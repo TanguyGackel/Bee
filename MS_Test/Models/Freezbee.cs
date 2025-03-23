@@ -125,6 +125,11 @@ internal class Freezbee
 
     internal static List<Test> GetFreezbeeTestById(int idModele)
     {
+        if (idModele < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idModele), (int)idModele, "idModel should be >= 0");
+        }
+        
         SqlCommand cmd = new SqlCommand("get_modele_test");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_modele", idModele);
