@@ -2,11 +2,14 @@ using System.Data;
 using System.Data.Common;
 using Microsoft.Data.Sql;
 using Microsoft.Data.SqlClient;
+using MS_Lib;
 
 namespace MS_Test.Models;
 
 public class Freezbee
 {
+    private static readonly DatabaseConnector dbConnector = DatabaseConnector.Instance;
+    
     internal int id;
     internal string name;
     internal string description;
