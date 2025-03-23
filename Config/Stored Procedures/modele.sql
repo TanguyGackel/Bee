@@ -174,3 +174,17 @@ BEGIN
     WHERE id = @id;
 END
 GO
+
+CREATE OR ALTER PROCEDURE get_modele_test(
+    @id_modele int
+)
+AS
+BEGIN
+    SET NOCOUNT ON
+
+    SELECT Test.id, Test.nom, Test.description, Test.type FROM Test
+    JOIN ProcedeFabrication_Test ON ProcedeFabrication_Test.id_test = Test.id
+    JOIN ProcedeFabrication ON ProcedeFabrication.id_modele = ProcedeFabrication_Test.id_procedeFabrication
+    WHERE ProcedeFabrication.id_modele = @id_modele;
+END
+GO

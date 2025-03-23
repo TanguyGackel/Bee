@@ -122,5 +122,39 @@ internal class Freezbee
         cmd.Connection?.Close();
         return toReturn;
     }
+
+    internal static List<Test> GetFreezbeeTestById(int idModele)
+    {
+        if (idModele < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idModele), (int)idModele, "idModel should be >= 0");
+        }
+        
+        SqlCommand cmd = new SqlCommand("get_modele_test");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id_modele", idModele);
+        cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
+
+        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+
+        List<Test> toReturn = new List<Test>();
+
+        while (result.Read())
+        {
+            Test t = new Test()
+            {
+                id = (int)result["id"],
+                name = (string)result["nom"],
+                description = (string)result["description"],
+                type = (string)result["type"]
+            };
+            
+            toReturn.Add(t);
+        }
+        cmd.Connection?.Close();
+        return toReturn;
+    }
+    
+    
     
 }

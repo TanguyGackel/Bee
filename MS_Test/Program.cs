@@ -22,9 +22,11 @@ internal class Program
         db.Credentials = "";
         db.Source = "local";
         db.DB = "BeeDB";
+        db.Encryption = false;
         db.ConstructConnectionString();
 
-        List<Freezbee> f = Freezbee.GetFreezbeeByGamme("amme2");
+
+        List<ProcedeFabrication> procede =  Test.GetTestProcedeById(2);
 
     }
 }
