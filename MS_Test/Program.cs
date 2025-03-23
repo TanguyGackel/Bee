@@ -2,6 +2,9 @@
 using System.Net.Sockets;
 using System.Text;
 using Microsoft.Data.SqlClient;
+using MS_Lib;
+using MS_Test.Models;
+
 internal class Program  
 {
     static void Main(string[] args)
@@ -13,11 +16,15 @@ internal class Program
         // byte[] messageBytes = "Hello World"u8.ToArray();
         //
         // s.Send(messageBytes);
+        
+        DatabaseConnector db = DatabaseConnector.Instance;
+        db.Type = ConnectionType.WindowsAuthentication;
+        db.Credentials = "";
+        db.Source = "local";
+        db.DB = "BeeDB";
+        db.ConstructConnectionString();
 
-        string str = "Data Source=localhost; Initial Catalog=Bee; Integrated Security=SSPI; Encrypt=False";
-        SqlConnection connection = new SqlConnection(str);
-        connection.Open();
-
+        List<Freezbee> f = Freezbee.GetFreezbeeByGamme("amme2");
 
     }
 }

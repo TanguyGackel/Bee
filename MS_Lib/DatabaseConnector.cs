@@ -15,7 +15,7 @@ public sealed class DatabaseConnector
 
     public void ConstructConnectionString()
     {
-        _connString = _source + _db + _credentials;
+        _connString = _source + _db + _credentials + "Encrypt=False;";
         SqlConnection temp = new SqlConnection(_connString);
         temp.Open();
         temp.Close();
@@ -69,7 +69,6 @@ public sealed class DatabaseConnector
             conn.Open();
             cmd.Connection = conn;
             SqlDataReader result = cmd.ExecuteReader();
-            conn.Close();
             return result;
         }
         catch (Exception e)
