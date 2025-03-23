@@ -60,6 +60,24 @@ public sealed class DatabaseConnector
     }
     
     public ConnectionType Type = ConnectionType.Password;
+
+    public SqlDataReader SendQueryRequest(SqlCommand cmd)
+    {
+        try
+        {
+            SqlConnection conn = new SqlConnection(_connString);
+            conn.Open();
+            cmd.Connection = conn;
+            SqlDataReader result = cmd.ExecuteReader();
+            conn.Close();
+            return result;
+        }
+        catch (Exception e)
+        {
+
+            throw;
+        }
+    }
 }
 
 public enum ConnectionType
