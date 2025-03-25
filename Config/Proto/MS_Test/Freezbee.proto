@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package MS_Test.proto;
+
+message Freezbee {
+  int32 idModele = 1;
+  string nameModele = 2;
+  string gammeModele = 3;
+}

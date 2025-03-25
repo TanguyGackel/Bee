@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package MS_Test.proto;
+
+message Test {
+  int32 idTest = 1;
+  string nameTest = 2;
+  bool validate = 3;
+}

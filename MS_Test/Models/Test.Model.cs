@@ -4,9 +4,9 @@ using MS_Lib;
 
 namespace MS_Test.Models;
 
-internal class Test
+internal class TestModel
 {
-    internal Test()
+    internal TestModel()
     {
         name = "";
         description = "";
@@ -21,16 +21,16 @@ internal class Test
     internal string type;
     internal bool valide;
 
-    internal static List<Test> GetTests()
+    internal static List<TestModel> GetTests()
     {
         SqlCommand cmd = new SqlCommand("get_tests");
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataReader result = dbConnector.SendQueryRequest(cmd);
 
-        List<Test> toReturn = new List<Test>();
+        List<TestModel> toReturn = new List<TestModel>();
         while (result.Read())
         {
-            Test f = new Test()
+            TestModel f = new TestModel()
             {
                 id = (int)result["id"],
                 name = (string)result["nom"],
@@ -44,7 +44,7 @@ internal class Test
         return toReturn;
     }
 
-    internal static Test? GetTestById(int idTest)
+    internal static TestModel? GetTestById(int idTest)
     {
         if (idTest < 0)
         {
@@ -58,11 +58,11 @@ internal class Test
         
         SqlDataReader result = dbConnector.SendQueryRequest(cmd);
 
-        Test? toReturn = null;
+        TestModel? toReturn = null;
 
         while (result.Read())
         {
-            toReturn = new Test()
+            toReturn = new TestModel()
             {
                 name = (string)result["nom"],
                 description = (string)result["description"],
@@ -74,7 +74,7 @@ internal class Test
         return toReturn;
     }
     
-    internal static List<Test> GetTestByName(string nameTest)
+    internal static List<TestModel> GetTestByName(string nameTest)
     {
         SqlCommand cmd = new SqlCommand("get_tests_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -83,11 +83,11 @@ internal class Test
         
         SqlDataReader result = dbConnector.SendQueryRequest(cmd);
 
-        List<Test> toReturn = new List<Test>();
+        List<TestModel> toReturn = new List<TestModel>();
 
         while (result.Read())
         {
-            Test t = new Test()
+            TestModel t = new TestModel()
             {
                 id = (int)result["id"],
                 name = (string)result["nom"],
@@ -117,7 +117,7 @@ internal class Test
         dbConnector.SendNonQueryRequest(cmd);
     }
 
-    internal static List<ProcedeFabrication> GetTestProcedeById(int idTest)
+    internal static List<ProcedeFabricationModel> GetTestProcedeById(int idTest)
     {
         if (idTest < 0)
         {
@@ -131,18 +131,18 @@ internal class Test
         
         SqlDataReader result = dbConnector.SendQueryRequest(cmd);
 
-        List<ProcedeFabrication> toReturn = new List<ProcedeFabrication>();
+        List<ProcedeFabricationModel> toReturn = new List<ProcedeFabricationModel>();
 
         while (result.Read())
         {
-            ProcedeFabrication p = new ProcedeFabrication()
+            ProcedeFabricationModel p = new ProcedeFabricationModel()
             {
                 id = (int)result["id"],
                 name = (string)result["nom"],
                 description = (string)result["description"]
  
             };
-            toReturn.Add(p);
+            toReturn.Add(p);    
         }
         cmd.Connection?.Close();
         return toReturn;
