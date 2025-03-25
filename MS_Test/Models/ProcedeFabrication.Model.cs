@@ -1,9 +1,9 @@
 namespace MS_Test.Models;
 
-public class ProcedeFabrication
+internal class ProcedeFabricationModel
 {
 
-    internal ProcedeFabrication()
+    internal ProcedeFabricationModel()
     {
         name = "";
         description = "";

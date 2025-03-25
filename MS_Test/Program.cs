@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
+using MS_Test.Controllers;
 using MS_Test.Models;
 
 internal class Program  
@@ -26,7 +27,8 @@ internal class Program
         db.ConstructConnectionString();
 
 
-        List<ProcedeFabrication> procede =  Test.GetTestProcedeById(2);
+        FreezbeeController test = new FreezbeeController();
+        
 
     }
 }
