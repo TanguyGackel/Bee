@@ -62,7 +62,7 @@ CREATE OR ALTER PROCEDURE delete_ingredient(
 AS
     BEGIN
         SET NOCOUNT ON
-    
+        DELETE FROM Modele_Ingredient WHERE id_ingredient = @id;
         DELETE FROM Ingredient WHERE id = @id;
     END
 GO
