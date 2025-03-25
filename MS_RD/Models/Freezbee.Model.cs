@@ -4,11 +4,11 @@ using MS_Lib;
 
 namespace MS_RD.Models;
 
-internal class Freezbee
+internal class FreezbeeModel
 {
     private static readonly DatabaseConnector DbConnector = DatabaseConnector.Instance;
     
-    internal Freezbee()
+    internal FreezbeeModel()
     {
         Nom = "";
         Description = "";
@@ -22,16 +22,16 @@ internal class Freezbee
     internal string Gamme;
 
     #region Get
-    internal static List<Freezbee> GetFreezbee()
+    internal static List<FreezbeeModel> GetFreezbee()
     {
         SqlCommand cmd = new SqlCommand("get_modeles");
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<Freezbee> toReturn = new List<Freezbee>();
+        List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
         while (result.Read())
         {
-            Freezbee f = new Freezbee()
+            FreezbeeModel f = new FreezbeeModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -43,25 +43,25 @@ internal class Freezbee
         return toReturn;
     }
 
-    internal static Freezbee? GetFreezbeeById(int idModel)
+    internal static FreezbeeModel? GetFreezbeeById(int idModele)
     {
-        if (idModel < 0)
+        if (idModele < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(idModel), (int)idModel, "idModel should be >= 0");
+            throw new ArgumentOutOfRangeException(nameof(idModele), (int)idModele, "idModele should be >= 0");
         }
         
         SqlCommand cmd = new SqlCommand("get_modele_by_id");
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@id", idModel);
+        cmd.Parameters.AddWithValue("@id", idModele);
         cmd.Parameters["@id"].Direction = ParameterDirection.Input;
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        Freezbee? toReturn = null;
+        FreezbeeModel? toReturn = null;
 
         while (result.Read())
         {
-            toReturn = new Freezbee()
+            toReturn = new FreezbeeModel()
             {
                 Nom = (string)result["nom"],
                 Description = (string)result["description"],
@@ -73,20 +73,20 @@ internal class Freezbee
         return toReturn;
     }
 
-    internal static List<Freezbee> GetFreezbeeByName(string nameModel)
+    internal static List<FreezbeeModel> GetFreezbeeByName(string nameModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@nom", nameModel);
+        cmd.Parameters.AddWithValue("@nom", nameModele);
         cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<Freezbee> toReturn = new List<Freezbee>();
+        List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
 
         while (result.Read())
         {
-            Freezbee f = new Freezbee()
+            FreezbeeModel f = new FreezbeeModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]
@@ -97,20 +97,20 @@ internal class Freezbee
         return toReturn;
     }
 
-    internal static List<Freezbee> GetFreezbeeByGamme(string gammeModel)
+    internal static List<FreezbeeModel> GetFreezbeeByGamme(string gammeModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_by_gamme");
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@gamme", gammeModel);
+        cmd.Parameters.AddWithValue("@gamme", gammeModele);
         cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<Freezbee> toReturn = new List<Freezbee>();
+        List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
 
         while (result.Read())
         {
-            Freezbee f = new Freezbee()
+            FreezbeeModel f = new FreezbeeModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -122,7 +122,7 @@ internal class Freezbee
         return toReturn;
     }
 
-    internal static List<Ingredient> GetIngredientsFromFreezbee(int idModele)
+    internal static List<IngredientModel> GetIngredientsFromFreezbee(int idModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_ingredients");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -131,11 +131,11 @@ internal class Freezbee
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<Ingredient> toReturn = new List<Ingredient>();
+        List<IngredientModel> toReturn = new List<IngredientModel>();
 
         while (result.Read())
         {
-            Ingredient i = new Ingredient()
+            IngredientModel i = new IngredientModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -148,7 +148,7 @@ internal class Freezbee
         return toReturn;
     }
     
-    internal static List<Caracteristique> GetCaracteristiquesFromFreezbee(int idModele)
+    internal static List<CaracteristiqueModel> GetCaracteristiquesFromFreezbee(int idModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_caracteristiques");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -157,11 +157,11 @@ internal class Freezbee
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<Caracteristique> toReturn = new List<Caracteristique>();
+        List<CaracteristiqueModel> toReturn = new List<CaracteristiqueModel>();
 
         while (result.Read())
         {
-            Caracteristique c = new Caracteristique()
+            CaracteristiqueModel c = new CaracteristiqueModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]
@@ -172,7 +172,7 @@ internal class Freezbee
         return toReturn;
     }
     
-    internal static List<ProcedeFabrication> GetProcedeFabricationsFromFreezbee(int idModele)
+    internal static List<ProcedeFabricationModel> GetProcedeFabricationsFromFreezbee(int idModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_procedeFabrications");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -181,11 +181,11 @@ internal class Freezbee
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<ProcedeFabrication> toReturn = new List<ProcedeFabrication>();
+        List<ProcedeFabricationModel> toReturn = new List<ProcedeFabricationModel>();
 
         while (result.Read())
         {
-            ProcedeFabrication pf = new ProcedeFabrication()
+            ProcedeFabricationModel pf = new ProcedeFabricationModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]

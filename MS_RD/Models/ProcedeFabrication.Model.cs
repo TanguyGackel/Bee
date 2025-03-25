@@ -4,11 +4,11 @@ using MS_Lib;
 
 namespace MS_RD.Models;
 
-internal class ProcedeFabrication
+internal class ProcedeFabricationModel
 {
     private static readonly DatabaseConnector DbConnector = DatabaseConnector.Instance;
     
-    internal ProcedeFabrication()
+    internal ProcedeFabricationModel()
     {
         Nom = "";
         Description = "";
@@ -22,16 +22,16 @@ internal class ProcedeFabrication
     internal string NomModele;
     
     #region Get
-    internal static List<ProcedeFabrication> GetProcedeFabrications()
+    internal static List<ProcedeFabricationModel> GetProcedeFabrications()
     {
         SqlCommand cmd = new SqlCommand("get_procedeFabrications");
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<ProcedeFabrication> toReturn = new List<ProcedeFabrication>();
+        List<ProcedeFabricationModel> toReturn = new List<ProcedeFabricationModel>();
         while (result.Read())
         {
-            ProcedeFabrication pf = new ProcedeFabrication()
+            ProcedeFabricationModel pf = new ProcedeFabricationModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -43,7 +43,7 @@ internal class ProcedeFabrication
         return toReturn;
     }
 
-    internal static ProcedeFabrication? GetProcedeFabricationById(int idProcedeFabrication)
+    internal static ProcedeFabricationModel? GetProcedeFabricationById(int idProcedeFabrication)
     {
         if (idProcedeFabrication < 0)
         {
@@ -57,11 +57,11 @@ internal class ProcedeFabrication
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        ProcedeFabrication? toReturn = null;
+        ProcedeFabricationModel? toReturn = null;
 
         while (result.Read())
         {
-            toReturn = new ProcedeFabrication()
+            toReturn = new ProcedeFabricationModel()
             {
                 Nom = (string)result["ProcedeFabrication.nom"],
                 Description = (string)result["description"],
@@ -73,7 +73,7 @@ internal class ProcedeFabrication
         return toReturn;
     }
 
-    internal static List<ProcedeFabrication> GetProcedeFabricationByName(string nameProcedeFabrication)
+    internal static List<ProcedeFabricationModel> GetProcedeFabricationByName(string nameProcedeFabrication)
     {
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -82,11 +82,11 @@ internal class ProcedeFabrication
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<ProcedeFabrication> toReturn = new List<ProcedeFabrication>();
+        List<ProcedeFabricationModel> toReturn = new List<ProcedeFabricationModel>();
 
         while (result.Read())
         {
-            ProcedeFabrication pf = new ProcedeFabrication()
+            ProcedeFabricationModel pf = new ProcedeFabricationModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]
@@ -97,7 +97,7 @@ internal class ProcedeFabrication
         return toReturn;
     }
 
-    internal static ProcedeFabrication GetProcedeFabricationFromModele(int idModele)
+    internal static ProcedeFabricationModel GetProcedeFabricationFromModele(int idModele)
     {
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_modele");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -106,7 +106,7 @@ internal class ProcedeFabrication
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        ProcedeFabrication toReturn = new ProcedeFabrication();
+        ProcedeFabricationModel toReturn = new ProcedeFabricationModel();
 
         while (result.Read())
         {
@@ -117,7 +117,7 @@ internal class ProcedeFabrication
         return toReturn;
     }
     
-    internal static List<Test> GetTestsFromProcedeFabrication(int idProcedeFabrication)
+    internal static List<TestModel> GetTestsFromProcedeFabrication(int idProcedeFabrication)
     {
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_tests");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -126,11 +126,11 @@ internal class ProcedeFabrication
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<Test> toReturn = new List<Test>();
+        List<TestModel> toReturn = new List<TestModel>();
 
         while (result.Read())
         {
-            Test t = new Test()
+            TestModel t = new TestModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -144,7 +144,7 @@ internal class ProcedeFabrication
         return toReturn;
     }
     
-    internal static List<Etape> GetEtapeFromProcedeFabrication(int idProcedeFabrication)
+    internal static List<EtapeModel> GetEtapeFromProcedeFabrication(int idProcedeFabrication)
     {
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_etapes");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -153,11 +153,11 @@ internal class ProcedeFabrication
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<Etape> toReturn = new List<Etape>();
+        List<EtapeModel> toReturn = new List<EtapeModel>();
 
         while (result.Read())
         {
-            Etape e = new Etape()
+            EtapeModel e = new EtapeModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]

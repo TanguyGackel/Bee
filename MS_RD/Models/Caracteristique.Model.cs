@@ -1,8 +1,8 @@
 namespace MS_RD.Models;
 
-internal class Caracteristique
+internal class CaracteristiqueModel
 {
-    internal Caracteristique()
+    internal CaracteristiqueModel()
     {
         Nom = "";
         Description = "";

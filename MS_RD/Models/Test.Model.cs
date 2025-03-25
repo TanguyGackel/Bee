@@ -1,8 +1,8 @@
 namespace MS_RD.Models;
 
-internal class Test
+internal class TestModel
 {
-    internal Test()
+    internal TestModel()
     {
         Nom = "";
         Type = TestType.None;

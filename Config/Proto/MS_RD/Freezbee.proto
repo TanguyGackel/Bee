@@ -1,0 +1,14 @@
+syntax="proto3";
+
+package MS_RD.proto;
+
+message Freezbee{
+  int32 idModele = 1;
+  string nameModele = 2;
+  string gammeModele = 3;
+  string description = 4;
+  int32 pUht = 5;
+  int32 idIngredient = 6;
+  int32 grammage = 7;
+  int32 idCaracteristique = 8;
+}

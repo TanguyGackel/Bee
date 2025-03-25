@@ -4,11 +4,11 @@ using MS_Lib;
 
 namespace MS_RD.Models;
 
-internal class Ingredient
+internal class IngredientModel
 {
     private static readonly DatabaseConnector DbConnector = DatabaseConnector.Instance;
 
-    internal Ingredient()
+    internal IngredientModel()
     {
         Nom = "";
         Description = "";
@@ -20,16 +20,16 @@ internal class Ingredient
     internal int Grammage;
     
     #region Get
-    internal static List<Ingredient> GetIngredients()
+    internal static List<IngredientModel> GetIngredients()
     {
         SqlCommand cmd = new SqlCommand("get_ingredients");
         cmd.CommandType = CommandType.StoredProcedure;
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<Ingredient> toReturn = new List<Ingredient>();
+        List<IngredientModel> toReturn = new List<IngredientModel>();
         while (result.Read())
         {
-            Ingredient i = new Ingredient()
+            IngredientModel i = new IngredientModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],
@@ -41,7 +41,7 @@ internal class Ingredient
         return toReturn;
     }
     
-    internal static Ingredient? GetIngredientById(int idIngredient)
+    internal static IngredientModel? GetIngredientById(int idIngredient)
     {
         if (idIngredient < 0)
         {
@@ -55,11 +55,11 @@ internal class Ingredient
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        Ingredient? toReturn = null;
+        IngredientModel? toReturn = null;
 
         while (result.Read())
         {
-            toReturn = new Ingredient()
+            toReturn = new IngredientModel()
             {
                 Nom = (string)result["nom"],
                 Description = (string)result["description"],
@@ -69,7 +69,7 @@ internal class Ingredient
         return toReturn;
     }
 
-    internal static List<Ingredient> GetIngredientByName(string nameIngredient)
+    internal static List<IngredientModel> GetIngredientByName(string nameIngredient)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -78,11 +78,11 @@ internal class Ingredient
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
-        List<Ingredient> toReturn = new List<Ingredient>();
+        List<IngredientModel> toReturn = new List<IngredientModel>();
 
         while (result.Read())
         {
-            Ingredient i = new Ingredient()
+            IngredientModel i = new IngredientModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"]
@@ -93,7 +93,7 @@ internal class Ingredient
         return toReturn;
     }
     
-    internal static List<Freezbee> GetFreezbeesFromIngredient(int idIngredient)
+    internal static List<FreezbeeModel> GetFreezbeesFromIngredient(int idIngredient)
     {
         SqlCommand cmd = new SqlCommand("get_ingredient_modeles");
         cmd.CommandType = CommandType.StoredProcedure;
@@ -102,11 +102,11 @@ internal class Ingredient
 
         SqlDataReader result = DbConnector.SendQueryRequest(cmd);
         
-        List<Freezbee> toReturn = new List<Freezbee>();
+        List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
 
         while (result.Read())
         {
-            Freezbee i = new Freezbee()
+            FreezbeeModel i = new FreezbeeModel()
             {
                 Id = (int)result["id"],
                 Nom = (string)result["nom"],

@@ -1,8 +1,8 @@
 namespace MS_RD.Models;
 
-internal class Etape
+internal class EtapeModel
 {
-    internal Etape()
+    internal EtapeModel()
     {
         Nom = "";
     }
