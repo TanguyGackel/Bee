@@ -6,14 +6,14 @@ using MSLib.Proto;
 
 namespace MS_Lib;
 
-public class RequestManager
+public class NetworkManager
 {
-    private RequestManager()
+    private NetworkManager()
     {
     }
 
-    private static RequestManager? _instance;
-    public static RequestManager Instance => _instance ??= new RequestManager();
+    private static NetworkManager? _instance;
+    public static NetworkManager Instance => _instance ??= new NetworkManager();
 
     private static readonly Socket Self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
