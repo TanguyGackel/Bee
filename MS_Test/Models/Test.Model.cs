@@ -21,11 +21,11 @@ internal class TestModel
     internal string type;
     internal bool valide;
 
-    internal static List<TestModel> GetTests()
+    internal static async Task<List<TestModel>> GetTests()
     {
         SqlCommand cmd = new SqlCommand("get_tests");
         cmd.CommandType = CommandType.StoredProcedure;
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<TestModel> toReturn = new List<TestModel>();
         while (result.Read())
@@ -44,7 +44,7 @@ internal class TestModel
         return toReturn;
     }
 
-    internal static TestModel? GetTestById(int idTest)
+    internal static async Task<TestModel?> GetTestById(int idTest)
     {
         if (idTest < 0)
         {
@@ -56,7 +56,7 @@ internal class TestModel
         cmd.Parameters.AddWithValue("@id_test", idTest);
         cmd.Parameters["@id_test"].Direction = ParameterDirection.Input;
         
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         TestModel? toReturn = null;
 
@@ -74,14 +74,14 @@ internal class TestModel
         return toReturn;
     }
     
-    internal static List<TestModel> GetTestByName(string nameTest)
+    internal static async Task<List<TestModel>> GetTestByName(string nameTest)
     {
         SqlCommand cmd = new SqlCommand("get_tests_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@nom", nameTest);
         cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
         
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<TestModel> toReturn = new List<TestModel>();
 
@@ -117,7 +117,7 @@ internal class TestModel
         dbConnector.SendNonQueryRequest(cmd);
     }
 
-    internal static List<ProcedeFabricationModel> GetTestProcedeById(int idTest)
+    internal static async Task<List<ProcedeFabricationModel>> GetTestProcedeById(int idTest)
     {
         if (idTest < 0)
         {
@@ -129,7 +129,7 @@ internal class TestModel
         cmd.Parameters.AddWithValue("@id_test", idTest);
         cmd.Parameters["@id_test"].Direction = ParameterDirection.Input;
         
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<ProcedeFabricationModel> toReturn = new List<ProcedeFabricationModel>();
 

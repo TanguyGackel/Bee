@@ -6,7 +6,7 @@ namespace MS_Test.Controllers;
 
 internal class Test_Controllers
 {
-    internal void GetTests()
+    internal async void GetTests()
     {
         List<TestModel> result;
         int statusCode;
@@ -14,7 +14,7 @@ internal class Test_Controllers
 
         try
         {
-            result = TestModel.GetTests();
+            result = await TestModel.GetTests();
             if (result.Count == 0)
             {
                 statusCode = 204;
@@ -38,7 +38,7 @@ internal class Test_Controllers
         }
     }
 
-    internal void GetTestById(Test req)
+    internal async void GetTestById(Test req)
     {
         TestModel? result;
         int statusCode;
@@ -46,7 +46,7 @@ internal class Test_Controllers
 
         try
         {
-            result = TestModel.GetTestById(req.IdTest);
+            result = await TestModel.GetTestById(req.IdTest);
             if (string.IsNullOrEmpty(result.name))
             {
                 statusCode = 404;
@@ -76,7 +76,7 @@ internal class Test_Controllers
         
     }
     
-    internal void GetFreezbeeByName(Test req)
+    internal async void GetFreezbeeByName(Test req)
     {
         List<TestModel> result;
         int statusCode;
@@ -84,7 +84,7 @@ internal class Test_Controllers
 
         try
         {
-            result = TestModel.GetTestByName(req.NameTest);
+            result = await TestModel.GetTestByName(req.NameTest);
             if (result.Count == 0)
             {
                 statusCode = 404;
@@ -135,7 +135,7 @@ internal class Test_Controllers
         
     }
 
-    internal void GetTestProcedeById(Test req)
+    internal async void GetTestProcedeById(Test req)
     {
         List<ProcedeFabricationModel> result;
         int statusCode;
@@ -143,7 +143,7 @@ internal class Test_Controllers
 
         try
         {
-            result = TestModel.GetTestProcedeById(req.IdTest);
+            result = await TestModel.GetTestProcedeById(req.IdTest);
             if (result.Count == 0)
             {
                 statusCode = 404;

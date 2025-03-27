@@ -23,11 +23,11 @@ internal class FreezbeeModel
     internal int UHT_price;
     internal string gamme;
     
-    internal static List<FreezbeeModel> GetFreezbee()
+    internal static async Task<List<FreezbeeModel>> GetFreezbee()
     {
         SqlCommand cmd = new SqlCommand("get_modeles");
         cmd.CommandType = CommandType.StoredProcedure;
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
         while (result.Read())
@@ -44,7 +44,7 @@ internal class FreezbeeModel
         return toReturn;
     }
 
-    internal static FreezbeeModel? GetFreezbeeById(int idModele)
+    internal static async Task<FreezbeeModel?> GetFreezbeeById(int idModele)
     {
         if (idModele < 0)
         {
@@ -56,7 +56,7 @@ internal class FreezbeeModel
         cmd.Parameters.AddWithValue("@id", idModele);
         cmd.Parameters["@id"].Direction = ParameterDirection.Input;
 
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         FreezbeeModel? toReturn = null;
 
@@ -74,14 +74,14 @@ internal class FreezbeeModel
         return toReturn;
     }
 
-    internal static List<FreezbeeModel> GetFreezbeeByName(string nameModele)
+    internal static async Task<List<FreezbeeModel>> GetFreezbeeByName(string nameModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_by_name");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@nom", nameModele);
         cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
 
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
 
@@ -98,14 +98,14 @@ internal class FreezbeeModel
         return toReturn;
     }
 
-    internal static List<FreezbeeModel> GetFreezbeeByGamme(string gammeModele)
+    internal static async Task<List<FreezbeeModel>> GetFreezbeeByGamme(string gammeModele)
     {
         SqlCommand cmd = new SqlCommand("get_modeles_by_gamme");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@gamme", gammeModele);
         cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
 
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
 
@@ -123,7 +123,7 @@ internal class FreezbeeModel
         return toReturn;
     }
 
-    internal static List<TestModel> GetFreezbeeTestById(int idModele)
+    internal static async Task<List<TestModel>> GetFreezbeeTestById(int idModele)
     {
         if (idModele < 0)
         {
@@ -135,7 +135,7 @@ internal class FreezbeeModel
         cmd.Parameters.AddWithValue("@id_modele", idModele);
         cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
 
-        SqlDataReader result = dbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
         List<TestModel> toReturn = new List<TestModel>();
 
