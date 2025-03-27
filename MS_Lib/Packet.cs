@@ -25,12 +25,13 @@ namespace MSLib.Proto {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiBDb25maWcvUHJvdG8vTVNfTGliL1BhY2tldC5wcm90bxIMTVNfTGliLnBy",
-            "b3RvIjcKBlBhY2tldBINCgVyb3V0ZRgBIAEoCRIQCghmb25jdGlvbhgCIAEo",
-            "CRIMCgRib2R5GAMgASgJYgZwcm90bzM="));
+            "b3RvIk8KBlBhY2tldBINCgVyb3V0ZRgBIAEoCRIQCghmb25jdGlvbhgCIAEo",
+            "CRIQCghib2R5VHlwZRgFIAEoCRIMCgRib2R5GAQgASgMSgQIAxAEYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSLib.Proto.Packet), global::MSLib.Proto.Packet.Parser, new[]{ "Route", "Fonction", "Body" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSLib.Proto.Packet), global::MSLib.Proto.Packet.Parser, new[]{ "Route", "Fonction", "BodyType", "Body" }, null, null, null, null)
           }));
     }
     #endregion
@@ -74,6 +75,7 @@ namespace MSLib.Proto {
     public Packet(Packet other) : this() {
       route_ = other.route_;
       fonction_ = other.fonction_;
+      bodyType_ = other.bodyType_;
       body_ = other.body_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -108,12 +110,27 @@ namespace MSLib.Proto {
       }
     }
 
-    /// <summary>Field number for the "body" field.</summary>
-    public const int BodyFieldNumber = 3;
-    private string body_ = "";
+    /// <summary>Field number for the "bodyType" field.</summary>
+    public const int BodyTypeFieldNumber = 5;
+    private string bodyType_ = "";
+    /// <summary>
+    ///  string body = 3;
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Body {
+    public string BodyType {
+      get { return bodyType_; }
+      set {
+        bodyType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "body" field.</summary>
+    public const int BodyFieldNumber = 4;
+    private pb::ByteString body_ = pb::ByteString.Empty;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString Body {
       get { return body_; }
       set {
         body_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -137,6 +154,7 @@ namespace MSLib.Proto {
       }
       if (Route != other.Route) return false;
       if (Fonction != other.Fonction) return false;
+      if (BodyType != other.BodyType) return false;
       if (Body != other.Body) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -147,6 +165,7 @@ namespace MSLib.Proto {
       int hash = 1;
       if (Route.Length != 0) hash ^= Route.GetHashCode();
       if (Fonction.Length != 0) hash ^= Fonction.GetHashCode();
+      if (BodyType.Length != 0) hash ^= BodyType.GetHashCode();
       if (Body.Length != 0) hash ^= Body.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -175,8 +194,12 @@ namespace MSLib.Proto {
         output.WriteString(Fonction);
       }
       if (Body.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Body);
+        output.WriteRawTag(34);
+        output.WriteBytes(Body);
+      }
+      if (BodyType.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(BodyType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -197,8 +220,12 @@ namespace MSLib.Proto {
         output.WriteString(Fonction);
       }
       if (Body.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(Body);
+        output.WriteRawTag(34);
+        output.WriteBytes(Body);
+      }
+      if (BodyType.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(BodyType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -216,8 +243,11 @@ namespace MSLib.Proto {
       if (Fonction.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Fonction);
       }
+      if (BodyType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BodyType);
+      }
       if (Body.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Body);
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Body);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -236,6 +266,9 @@ namespace MSLib.Proto {
       }
       if (other.Fonction.Length != 0) {
         Fonction = other.Fonction;
+      }
+      if (other.BodyType.Length != 0) {
+        BodyType = other.BodyType;
       }
       if (other.Body.Length != 0) {
         Body = other.Body;
@@ -267,8 +300,12 @@ namespace MSLib.Proto {
             Fonction = input.ReadString();
             break;
           }
-          case 26: {
-            Body = input.ReadString();
+          case 34: {
+            Body = input.ReadBytes();
+            break;
+          }
+          case 42: {
+            BodyType = input.ReadString();
             break;
           }
         }
@@ -298,8 +335,12 @@ namespace MSLib.Proto {
             Fonction = input.ReadString();
             break;
           }
-          case 26: {
-            Body = input.ReadString();
+          case 34: {
+            Body = input.ReadBytes();
+            break;
+          }
+          case 42: {
+            BodyType = input.ReadString();
             break;
           }
         }

@@ -1,10 +1,13 @@
+using System.Reflection;
+using MSLib.Proto;
+
 namespace MS_Lib;
 
 public class Router
 {
-    public readonly Dictionary<string, Tuple<Type,Action<IRequest>>> Routes = new Dictionary<string, Tuple<Type,Action<IRequest>>>();
+    public readonly Dictionary<string, Action<IRequest>> Routes = new Dictionary<string, Action<IRequest>>();
 
-    public void AddRoutes(string functionName, Tuple<Type,Action<IRequest>> request)
+    public void AddRoutes(string functionName, Action<IRequest> request)
     {
         if (string.IsNullOrEmpty(functionName))
         {
@@ -14,27 +17,37 @@ public class Router
     }
 }
 
-public abstract class Routes
+public abstract class Route
 {
     protected Router Router;
 
-    protected Routes(Router router)
+    protected Route(Router router)
     {
         Router = router;
     }
 
-    internal void Call(string functionName, string body)
+    protected void Add(Type controller)
     {
-        if (string.IsNullOrEmpty(functionName))
+        MethodInfo[] methods = controller.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+        foreach (MethodInfo method in methods)
         {
-            throw new ArgumentNullException(nameof(functionName));
+            Router.AddRoutes(method.Name, (Action<IRequest>)method.CreateDelegate(typeof(Action<IRequest>), method));
         }
-        if (Router == null)
-        {
-            throw new NullReferenceException(nameof(functionName));
-        }
-        
-        Tuple<Type, Action<IRequest>> info = Router.Routes.First(r => r.Key.Equals(functionName)).Value;
+    }
+
+    internal void Call(Packet packet)
+    {
+        // if (string.IsNullOrEmpty(functionName))
+        // {
+        //     throw new ArgumentNullException(nameof(functionName));
+        // }
+        // if (Router == null)
+        // {
+        //     throw new NullReferenceException(nameof(functionName));
+        // }
+        //
+        // Tuple<Type, Action<IRequest>> info = Router.Routes.First(r => r.Key.Equals(functionName)).Value;
 
     }
 

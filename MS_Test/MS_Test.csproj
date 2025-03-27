@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <Folder Include="proto\" />
-      <Folder Include="Routes\" />
     </ItemGroup>
 
     <ItemGroup>

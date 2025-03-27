@@ -5,5 +5,8 @@ package MS_Lib.proto;
 message Packet{
   string route = 1;
   string fonction = 2;
-  string body = 3;
+//  string body = 3;
+  string bodyType = 5;
+  bytes body = 4;
+  reserved 3;
 }

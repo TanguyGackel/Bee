@@ -1,5 +1,6 @@
 using Google.Protobuf;
 using Microsoft.Data.SqlClient;
+using MS_Lib;
 using MS_Test.Models;
 using MSTest.Proto;
 
@@ -8,7 +9,7 @@ namespace MS_Test.Controllers;
 internal class FreezbeeController
 {
 
-    internal async void GetFreezbee()
+    internal static async void GetFreezbee(IRequest r)
     {
         List<FreezbeeModel> result;
         int statusCode;
@@ -41,7 +42,7 @@ internal class FreezbeeController
 
     }
 
-    internal async void GetFreezbeeById(Freezbee req)
+    internal static async void GetFreezbeeById(Freezbee req)
     {
         FreezbeeModel? result;
         int statusCode;
@@ -79,7 +80,7 @@ internal class FreezbeeController
 
     }
 
-    internal async void GetFreezbeeByName(Freezbee req)
+    internal static async void GetFreezbeeByName(Freezbee req)
     {
         List<FreezbeeModel> result;
         int statusCode;
@@ -111,7 +112,7 @@ internal class FreezbeeController
         }
     }
     
-    internal async void GetFreezbeeByGamme(Freezbee req)
+    internal static async void GetFreezbeeByGamme(Freezbee req)
     {
         List<FreezbeeModel> result;
         int statusCode;
@@ -143,7 +144,7 @@ internal class FreezbeeController
         }
     }
     
-    internal async void GetFreezbeeTestById(Freezbee req)
+    internal static async void GetFreezbeeTestById(Freezbee req)
     {
         List<TestModel> result;
         int statusCode;

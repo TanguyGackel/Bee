@@ -10,14 +10,22 @@ public class NetworkManager
 {
     private NetworkManager()
     {
+        _threadPool = new ThreadPool(Cts.Token);
+        _routes = new Dictionary<string, Route>();
     }
 
     private static NetworkManager? _instance;
     public static NetworkManager Instance => _instance ??= new NetworkManager();
 
-    private static readonly Socket Self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    public static readonly CancellationTokenSource Cts = new CancellationTokenSource();
-    private static readonly ThreadPool threadPool = new ThreadPool(Cts.Token);
+    private readonly Socket _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    public readonly CancellationTokenSource Cts = new CancellationTokenSource();
+    private readonly ThreadPool _threadPool;
+    public readonly Dictionary<string, Route> _routes;
+
+    public void AddRoute(string s, Route r)
+    {
+        _routes.Add(s, r);
+    }
     
     public void Start(IPAddress ip, int port, IEnumerable<Client> clients)
     {
@@ -31,22 +39,20 @@ public class NetworkManager
     {
         
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
-        Self.Bind(localEndPoint);
-        Self.Listen();
+        _self.Bind(localEndPoint);
+        _self.Listen();
 
         while (!Cts.Token.IsCancellationRequested)
         {
             try
             {
-                threadPool.EnqueueTask(Self.Accept());
+                _threadPool.EnqueueTask(_self.Accept());
             }
             catch (Exception) //TODO
             {
                 
             }
         }
-
-
     }
     
     public void Handshake(Client c)
@@ -79,19 +85,18 @@ internal class ThreadPool
         ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
-            _threads[i] = new Thread(Work) { IsBackground = true };
+            _threads[i] = new Thread(HandleRequest) { IsBackground = true };
             _threads[i].Start(token);
         }
     }
 
-    private void Work()
+    private void HandleRequest()
     {
-        byte[] body = new byte[512];
         byte[] buffer = new byte[512];
         foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
         {
             int length = task.Receive(buffer);
-            body = buffer.ToArray();
+            byte[] body = buffer.ToArray();
             
             while (length > 0)
             {
@@ -103,7 +108,7 @@ internal class ThreadPool
             }
 
             Packet packet = Packet.Parser.ParseFrom(body);
-
+            NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
         }
     }
 
