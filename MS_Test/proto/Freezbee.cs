@@ -5,6 +5,7 @@
 #pragma warning disable 1591, 0612, 3021, 8981
 #region Designer generated code
 
+using MS_Lib;
 using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
@@ -38,7 +39,7 @@ namespace MSTest.Proto {
   }
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Freezbee : pb::IMessage<Freezbee>
+  public sealed partial class Freezbee : pb::IMessage<Freezbee>, IRequest
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
