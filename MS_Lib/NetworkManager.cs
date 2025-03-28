@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using MSLib.Proto;
 
 namespace MS_Lib;
@@ -10,17 +9,20 @@ public class NetworkManager
 {
     private NetworkManager()
     {
+        Cts = new CancellationTokenSource();
         _threadPool = new ThreadPool(Cts.Token);
         _routes = new Dictionary<string, Route>();
+        _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
 
     private static NetworkManager? _instance;
     public static NetworkManager Instance => _instance ??= new NetworkManager();
 
-    private readonly Socket _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    public readonly CancellationTokenSource Cts = new CancellationTokenSource();
-    private readonly ThreadPool _threadPool;
+    public readonly CancellationTokenSource Cts;
     public readonly Dictionary<string, Route> _routes;
+    
+    private readonly Socket _self;
+    private readonly ThreadPool _threadPool;
 
     public void AddRoute(string s, Route r)
     {
@@ -133,6 +135,13 @@ public class Client
 
     public Client(string domainName, int port)
     {
+        this.domainName = domainName;
+        this.port = port;
+    }
+    
+    public Client(string? domainName, IPAddress? ip, int port)
+    {
+        this.ip = ip;
         this.domainName = domainName;
         this.port = port;
     }

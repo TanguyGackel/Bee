@@ -1,23 +1,9 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using MS_Lib;
-using MS_Test.Controllers;
-using MS_Test.Models;
+﻿using MS_Lib;
 
 internal class Program  
 {
     static void Main(string[] args)
     {
-        // IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9999);
-        // Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // s.Connect(ipEndPoint);
-        //
-        // byte[] messageBytes = "Hello World"u8.ToArray();
-        //
-        // s.Send(messageBytes);
-        
         DatabaseConnector db = DatabaseConnector.Instance;
         db.Type = ConnectionType.WindowsAuthentication;
         db.Credentials = "";
@@ -25,10 +11,6 @@ internal class Program
         db.DB = "BeeDB";
         db.Encryption = false;
         db.ConstructConnectionString();
-
-
-        FreezbeeController test = new FreezbeeController();
-        
 
     }
 }
