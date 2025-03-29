@@ -6,4 +6,34 @@ message Freezbee {
   int32 idModele = 1;
   string nameModele = 2;
   string gammeModele = 3;
+  int32 pUHT = 4;
+  string description = 5;
+  repeated TestFreezbee tests = 6;
+  repeated IngredientFreezbee ingredients = 7;
+  repeated CaracteristiqueFreezbee caracteristiques = 8;
+  repeated ProcedeFabrication procedes = 9;
 }
+
+message TestFreezbee{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  string type = 4;
+}
+
+message IngredientFreezbee{
+  int32 id = 1;
+  string name = 2;
+  int32 grammage = 3;
+}
+
+message CaracteristiqueFreezbee{
+  int32 id = 1;
+  string name = 2;
+}
+
+message ProcedeFabrication{
+  int32 id = 1;
+  string name = 2;
+}
+

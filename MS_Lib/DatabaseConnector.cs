@@ -68,14 +68,14 @@ public sealed class DatabaseConnector
     
     public ConnectionType Type = ConnectionType.Password;
 
-    public SqlDataReader SendQueryRequest(SqlCommand cmd)
+    public async Task<SqlDataReader> SendQueryRequest(SqlCommand cmd)
     {
         try
         {
             SqlConnection conn = new SqlConnection(_connString);
             conn.Open();
             cmd.Connection = conn;
-            SqlDataReader result = cmd.ExecuteReader();
+            SqlDataReader result = await cmd.ExecuteReaderAsync();
             return result;
         }
         catch (Exception e)
@@ -85,7 +85,7 @@ public sealed class DatabaseConnector
         }
     }
 
-    public void SendNonQueryRequest(SqlCommand cmd)
+    public async void SendNonQueryRequest(SqlCommand cmd)
     {
         try
         {
@@ -93,7 +93,7 @@ public sealed class DatabaseConnector
             conn.Open();
 
             cmd.Connection = conn;
-            cmd.ExecuteNonQuery();
+            await cmd.ExecuteNonQueryAsync();
         }
         catch (Exception e)
         {
