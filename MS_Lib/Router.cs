@@ -1,4 +1,5 @@
 using System.Reflection;
+using Google.Protobuf.Reflection;
 using MSLib.Proto;
 
 namespace MS_Lib;
@@ -38,16 +39,26 @@ public abstract class Route
 
     internal void Call(Packet packet)
     {
-        // if (string.IsNullOrEmpty(functionName))
-        // {
-        //     throw new ArgumentNullException(nameof(functionName));
-        // }
-        // if (Router == null)
-        // {
-        //     throw new NullReferenceException(nameof(functionName));
-        // }
-        //
-        // Tuple<Type, Action<IRequest>> info = Router.Routes.First(r => r.Key.Equals(functionName)).Value;
+        if (string.IsNullOrEmpty(packet.Fonction))
+        {
+            throw new ArgumentNullException(nameof(packet.Fonction));
+        }
+        if (Router == null)
+        {
+            throw new NullReferenceException(nameof(Router));
+        }
+
+        Type type = Type.GetType(packet.BodyType);
+        Object instanceC = Activator.CreateInstance(type);
+
+        FieldInfo fieldinfo = type.GetField("Parser");
+        Object instanceO = fieldinfo.GetValue(instanceC);
+
+        MethodInfo methodInfo = instanceO.GetType().GetMethod("ParseFrom");
+        
+        Action<IRequest> info = Router.Routes.First(r => r.Key.Equals(packet.Fonction)).Value;
+
+        info.Invoke((IRequest)methodInfo.Invoke(instanceO, new object[]{packet.Body}));
 
     }
 
