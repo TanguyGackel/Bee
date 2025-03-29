@@ -5,75 +5,56 @@ using MS_RD.Routes;
 
 internal class Program
 {
-    static void Main(string[] args)
+    internal static void Main(string[] args)
     {
-        Dictionary<string, string?> conf = new Dictionary<string, string?>();
+        Dictionary<string, string> conf = new Dictionary<string, string>();
 
 
-        if (args[1] == "f" && args[2].IsNullOrEmpty())
-            readConfFile(conf, args[2]);
-        else
-            readInput(conf);
+        // if (args[1] == "f" && args[2].IsNullOrEmpty())
+        //     Tools.ReadConfFile(conf, args[2]);
+        // else
+        Tools.ReadInput(conf);
 
 
         DatabaseConnector db = DatabaseConnector.Instance;
-        db.Type = ConnectionType.WindowsAuthentication;
-        db.Credentials = "";
-        db.Source = "local";
-        db.DB = "beeDB";
+        db.Type = conf["dbConnectionType"] == "Credentials" ? ConnectionType.Password : ConnectionType.WindowsAuthentication;
+        if (db.Type == ConnectionType.Password)
+        {
+            Console.Write("\nlogin :");
+            string? login = Console.ReadLine();
+            Console.Write("\npassword :");
+            string passwd = Tools.ReadPassword();
+            db.Credentials = login + "," + passwd;
+        }
+        db.Source = conf["dbSource"];
+        db.DB = conf["db"];
         db.Encryption = false;
         db.ConstructConnectionString();
 
         NetworkManager nm = NetworkManager.Instance;
         nm.AddRoute("Freezbee", new FreezbeeRoutes());
 
-        Console.Write("\nNombre de serveurs à contacter :");
-        int.TryParse(Console.ReadLine(), out int n);
+        List<Client> clients = new List<Client>();
+        Dictionary<string, string> confClients = conf.Where(c => c.Key.Contains("clientConf")).ToDictionary();
 
-        Client[] list = new Client[n];
-        for (int i = 0; i < n; i++)
+        foreach (string v in confClients.Values)
         {
-            Console.Write("\nNom de domaine du serveur " + (n+1) + " :");
-            string? hostname = Console.ReadLine();
+            string[] s = v.Split(",");  //hostname,ip,port
 
-            IPAddress? ip = null;
-            if (hostname.IsNullOrEmpty())
-            {
-                Console.Write("\nIp du serveur " + (n + 1) + " :");
-                IPAddress.TryParse(Console.ReadLine(), out ip);
-            }
+            IPAddress cip = null;
+            if (s[0].IsNullOrEmpty())
+                IPAddress.TryParse(s[1], out cip);
+            int.TryParse(s[2], out int cport);
             
-            Console.Write("\nPort du serveur " + (n+1) + " :");
-            int.TryParse(Console.ReadLine(), out int port);
-
-            list[i] = new Client(hostname, ip, port);
+            clients.Add(new Client(s[0], cip, cport));
         }
-
-
-
-
-        nm.Start();
-    }
-
-    static void readConfFile(Dictionary<string, string> conf, string path)
-    {
-        using StreamReader reader = new StreamReader(path);
-        conf.Add("ipServer", reader.ReadLine());
-        conf.Add("portServer", reader.ReadLine());
-        conf.Add("dbConnectionType", reader.ReadLine());
-        conf.Add("dbSource", reader.ReadLine());
-        conf.Add("db", reader.ReadLine());
-        conf.Add("clientNumber", reader.ReadLine());
-
-        int.TryParse(conf["clientNumber"], out int n);
-        for (int i = 0; i < n; i++)
-        {
-            conf.Add("client" + i, reader.ReadLine());
-        }
-    }
-
-    static void readInput(Dictionary)
-    {
         
+        IPAddress.TryParse(conf["ipServer"], out IPAddress ip);
+        int.TryParse(conf["portServer"], out int port);
+        
+        nm.Start(ip, port, clients);
     }
+
+    
+
 }

@@ -22,12 +22,12 @@ internal class FreezbeeModel
     internal string Gamme;
 
     #region Get
-    internal static async Task<List<FreezbeeModel>> GetFreezbee()
+    internal static List<FreezbeeModel> GetFreezbee()
     {
         SqlCommand cmd = new SqlCommand("get_modeles");
         cmd.CommandType = CommandType.StoredProcedure;
         
-        SqlDataReader result = await DbConnector.SendQueryRequest(cmd);
+        SqlDataReader result = DbConnector.SendQueryRequest(cmd);
 
         List<FreezbeeModel> toReturn = new List<FreezbeeModel>();
         while (result.Read())

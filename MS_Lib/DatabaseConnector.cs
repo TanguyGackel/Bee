@@ -68,14 +68,14 @@ public sealed class DatabaseConnector
     
     public ConnectionType Type = ConnectionType.Password;
 
-    public async Task<SqlDataReader> SendQueryRequest(SqlCommand cmd)
+    public SqlDataReader SendQueryRequest(SqlCommand cmd)
     {
         try
         {
             SqlConnection conn = new SqlConnection(_connString);
             conn.Open();
             cmd.Connection = conn;
-            SqlDataReader result = await cmd.ExecuteReaderAsync();
+            SqlDataReader result = cmd.ExecuteReader();
             return result;
         }
         catch (Exception e)

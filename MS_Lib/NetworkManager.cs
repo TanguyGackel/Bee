@@ -37,7 +37,7 @@ public class NetworkManager
         CreateServer(ip, port);
     }
 
-    public async void CreateServer(IPAddress ip, int port)
+    public void CreateServer(IPAddress ip, int port)
     {
         
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
@@ -88,7 +88,7 @@ internal class ThreadPool
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
             _threads[i] = new Thread(HandleRequest) { IsBackground = true };
-            _threads[i].Start(token);
+            _threads[i].Start();
         }
     }
 

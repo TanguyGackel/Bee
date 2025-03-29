@@ -7,7 +7,7 @@ namespace MS_RD.Controllers;
 
 internal class FreezbeeController
 {
-    internal async void GetFreezbee(Freezbee req)
+    internal void GetFreezbee(Freezbee req)
     {
         List<FreezbeeModel>? results = null;
         int statusCode;
@@ -15,7 +15,7 @@ internal class FreezbeeController
 
         try
         {
-            results = await FreezbeeModel.GetFreezbee();
+            results = FreezbeeModel.GetFreezbee();
 
             if (results.Count == 0)
             {
