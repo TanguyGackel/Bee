@@ -5,6 +5,7 @@
 #pragma warning disable 1591, 0612, 3021, 8981
 #region Designer generated code
 
+using MS_Lib;
 using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
@@ -24,20 +25,21 @@ namespace MSTest.Proto {
     static FreezbeeReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChZNU19UZXN0L0ZyZWV6YmVlLnByb3RvEg1NU19UZXN0LnByb3RvIsMCCghG",
+            "ChZNU19UZXN0L0ZyZWV6YmVlLnByb3RvEg1NU19UZXN0LnByb3RvIssCCghG",
             "cmVlemJlZRIQCghpZE1vZGVsZRgBIAEoBRISCgpuYW1lTW9kZWxlGAIgASgJ",
             "EhMKC2dhbW1lTW9kZWxlGAMgASgJEgwKBHBVSFQYBCABKAUSEwoLZGVzY3Jp",
             "cHRpb24YBSABKAkSKgoFdGVzdHMYBiADKAsyGy5NU19UZXN0LnByb3RvLlRl",
             "c3RGcmVlemJlZRI2CgtpbmdyZWRpZW50cxgHIAMoCzIhLk1TX1Rlc3QucHJv",
             "dG8uSW5ncmVkaWVudEZyZWV6YmVlEkAKEGNhcmFjdGVyaXN0aXF1ZXMYCCAD",
-            "KAsyJi5NU19UZXN0LnByb3RvLkNhcmFjdGVyaXN0aXF1ZUZyZWV6YmVlEjMK",
-            "CHByb2NlZGVzGAkgAygLMiEuTVNfVGVzdC5wcm90by5Qcm9jZWRlRmFicmlj",
-            "YXRpb24iSwoMVGVzdEZyZWV6YmVlEgoKAmlkGAEgASgFEgwKBG5hbWUYAiAB",
-            "KAkSEwoLZGVzY3JpcHRpb24YAyABKAkSDAoEdHlwZRgEIAEoCSJAChJJbmdy",
-            "ZWRpZW50RnJlZXpiZWUSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRIQCghn",
-            "cmFtbWFnZRgDIAEoBSIzChdDYXJhY3RlcmlzdGlxdWVGcmVlemJlZRIKCgJp",
-            "ZBgBIAEoBRIMCgRuYW1lGAIgASgJIi4KElByb2NlZGVGYWJyaWNhdGlvbhIK",
-            "CgJpZBgBIAEoBRIMCgRuYW1lGAIgASgJYgZwcm90bzM="));
+            "KAsyJi5NU19UZXN0LnByb3RvLkNhcmFjdGVyaXN0aXF1ZUZyZWV6YmVlEjsK",
+            "CHByb2NlZGVzGAkgAygLMikuTVNfVGVzdC5wcm90by5Qcm9jZWRlRmFicmlj",
+            "YXRpb25GcmVlemJlZSJLCgxUZXN0RnJlZXpiZWUSCgoCaWQYASABKAUSDAoE",
+            "bmFtZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIMCgR0eXBlGAQgASgJ",
+            "IkAKEkluZ3JlZGllbnRGcmVlemJlZRIKCgJpZBgBIAEoBRIMCgRuYW1lGAIg",
+            "ASgJEhAKCGdyYW1tYWdlGAMgASgFIjMKF0NhcmFjdGVyaXN0aXF1ZUZyZWV6",
+            "YmVlEgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkiNgoaUHJvY2VkZUZhYnJp",
+            "Y2F0aW9uRnJlZXpiZWUSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -45,7 +47,7 @@ namespace MSTest.Proto {
             new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.TestFreezbee), global::MSTest.Proto.TestFreezbee.Parser, new[]{ "Id", "Name", "Description", "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.IngredientFreezbee), global::MSTest.Proto.IngredientFreezbee.Parser, new[]{ "Id", "Name", "Grammage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.CaracteristiqueFreezbee), global::MSTest.Proto.CaracteristiqueFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.ProcedeFabrication), global::MSTest.Proto.ProcedeFabrication.Parser, new[]{ "Id", "Name" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.ProcedeFabricationFreezbee), global::MSTest.Proto.ProcedeFabricationFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null)
           }));
     }
     #endregion
@@ -53,7 +55,7 @@ namespace MSTest.Proto {
   }
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Freezbee : pb::IMessage<Freezbee>
+  public sealed partial class Freezbee : pb::IMessage<Freezbee>, IRequest
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
@@ -200,12 +202,12 @@ namespace MSTest.Proto {
 
     /// <summary>Field number for the "procedes" field.</summary>
     public const int ProcedesFieldNumber = 9;
-    private static readonly pb::FieldCodec<global::MSTest.Proto.ProcedeFabrication> _repeated_procedes_codec
-        = pb::FieldCodec.ForMessage(74, global::MSTest.Proto.ProcedeFabrication.Parser);
-    private readonly pbc::RepeatedField<global::MSTest.Proto.ProcedeFabrication> procedes_ = new pbc::RepeatedField<global::MSTest.Proto.ProcedeFabrication>();
+    private static readonly pb::FieldCodec<global::MSTest.Proto.ProcedeFabricationFreezbee> _repeated_procedes_codec
+        = pb::FieldCodec.ForMessage(74, global::MSTest.Proto.ProcedeFabricationFreezbee.Parser);
+    private readonly pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee> procedes_ = new pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MSTest.Proto.ProcedeFabrication> Procedes {
+    public pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee> Procedes {
       get { return procedes_; }
     }
 
@@ -1319,16 +1321,16 @@ namespace MSTest.Proto {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class ProcedeFabrication : pb::IMessage<ProcedeFabrication>
+  public sealed partial class ProcedeFabricationFreezbee : pb::IMessage<ProcedeFabricationFreezbee>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<ProcedeFabrication> _parser = new pb::MessageParser<ProcedeFabrication>(() => new ProcedeFabrication());
+    private static readonly pb::MessageParser<ProcedeFabricationFreezbee> _parser = new pb::MessageParser<ProcedeFabricationFreezbee>(() => new ProcedeFabricationFreezbee());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<ProcedeFabrication> Parser { get { return _parser; } }
+    public static pb::MessageParser<ProcedeFabricationFreezbee> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1344,7 +1346,7 @@ namespace MSTest.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ProcedeFabrication() {
+    public ProcedeFabricationFreezbee() {
       OnConstruction();
     }
 
@@ -1352,7 +1354,7 @@ namespace MSTest.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ProcedeFabrication(ProcedeFabrication other) : this() {
+    public ProcedeFabricationFreezbee(ProcedeFabricationFreezbee other) : this() {
       id_ = other.id_;
       name_ = other.name_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1360,8 +1362,8 @@ namespace MSTest.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ProcedeFabrication Clone() {
-      return new ProcedeFabrication(this);
+    public ProcedeFabricationFreezbee Clone() {
+      return new ProcedeFabricationFreezbee(this);
     }
 
     /// <summary>Field number for the "id" field.</summary>
@@ -1391,12 +1393,12 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as ProcedeFabrication);
+      return Equals(other as ProcedeFabricationFreezbee);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(ProcedeFabrication other) {
+    public bool Equals(ProcedeFabricationFreezbee other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -1482,7 +1484,7 @@ namespace MSTest.Proto {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(ProcedeFabrication other) {
+    public void MergeFrom(ProcedeFabricationFreezbee other) {
       if (other == null) {
         return;
       }

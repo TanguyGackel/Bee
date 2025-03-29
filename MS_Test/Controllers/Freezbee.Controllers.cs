@@ -11,7 +11,7 @@ internal class FreezbeeController
 
     internal static async void GetFreezbee(IRequest r)
     {
-        List<FreezbeeModel> result;
+        List<Freezbee> result;
         int statusCode;
         string statusDescription;
 
@@ -42,16 +42,18 @@ internal class FreezbeeController
 
     }
 
-    internal static async void GetFreezbeeById(Freezbee req)
+    internal static async void GetFreezbeeById(IRequest req)
     {
-        FreezbeeModel? result;
+        Freezbee? result;
         int statusCode;
         string statusDescription;
 
+        Freezbee f = (Freezbee)req;
+
         try
         {
-            result = await FreezbeeModel.GetFreezbeeById(req.IdModele);
-            if (string.IsNullOrEmpty(result.name))
+            result = await FreezbeeModel.GetFreezbeeById(f.IdModele);
+            if (string.IsNullOrEmpty(result.NameModele))
             {
                 statusCode = 404;
                 statusDescription = "Not found";
@@ -82,7 +84,7 @@ internal class FreezbeeController
 
     internal static async void GetFreezbeeByName(Freezbee req)
     {
-        List<FreezbeeModel> result;
+        List<Freezbee> result;
         int statusCode;
         string statusDescription;
 
@@ -114,7 +116,7 @@ internal class FreezbeeController
     
     internal static async void GetFreezbeeByGamme(Freezbee req)
     {
-        List<FreezbeeModel> result;
+        List<Freezbee> result;
         int statusCode;
         string statusDescription;
 
@@ -146,7 +148,7 @@ internal class FreezbeeController
     
     internal static async void GetFreezbeeTestById(Freezbee req)
     {
-        List<TestModel> result;
+        List<TestFreezbee> result;
         int statusCode;
         string statusDescription;
 

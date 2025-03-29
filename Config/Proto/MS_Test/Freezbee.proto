@@ -11,7 +11,7 @@ message Freezbee {
   repeated TestFreezbee tests = 6;
   repeated IngredientFreezbee ingredients = 7;
   repeated CaracteristiqueFreezbee caracteristiques = 8;
-  repeated ProcedeFabrication procedes = 9;
+  repeated ProcedeFabricationFreezbee procedes = 9;
 }
 
 message TestFreezbee{
@@ -32,7 +32,7 @@ message CaracteristiqueFreezbee{
   string name = 2;
 }
 
-message ProcedeFabrication{
+message ProcedeFabricationFreezbee{
   int32 id = 1;
   string name = 2;
 }
