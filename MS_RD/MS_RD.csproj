@@ -8,16 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="proto\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Google.Protobuf" Version="3.30.2" />
       <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MS_Lib\MS_Lib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="proto\" />
     </ItemGroup>
 
 </Project>

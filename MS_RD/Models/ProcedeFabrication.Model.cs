@@ -4,22 +4,9 @@ using MS_Lib;
 
 namespace MS_RD.Models;
 
-internal class ProcedeFabricationModel
+internal static class ProcedeFabricationModel
 {
     private static readonly DatabaseConnector DbConnector = DatabaseConnector.Instance;
-    
-    internal ProcedeFabricationModel()
-    {
-        Nom = "";
-        Description = "";
-        NomModele = "";
-    }
-
-    internal int Id;
-    internal string Nom;
-    internal string Description;
-    internal int IdModele;
-    internal string NomModele;
     
     #region Get
     internal static List<ProcedeFabricationModel> GetProcedeFabrications()

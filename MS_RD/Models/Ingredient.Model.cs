@@ -4,20 +4,9 @@ using MS_Lib;
 
 namespace MS_RD.Models;
 
-internal class IngredientModel
+internal static class IngredientModel
 {
     private static readonly DatabaseConnector DbConnector = DatabaseConnector.Instance;
-
-    internal IngredientModel()
-    {
-        Nom = "";
-        Description = "";
-    }
-
-    internal int Id;
-    internal string Nom;
-    internal string Description;
-    internal int Grammage;
     
     #region Get
     internal static List<IngredientModel> GetIngredients()

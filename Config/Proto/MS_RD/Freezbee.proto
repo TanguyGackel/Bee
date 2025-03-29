@@ -8,7 +8,12 @@ message Freezbee{
   string gammeModele = 3;
   string description = 4;
   int32 pUht = 5;
-  int32 idIngredient = 6;
-  int32 grammage = 7;
+  repeated Ingredient ingredient = 9; 
   int32 idCaracteristique = 8;
+  reserved 6,7;
+}
+
+message Ingredient{
+  int32 idIngredient = 1;
+  int32 grammage = 2;
 }
