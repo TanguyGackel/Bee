@@ -8,7 +8,8 @@ namespace MS_Lib;
 public class Router
 {
     public readonly Dictionary<string, Func<IRequest, Task<Response>>> Routes = new Dictionary<string, Func<IRequest, Task<Response>>>();
-
+    public readonly Dictionary<string, Type> Types = new Dictionary<string, Type>();
+    
     public void AddRoutes(string functionName, Func<IRequest, Task<Response>> request)
     {
         if (string.IsNullOrEmpty(functionName))
@@ -17,11 +18,21 @@ public class Router
         }
         Routes.Add(functionName, request);
     }
+
+    public void AddType(string name, Type type)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException(nameof(name));
+        }
+        Types.Add(name, type);
+    }
 }
 
 public abstract class Route
 {
     protected Router Router;
+    protected Type Type;
 
     protected Route(Router router)
     {
@@ -50,13 +61,17 @@ public abstract class Route
             throw new NullReferenceException(nameof(Router));
         }
 
-        Type type = Type.GetType(packet.BodyType);
+
+        Type type = Router.Types.First(t => t.Key.Equals(packet.BodyType)).Value;
         Object instanceC = Activator.CreateInstance(type);
 
-        FieldInfo fieldinfo = type.GetField("Parser");
-        Object instanceO = fieldinfo.GetValue(instanceC);
+        PropertyInfo[] f = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
+        PropertyInfo propertyInfo = type.GetProperty("Parser", BindingFlags.Public | BindingFlags.Static);
+        Object instanceO = propertyInfo.GetValue(instanceC);
 
-        MethodInfo methodInfo = instanceO.GetType().GetMethod("ParseFrom");
+        List<MethodInfo> methodInfos = instanceO.GetType().GetMethods().Where(m => m.Name == "ParseFrom" && m.GetParameters().Length == 1 && m.GetParameters()[0].ParameterType == typeof(ByteString)).ToList();
+
+        MethodInfo methodInfo = methodInfos.First();
         
         Func<IRequest, Task<Response>> info = Router.Routes.First(r => r.Key.Equals(packet.Fonction)).Value;
 
