@@ -1,0 +1,10 @@
+syntax="proto3";
+
+package MS_Lib.proto;
+
+message Response{
+  int32 statusCode = 1;
+  string statusDescription = 2;
+  string bodyType = 3;
+  repeated bytes body = 4;
+}
