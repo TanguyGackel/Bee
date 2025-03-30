@@ -2,16 +2,16 @@ using Google.Protobuf;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
 using MS_RD.Models;
+using MSLib.Proto;
 using MSTest.Proto;
 
 namespace MS_RD.Controllers;
 
 internal class FreezbeeController
 {
-    internal async Task<string> GetFreezbee(IRequest r)
+    internal async Task<Response> GetFreezbee(IRequest r)
     {
         List<Freezbee>? results = null;
-        Response 
         int statusCode;
         string statusDescription;
 
@@ -41,15 +41,21 @@ internal class FreezbeeController
             statusDescription = "Database TimeOut";
         }
 
-        List<byte[]> response = new List<byte[]>();
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "Freezbee"
+        };
+        
         foreach (Freezbee f in results)
         {
-            response.Add(f.ToByteArray());
+            response.Body.Add(f.ToByteString());
         }
-
+        return response;
     }
     
-    internal async Task<string> GetFreezbeeById(IRequest r)
+    internal async Task<Response> GetFreezbeeById(IRequest r)
     {
         Freezbee? results = null;
         int statusCode;
@@ -81,11 +87,11 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
-        
-        
+
+        return new Response();
     }
     
-    internal async Task<string> GetFreezbeeByName(IRequest r)
+    internal async Task<Response> GetFreezbeeByName(IRequest r)
     {
         List<Freezbee>? results = null;
         int statusCode;
@@ -117,11 +123,11 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
-        
-        
+
+        return new Response();
     }
     
-    internal async Task<string> GetFreezbeeByGamme(IRequest r)
+    internal async Task<Response> GetFreezbeeByGamme(IRequest r)
     {
         List<Freezbee>? results = null;
         int statusCode;
@@ -153,11 +159,11 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
-        
-        
+
+        return new Response();
     }
     
-    internal async Task<string> GetIngredientsFromFreezbee(IRequest r)
+    internal async Task<Response> GetIngredientsFromFreezbee(IRequest r)
     {
         List<IngredientFreezbee>? results = null;
         int statusCode;
@@ -189,9 +195,11 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
+
+        return new Response();
     }
     
-    internal async Task<string> GetCaracteristiquesFromFreezbee(IRequest r)
+    internal async Task<Response> GetCaracteristiquesFromFreezbee(IRequest r)
     {
         List<CaracteristiqueFreezbee>? results = null;
         int statusCode;
@@ -223,11 +231,11 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
-        
-        
+
+        return new Response();
     }
     
-    internal async Task<string> GetProcedeFabricationsFromFreezbee(IRequest r)
+    internal async Task<Response> GetProcedeFabricationsFromFreezbee(IRequest r)
     {
         List<ProcedeFabricationFreezbee>? results = null;
         int statusCode;
@@ -259,7 +267,7 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database TimeOut";
         }
-        
-        
+
+        return new Response();
     }
 }
