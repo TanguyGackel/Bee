@@ -38,7 +38,7 @@ public sealed class DatabaseConnector
         set => _db = "Initial Catalog=" + value + ";";
     }
 
-    private string _credentials = "Integrated Security=false;";
+    private string _credentials = "Integrated Security=SSPI;";
 
     public string Credentials
     {

@@ -10,10 +10,10 @@ internal class Program
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
 
-        // if (args[1] == "f" && args[2].IsNullOrEmpty())
-        //     Tools.ReadConfFile(conf, args[2]);
+        if (args[0] == "-f" && !args[1].IsNullOrEmpty())
+            Tools.ReadConfFile(conf, args[1]);
         // else
-        Tools.ReadInput(conf);
+        // Tools.ReadInput(conf);
 
 
         DatabaseConnector db = DatabaseConnector.Instance;

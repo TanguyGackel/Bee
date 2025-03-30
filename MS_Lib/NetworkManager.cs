@@ -42,6 +42,7 @@ public class NetworkManager
         
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
         _self.Bind(localEndPoint);
+        Console.WriteLine("Ready to listen");
         _self.Listen();
 
         while (!Cts.Token.IsCancellationRequested)
@@ -49,6 +50,7 @@ public class NetworkManager
             try
             {
                 _threadPool.EnqueueTask(_self.Accept());
+                Console.WriteLine("Received a request, enqueued it");
             }
             catch (Exception) //TODO
             {
@@ -96,6 +98,7 @@ internal class ThreadPool
     {
         foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
         {
+            Console.WriteLine("Begin process of a new task");
             HandleRequest(task);
         }
     }

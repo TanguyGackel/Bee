@@ -99,15 +99,16 @@ internal class FreezbeeController
         return new Response();
     }
 
-    internal static async Task<Response> GetFreezbeeByName(Freezbee req)
+    internal static async Task<Response> GetFreezbeeByName(IRequest req)
     {
         List<Freezbee> result;
         int statusCode;
         string statusDescription;
 
+        Freezbee f = (Freezbee)req;
         try
         {
-            result = await FreezbeeModel.GetFreezbeeByName(req.NameModele);
+            result = await FreezbeeModel.GetFreezbeeByName(f.NameModele);
             if (result.Count == 0)
             {
                 statusCode = 404;
@@ -132,15 +133,16 @@ internal class FreezbeeController
         return new Response();
     }
     
-    internal static async Task<Response> GetFreezbeeByGamme(Freezbee req)
+    internal static async Task<Response> GetFreezbeeByGamme(IRequest req)
     {
         List<Freezbee> result;
         int statusCode;
         string statusDescription;
+        Freezbee f = (Freezbee)req;
 
         try
         {
-            result = await FreezbeeModel.GetFreezbeeByGamme(req.GammeModele);
+            result = await FreezbeeModel.GetFreezbeeByGamme(f.GammeModele);
             if (result.Count == 0)
             {
                 statusCode = 404;
@@ -165,15 +167,16 @@ internal class FreezbeeController
         return new Response();
     }
     
-    internal static async Task<Response> GetFreezbeeTestById(Freezbee req)
+    internal static async Task<Response> GetFreezbeeTestById(IRequest req)
     {
         List<TestFreezbee> result;
         int statusCode;
         string statusDescription;
+        Freezbee f = (Freezbee)req;
 
         try
         {
-            result = await FreezbeeModel.GetFreezbeeTestById(req.IdModele);
+            result = await FreezbeeModel.GetFreezbeeTestById(f.IdModele);
             if (result.Count == 0)
             {
                 statusCode = 404;

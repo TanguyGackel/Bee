@@ -34,7 +34,8 @@ public abstract class Route
 
         foreach (MethodInfo method in methods)
         {
-            Router.AddRoutes(method.Name, (Func<IRequest, Task<Response>>)method.CreateDelegate(typeof(Func<IRequest, Task<Response>>), method));
+            Func<IRequest, Task<Response>> delegateInstance = (Func<IRequest, Task<Response>>)Delegate.CreateDelegate(typeof(Func<IRequest, Task<Response>>), method);
+            Router.AddRoutes(method.Name, delegateInstance);
         }
     }
 
