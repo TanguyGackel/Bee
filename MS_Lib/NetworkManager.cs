@@ -87,31 +87,38 @@ internal class ThreadPool
         ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
-            _threads[i] = new Thread(HandleRequest) { IsBackground = true };
+            _threads[i] = new Thread(StartWorking) { IsBackground = true };
             _threads[i].Start();
         }
     }
 
-    private void HandleRequest()
+    private void StartWorking()
     {
-        byte[] buffer = new byte[512];
         foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
         {
-            int length = task.Receive(buffer);
-            byte[] body = buffer.ToArray();
-            
-            while (length > 0)
-            {
-                length = task.Receive(buffer);
-                byte[] temp = new byte[body.Length + length];
-                Buffer.BlockCopy(body, 0, temp, 0, body.Length);
-                Buffer.BlockCopy(buffer, 0, temp, body.Length, buffer.Length);
-                body = temp;
-            }
-
-            Packet packet = Packet.Parser.ParseFrom(body);
-            NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
+            HandleRequest(task);
         }
+    }
+
+    private async void HandleRequest(Socket client)
+    {
+        byte[] buffer = new byte[512];
+        int length = await client.ReceiveAsync(buffer);
+        byte[] body = buffer.ToArray();
+            
+        while (length > 0)
+        {
+            length = await client.ReceiveAsync(buffer);
+            byte[] temp = new byte[body.Length + length];
+            Buffer.BlockCopy(body, 0, temp, 0, body.Length);
+            Buffer.BlockCopy(buffer, 0, temp, body.Length, buffer.Length);
+            body = temp;
+        }
+
+        Packet packet = Packet.Parser.ParseFrom(body);
+        byte[] response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
+
+        await client.SendAsync(response);
     }
 
     public void EnqueueTask(Socket task)

@@ -13,7 +13,6 @@ internal class FreezbeeController
     internal static async Task<Response> GetFreezbee(IRequest r)
     {
         List<Freezbee>? result = null;
-        Response re = new Response();
         
         int statusCode;
         string statusDescription;

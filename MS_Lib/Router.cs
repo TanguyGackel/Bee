@@ -1,4 +1,5 @@
 using System.Reflection;
+using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using MSLib.Proto;
 
@@ -6,9 +7,9 @@ namespace MS_Lib;
 
 public class Router
 {
-    public readonly Dictionary<string, Action<IRequest>> Routes = new Dictionary<string, Action<IRequest>>();
+    public readonly Dictionary<string, Func<IRequest, Task<Response>>> Routes = new Dictionary<string, Func<IRequest, Task<Response>>>();
 
-    public void AddRoutes(string functionName, Action<IRequest> request)
+    public void AddRoutes(string functionName, Func<IRequest, Task<Response>> request)
     {
         if (string.IsNullOrEmpty(functionName))
         {
@@ -33,11 +34,11 @@ public abstract class Route
 
         foreach (MethodInfo method in methods)
         {
-            Router.AddRoutes(method.Name, (Action<IRequest>)method.CreateDelegate(typeof(Action<IRequest>), method));
+            Router.AddRoutes(method.Name, (Func<IRequest, Task<Response>>)method.CreateDelegate(typeof(Func<IRequest, Task<Response>>), method));
         }
     }
 
-    internal void Call(Packet packet)
+    internal async Task<byte[]> Call(Packet packet)
     {
         if (string.IsNullOrEmpty(packet.Fonction))
         {
@@ -56,10 +57,11 @@ public abstract class Route
 
         MethodInfo methodInfo = instanceO.GetType().GetMethod("ParseFrom");
         
-        Action<IRequest> info = Router.Routes.First(r => r.Key.Equals(packet.Fonction)).Value;
+        Func<IRequest, Task<Response>> info = Router.Routes.First(r => r.Key.Equals(packet.Fonction)).Value;
 
-        info.Invoke((IRequest)methodInfo.Invoke(instanceO, new object[]{packet.Body}));
+        Response response = await info.Invoke((IRequest)methodInfo.Invoke(instanceO, new object[]{packet.Body}));
 
+        return response.ToByteArray();
     }
 
 }
