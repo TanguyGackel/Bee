@@ -16,12 +16,20 @@ internal class Program
         
         client.Connect(ipEndPoint);
         
-        Freezbee f = new Freezbee();
+        Freezbee f = new Freezbee()
+        {
+            IdModele = 2,
+        };
+
+        Test test = new Test()
+        {
+            IdTest = 2,
+        };
         
         Packet p = new Packet()
         {
             Route = "Freezbee",
-            Fonction = "GetFreezbee",
+            Fonction = "GetFreezbeeTestById",
             BodyType = "Freezbee",
             Body = f.ToByteString()
         };
@@ -40,12 +48,30 @@ internal class Program
         Console.WriteLine("Status description : " + packet.StatusDescription);
         Console.WriteLine("Status bodyType : " + packet.BodyType);
 
+        // foreach (ByteString b in packet.Body)
+        // {
+        //     Freezbee r = Freezbee.Parser.ParseFrom(b);
+        //     
+        //     Console.WriteLine("Freezbee " + r.IdModele + " nom " + r.NameModele + " description " + r.Description);
+        // }
+
         foreach (ByteString b in packet.Body)
         {
-            Freezbee r = Freezbee.Parser.ParseFrom(b);
-            
-            Console.WriteLine("Freezbee " + r.IdModele + " nom " + r.NameModele);
+            TestFreezbee tf = TestFreezbee.Parser.ParseFrom(b);
+            Console.WriteLine("Test id " + tf.Id + "Name Test " + tf.Name + " Description " + tf.Description + " Type " + tf.Type);
         }
+
+        // foreach (ByteString b in packet.Body)
+        // {
+        //     Test tf = Test.Parser.ParseFrom(b);
+        //     Console.WriteLine("Id: " + tf.IdTest + " Name " + tf.NameTest + " Validate " + tf.Validate);
+        // }
+
+        // foreach (ByteString b in packet.Body)
+        // {
+        //     ProcedeFabrication pf = ProcedeFabrication.Parser.ParseFrom(b);
+        //     Console.WriteLine("ID: " + pf.Id + " Name " + pf.Name + " Description " + pf.Description);
+        // }
 
     }
 }

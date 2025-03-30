@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package MSRD.proto;
+
+message Ingredient{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated FreezbeeI freezbees = 4;
+  
+}
+
+message FreezbeeI{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+}

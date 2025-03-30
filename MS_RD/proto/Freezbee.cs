@@ -10,7 +10,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace MSTest.Proto {
+namespace MSRD.Proto {
 
   /// <summary>Holder for reflection information generated from Config/Proto/MS_Test/Freezbee.proto</summary>
   public static partial class FreezbeeReflection {
@@ -43,11 +43,11 @@ namespace MSTest.Proto {
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.Freezbee), global::MSTest.Proto.Freezbee.Parser, new[]{ "IdModele", "NameModele", "GammeModele", "PUHT", "Description", "Tests", "Ingredients", "Caracteristiques", "Procedes" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.TestFreezbee), global::MSTest.Proto.TestFreezbee.Parser, new[]{ "Id", "Name", "Description", "Type" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.IngredientFreezbee), global::MSTest.Proto.IngredientFreezbee.Parser, new[]{ "Id", "Name", "Grammage" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.CaracteristiqueFreezbee), global::MSTest.Proto.CaracteristiqueFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MSTest.Proto.ProcedeFabricationFreezbee), global::MSTest.Proto.ProcedeFabricationFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSRD.Proto.Freezbee), global::MSRD.Proto.Freezbee.Parser, new[]{ "IdModele", "NameModele", "GammeModele", "PUHT", "Description", "Tests", "Ingredients", "Caracteristiques", "Procedes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSRD.Proto.TestFreezbee), global::MSRD.Proto.TestFreezbee.Parser, new[]{ "Id", "Name", "Description", "Type" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSRD.Proto.IngredientFreezbee), global::MSRD.Proto.IngredientFreezbee.Parser, new[]{ "Id", "Name", "Grammage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSRD.Proto.CaracteristiqueFreezbee), global::MSRD.Proto.CaracteristiqueFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::MSRD.Proto.ProcedeFabricationFreezbee), global::MSRD.Proto.ProcedeFabricationFreezbee.Parser, new[]{ "Id", "Name" }, null, null, null, null)
           }));
     }
     #endregion
@@ -69,7 +69,7 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MSTest.Proto.FreezbeeReflection.Descriptor.MessageTypes[0]; }
+      get { return global::MSRD.Proto.FreezbeeReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -169,45 +169,45 @@ namespace MSTest.Proto {
 
     /// <summary>Field number for the "tests" field.</summary>
     public const int TestsFieldNumber = 6;
-    private static readonly pb::FieldCodec<global::MSTest.Proto.TestFreezbee> _repeated_tests_codec
-        = pb::FieldCodec.ForMessage(50, global::MSTest.Proto.TestFreezbee.Parser);
-    private readonly pbc::RepeatedField<global::MSTest.Proto.TestFreezbee> tests_ = new pbc::RepeatedField<global::MSTest.Proto.TestFreezbee>();
+    private static readonly pb::FieldCodec<global::MSRD.Proto.TestFreezbee> _repeated_tests_codec
+        = pb::FieldCodec.ForMessage(50, global::MSRD.Proto.TestFreezbee.Parser);
+    private readonly pbc::RepeatedField<global::MSRD.Proto.TestFreezbee> tests_ = new pbc::RepeatedField<global::MSRD.Proto.TestFreezbee>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MSTest.Proto.TestFreezbee> Tests {
+    public pbc::RepeatedField<global::MSRD.Proto.TestFreezbee> Tests {
       get { return tests_; }
     }
 
     /// <summary>Field number for the "ingredients" field.</summary>
     public const int IngredientsFieldNumber = 7;
-    private static readonly pb::FieldCodec<global::MSTest.Proto.IngredientFreezbee> _repeated_ingredients_codec
-        = pb::FieldCodec.ForMessage(58, global::MSTest.Proto.IngredientFreezbee.Parser);
-    private readonly pbc::RepeatedField<global::MSTest.Proto.IngredientFreezbee> ingredients_ = new pbc::RepeatedField<global::MSTest.Proto.IngredientFreezbee>();
+    private static readonly pb::FieldCodec<global::MSRD.Proto.IngredientFreezbee> _repeated_ingredients_codec
+        = pb::FieldCodec.ForMessage(58, global::MSRD.Proto.IngredientFreezbee.Parser);
+    private readonly pbc::RepeatedField<global::MSRD.Proto.IngredientFreezbee> ingredients_ = new pbc::RepeatedField<global::MSRD.Proto.IngredientFreezbee>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MSTest.Proto.IngredientFreezbee> Ingredients {
+    public pbc::RepeatedField<global::MSRD.Proto.IngredientFreezbee> Ingredients {
       get { return ingredients_; }
     }
 
     /// <summary>Field number for the "caracteristiques" field.</summary>
     public const int CaracteristiquesFieldNumber = 8;
-    private static readonly pb::FieldCodec<global::MSTest.Proto.CaracteristiqueFreezbee> _repeated_caracteristiques_codec
-        = pb::FieldCodec.ForMessage(66, global::MSTest.Proto.CaracteristiqueFreezbee.Parser);
-    private readonly pbc::RepeatedField<global::MSTest.Proto.CaracteristiqueFreezbee> caracteristiques_ = new pbc::RepeatedField<global::MSTest.Proto.CaracteristiqueFreezbee>();
+    private static readonly pb::FieldCodec<global::MSRD.Proto.CaracteristiqueFreezbee> _repeated_caracteristiques_codec
+        = pb::FieldCodec.ForMessage(66, global::MSRD.Proto.CaracteristiqueFreezbee.Parser);
+    private readonly pbc::RepeatedField<global::MSRD.Proto.CaracteristiqueFreezbee> caracteristiques_ = new pbc::RepeatedField<global::MSRD.Proto.CaracteristiqueFreezbee>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MSTest.Proto.CaracteristiqueFreezbee> Caracteristiques {
+    public pbc::RepeatedField<global::MSRD.Proto.CaracteristiqueFreezbee> Caracteristiques {
       get { return caracteristiques_; }
     }
 
     /// <summary>Field number for the "procedes" field.</summary>
     public const int ProcedesFieldNumber = 9;
-    private static readonly pb::FieldCodec<global::MSTest.Proto.ProcedeFabricationFreezbee> _repeated_procedes_codec
-        = pb::FieldCodec.ForMessage(74, global::MSTest.Proto.ProcedeFabricationFreezbee.Parser);
-    private readonly pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee> procedes_ = new pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee>();
+    private static readonly pb::FieldCodec<global::MSRD.Proto.ProcedeFabricationFreezbee> _repeated_procedes_codec
+        = pb::FieldCodec.ForMessage(74, global::MSRD.Proto.ProcedeFabricationFreezbee.Parser);
+    private readonly pbc::RepeatedField<global::MSRD.Proto.ProcedeFabricationFreezbee> procedes_ = new pbc::RepeatedField<global::MSRD.Proto.ProcedeFabricationFreezbee>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MSTest.Proto.ProcedeFabricationFreezbee> Procedes {
+    public pbc::RepeatedField<global::MSRD.Proto.ProcedeFabricationFreezbee> Procedes {
       get { return procedes_; }
     }
 
@@ -519,7 +519,7 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MSTest.Proto.FreezbeeReflection.Descriptor.MessageTypes[1]; }
+      get { return global::MSRD.Proto.FreezbeeReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -828,7 +828,7 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MSTest.Proto.FreezbeeReflection.Descriptor.MessageTypes[2]; }
+      get { return global::MSRD.Proto.FreezbeeReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1100,7 +1100,7 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MSTest.Proto.FreezbeeReflection.Descriptor.MessageTypes[3]; }
+      get { return global::MSRD.Proto.FreezbeeReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1335,7 +1335,7 @@ namespace MSTest.Proto {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::MSTest.Proto.FreezbeeReflection.Descriptor.MessageTypes[4]; }
+      get { return global::MSRD.Proto.FreezbeeReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
