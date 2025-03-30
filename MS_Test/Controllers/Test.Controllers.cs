@@ -1,5 +1,6 @@
 using MS_Test.Models;
 using Microsoft.Data.SqlClient;
+using MS_Lib;
 using MSTest.Proto;
 
 namespace MS_Test.Controllers;
@@ -38,15 +39,17 @@ internal class Test_Controllers
         }
     }
 
-    internal async void GetTestById(Test req)
+    internal async void GetTestById(IRequest req)
     {
         Test? result;
         int statusCode;
         string statusDescription;
 
+        Test t = (Test)req;
+        
         try
         {
-            result = await TestModel.GetTestById(req.IdTest);
+            result = await TestModel.GetTestById(t.IdTest);
             if (string.IsNullOrEmpty(result.NameTest))
             {
                 statusCode = 404;
@@ -76,15 +79,17 @@ internal class Test_Controllers
         
     }
     
-    internal async void GetFreezbeeByName(Test req)
+    internal async void GetFreezbeeByName(IRequest req)
     {
         List<Test> result;
         int statusCode;
         string statusDescription;
 
+        Test t = (Test)req;
+
         try
         {
-            result = await TestModel.GetTestByName(req.NameTest);
+            result = await TestModel.GetTestByName(t.NameTest);
             if (result.Count == 0)
             {
                 statusCode = 404;
@@ -108,14 +113,16 @@ internal class Test_Controllers
         }
     }
 
-    internal void UpdateTest(Test req)
+    internal void UpdateTest(IRequest req)
     {
         int statusCode;
         string statusDescription;
 
+        Test t = (Test)req;
+
         try
         {
-            TestModel.UpdateTest(req.IdTest, req.Validate);
+            TestModel.UpdateTest(t.IdTest, t.Validate);
         }
         catch (SqlException)
         {
@@ -135,15 +142,17 @@ internal class Test_Controllers
         
     }
 
-    internal async void GetTestProcedeById(Test req)
+    internal async void GetTestProcedeById(IRequest req)
     {
         List<ProcedeFabrication> result;
         int statusCode;
         string statusDescription;
 
+        Test t = (Test)req;
+        
         try
         {
-            result = await TestModel.GetTestProcedeById(req.IdTest);
+            result = await TestModel.GetTestProcedeById(t.IdTest);
             if (result.Count == 0)
             {
                 statusCode = 404;
