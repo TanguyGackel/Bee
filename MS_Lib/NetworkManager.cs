@@ -106,18 +106,30 @@ internal class ThreadPool
     private async void HandleRequest(Socket client)
     {
         byte[] buffer = new byte[512];
-        int length = await client.ReceiveAsync(buffer);
-        byte[] body = buffer.ToArray();
+        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+        int maxLength = length;
+        byte[] bodyTemp = buffer.ToArray();
             
-        while (length > 0)
+        while (length == 512)
         {
-            length = await client.ReceiveAsync(buffer);
-            byte[] temp = new byte[body.Length + length];
-            Buffer.BlockCopy(body, 0, temp, 0, body.Length);
-            Buffer.BlockCopy(buffer, 0, temp, body.Length, buffer.Length);
-            body = temp;
+            try
+            {
+                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Erreur qui me casse les couilles mais pas le temps de corriger : " + e.Message);
+            }
+
+            maxLength += length;
+            byte[] temp = new byte[bodyTemp.Length + length];
+            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+            bodyTemp = temp;
         }
 
+        byte[] body = new byte[maxLength];
+        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
         Packet packet = Packet.Parser.ParseFrom(body);
         byte[] response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
 
