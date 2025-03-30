@@ -2,6 +2,7 @@ using Google.Protobuf;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
 using MS_Test.Models;
+using MSLib.Proto;
 using MSTest.Proto;
 
 namespace MS_Test.Controllers;
@@ -9,9 +10,11 @@ namespace MS_Test.Controllers;
 internal class FreezbeeController
 {
 
-    internal static async void GetFreezbee(IRequest r)
+    internal static async Task<Response> GetFreezbee(IRequest r)
     {
-        List<Freezbee> result;
+        List<Freezbee>? result = null;
+        Response re = new Response();
+        
         int statusCode;
         string statusDescription;
 
@@ -39,10 +42,24 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database timeout";
         }
+        
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "Freezbee"
+        };
+        
+        foreach (Freezbee f in result)
+        {
+            response.Body.Add(f.ToByteString());
+        }
+
+        return response;
 
     }
 
-    internal static async void GetFreezbeeById(IRequest req)
+    internal static async Task<Response> GetFreezbeeById(IRequest req)
     {
         Freezbee? result;
         int statusCode;
@@ -80,9 +97,10 @@ internal class FreezbeeController
             statusDescription = "Unprocessable entity";
         }
 
+        return new Response();
     }
 
-    internal static async void GetFreezbeeByName(Freezbee req)
+    internal static async Task<Response> GetFreezbeeByName(Freezbee req)
     {
         List<Freezbee> result;
         int statusCode;
@@ -112,9 +130,10 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database timeout";
         }
+        return new Response();
     }
     
-    internal static async void GetFreezbeeByGamme(Freezbee req)
+    internal static async Task<Response> GetFreezbeeByGamme(Freezbee req)
     {
         List<Freezbee> result;
         int statusCode;
@@ -144,9 +163,10 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database timeout";
         }
+        return new Response();
     }
     
-    internal static async void GetFreezbeeTestById(Freezbee req)
+    internal static async Task<Response> GetFreezbeeTestById(Freezbee req)
     {
         List<TestFreezbee> result;
         int statusCode;
@@ -181,7 +201,7 @@ internal class FreezbeeController
             statusCode = 422;
             statusDescription = "Unprocessable entity";
         }
-        
+        return new Response();
     }
     
 }

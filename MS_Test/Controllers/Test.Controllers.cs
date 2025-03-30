@@ -8,7 +8,7 @@ internal class Test_Controllers
 {
     internal async void GetTests()
     {
-        List<TestModel> result;
+        List<Test> result;
         int statusCode;
         string statusDescription;
 
@@ -40,14 +40,14 @@ internal class Test_Controllers
 
     internal async void GetTestById(Test req)
     {
-        TestModel? result;
+        Test? result;
         int statusCode;
         string statusDescription;
 
         try
         {
             result = await TestModel.GetTestById(req.IdTest);
-            if (string.IsNullOrEmpty(result.name))
+            if (string.IsNullOrEmpty(result.NameTest))
             {
                 statusCode = 404;
                 statusDescription = "Not found";
@@ -78,7 +78,7 @@ internal class Test_Controllers
     
     internal async void GetFreezbeeByName(Test req)
     {
-        List<TestModel> result;
+        List<Test> result;
         int statusCode;
         string statusDescription;
 
@@ -137,7 +137,7 @@ internal class Test_Controllers
 
     internal async void GetTestProcedeById(Test req)
     {
-        List<ProcedeFabricationModel> result;
+        List<ProcedeFabrication> result;
         int statusCode;
         string statusDescription;
 

@@ -1,6 +1,4 @@
 using System.Data;
-using System.Data.Common;
-using Microsoft.Data.Sql;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
 using MSTest.Proto;

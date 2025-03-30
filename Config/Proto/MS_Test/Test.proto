@@ -6,4 +6,12 @@ message Test {
   int32 idTest = 1;
   string nameTest = 2;
   bool validate = 3;
+  string description = 4;
+  string type = 5;
+}
+
+message ProcedeFabrication{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
 }
