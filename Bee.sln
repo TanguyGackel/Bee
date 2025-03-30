@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS_Factory", "MS_Factory\MS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS_Lib", "MS_Lib\MS_Lib.csproj", "{9C034021-614F-403E-96A7-FE2F56634FFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scriptClient", "scriptClient\scriptClient.csproj", "{0D173E9E-AD28-4D8E-BB01-3D3449A2FBCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{9C034021-614F-403E-96A7-FE2F56634FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C034021-614F-403E-96A7-FE2F56634FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C034021-614F-403E-96A7-FE2F56634FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D173E9E-AD28-4D8E-BB01-3D3449A2FBCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D173E9E-AD28-4D8E-BB01-3D3449A2FBCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D173E9E-AD28-4D8E-BB01-3D3449A2FBCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D173E9E-AD28-4D8E-BB01-3D3449A2FBCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
