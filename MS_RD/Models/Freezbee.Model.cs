@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
-using MSTest.Proto;
+using MSRD.Proto;
 
 
 namespace MS_RD.Models;
@@ -186,132 +186,132 @@ internal static class FreezbeeModel
         return toReturn;
     }
     #endregion
-    //
-    // #region Add
-    // internal static void AddFreezbee(string nom, string description, int pUht, string gamme)
-    // {
-    //     SqlCommand cmd = new SqlCommand("add_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@nom", nom);
-    //     cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@description", description);
-    //     cmd.Parameters["@description"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@pUHT", pUht);
-    //     cmd.Parameters["@pUHT"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@gamme", gamme);
-    //     cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
-    //     
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    //
-    // internal static void AddIngredientToFreezbee(int idModele, int idIngredient, int grammage)  //TODO
-    // {
-    //     if (idModele < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
-    //     if (idIngredient < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idIngredient), idIngredient, "idIngredient should be >= 0");
-    //     if (grammage <= 0)
-    //         throw new ArgumentOutOfRangeException(nameof(grammage), grammage, "grammage should be > 0");
-    //
-    //     SqlCommand cmd = new SqlCommand("add_ingredient_to_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id_modele", idModele);
-    //     cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@id_ingredient", idIngredient);
-    //     cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@grammage", grammage);
-    //     cmd.Parameters["@grammage"].Direction = ParameterDirection.Input;
-    //     
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    //
-    // internal static void AddCaracteristiqueToFreezbee(int idModele, int idCaracteristique)
-    // {
-    //     if (idModele < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
-    //     if (idCaracteristique < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idCaracteristique), idCaracteristique, "idCaracteristique should be >= 0");
-    //
-    //     SqlCommand cmd = new SqlCommand("add_caracteristique_to_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id_modele", idModele);
-    //     cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@id_caracteristique", idCaracteristique);
-    //     cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
-    //
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    // #endregion
-    //
-    // #region Delete
-    // internal static void DeleteModele(int id)
-    // {
-    //     if (id < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(id), id, "id should be >= 0");
-    //     
-    //     SqlCommand cmd = new SqlCommand("delete_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id", id);
-    //     cmd.Parameters["@id"].Direction = ParameterDirection.Input;
-    //
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    //
-    // internal static void DeleteIngredientFromFreezbee(int idModele, int idIngredient)
-    // {
-    //     if (idModele < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
-    //     if (idIngredient < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idIngredient), idIngredient, "idIngredient should be >= 0");
-    //
-    //     SqlCommand cmd = new SqlCommand("delete_ingredient_from_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id_modele", idModele);
-    //     cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@id_ingredient", idIngredient);
-    //     cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
-    //     
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    //
-    // internal static void DeleteCaracteristiqueFromFreezbee(int idModele, int idCaracteristique)
-    // {
-    //     if (idModele < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
-    //     if (idCaracteristique < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(idCaracteristique), idCaracteristique, "idCaracteristique should be >= 0");
-    //
-    //     SqlCommand cmd = new SqlCommand("delete_caracteristique_from_freezbee");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id_modele", idModele);
-    //     cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@id_caracteristique", idCaracteristique);
-    //     cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
-    //
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    // #endregion
-    //
-    // #region Update
-    // internal static void UpdateModele(int id, string nom, string description, int pUht, string gamme)
-    // {
-    //     if (id < 0)
-    //         throw new ArgumentOutOfRangeException(nameof(id), id, "id should be >= 0");
-    //     
-    //     SqlCommand cmd = new SqlCommand("update_modele");
-    //     cmd.CommandType = CommandType.StoredProcedure;
-    //     cmd.Parameters.AddWithValue("@id", id);
-    //     cmd.Parameters["@id"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@nom", nom);
-    //     cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@description", description);
-    //     cmd.Parameters["@description"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@pUHT", pUht);
-    //     cmd.Parameters["@pUHT"].Direction = ParameterDirection.Input;
-    //     cmd.Parameters.AddWithValue("@gamme", gamme);
-    //     cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
-    //     
-    //     DbConnector.SendNonQueryRequest(cmd);
-    // }
-    // #endregion
+    
+    #region Add
+    internal static async Task<int> AddFreezbee(string nom, string description, int pUht, string gamme)
+    {
+        SqlCommand cmd = new SqlCommand("add_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@description", description);
+        cmd.Parameters["@description"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@pUHT", pUht);
+        cmd.Parameters["@pUHT"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@gamme", gamme);
+        cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
+        
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    
+    internal static async Task<int> AddIngredientToFreezbee(int idModele, int idIngredient, int grammage)  //TODO
+    {
+        if (idModele < 0)
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
+        if (idIngredient < 0)
+            throw new ArgumentOutOfRangeException(nameof(idIngredient), idIngredient, "idIngredient should be >= 0");
+        if (grammage <= 0)
+            throw new ArgumentOutOfRangeException(nameof(grammage), grammage, "grammage should be > 0");
+    
+        SqlCommand cmd = new SqlCommand("add_ingredient_to_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id_modele", idModele);
+        cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@id_ingredient", idIngredient);
+        cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@grammage", grammage);
+        cmd.Parameters["@grammage"].Direction = ParameterDirection.Input;
+        
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    
+    internal static async Task<int> AddCaracteristiqueToFreezbee(int idModele, int idCaracteristique)
+    {
+        if (idModele < 0)
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
+        if (idCaracteristique < 0)
+            throw new ArgumentOutOfRangeException(nameof(idCaracteristique), idCaracteristique, "idCaracteristique should be >= 0");
+    
+        SqlCommand cmd = new SqlCommand("add_caracteristique_to_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id_modele", idModele);
+        cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@id_caracteristique", idCaracteristique);
+        cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
+    
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    #endregion
+    
+    #region Delete
+    internal static async Task<int> DeleteModele(int id)
+    {
+        if (id < 0)
+            throw new ArgumentOutOfRangeException(nameof(id), id, "id should be >= 0");
+        
+        SqlCommand cmd = new SqlCommand("delete_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters["@id"].Direction = ParameterDirection.Input;
+    
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    
+    internal static async Task<int> DeleteIngredientFromFreezbee(int idModele, int idIngredient)
+    {
+        if (idModele < 0)
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
+        if (idIngredient < 0)
+            throw new ArgumentOutOfRangeException(nameof(idIngredient), idIngredient, "idIngredient should be >= 0");
+    
+        SqlCommand cmd = new SqlCommand("delete_ingredient_from_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id_modele", idModele);
+        cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@id_ingredient", idIngredient);
+        cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
+        
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    
+    internal static async Task<int> DeleteCaracteristiqueFromFreezbee(int idModele, int idCaracteristique)
+    {
+        if (idModele < 0)
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
+        if (idCaracteristique < 0)
+            throw new ArgumentOutOfRangeException(nameof(idCaracteristique), idCaracteristique, "idCaracteristique should be >= 0");
+    
+        SqlCommand cmd = new SqlCommand("delete_caracteristique_from_freezbee");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id_modele", idModele);
+        cmd.Parameters["@id_modele"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@id_caracteristique", idCaracteristique);
+        cmd.Parameters["@id_ingredient"].Direction = ParameterDirection.Input;
+    
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    #endregion
+    
+    #region Update
+    internal static async Task<int> UpdateModele(int id, string nom, string description, int pUht, string gamme)
+    {
+        if (id < 0)
+            throw new ArgumentOutOfRangeException(nameof(id), id, "id should be >= 0");
+        
+        SqlCommand cmd = new SqlCommand("update_modele");
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters["@id"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@nom", nom);
+        cmd.Parameters["@nom"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@description", description);
+        cmd.Parameters["@description"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@pUHT", pUht);
+        cmd.Parameters["@pUHT"].Direction = ParameterDirection.Input;
+        cmd.Parameters.AddWithValue("@gamme", gamme);
+        cmd.Parameters["@gamme"].Direction = ParameterDirection.Input;
+        
+        return await DbConnector.SendNonQueryRequest(cmd);
+    }
+    #endregion
 }

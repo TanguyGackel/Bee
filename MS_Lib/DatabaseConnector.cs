@@ -85,7 +85,7 @@ public sealed class DatabaseConnector
         }
     }
 
-    public async void SendNonQueryRequest(SqlCommand cmd)
+    public async Task<int> SendNonQueryRequest(SqlCommand cmd)
     {
         try
         {
@@ -93,13 +93,15 @@ public sealed class DatabaseConnector
             conn.Open();
 
             cmd.Connection = conn;
-            await cmd.ExecuteNonQueryAsync();
+            return await cmd.ExecuteNonQueryAsync();
+            
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
+        
     }
 }
 

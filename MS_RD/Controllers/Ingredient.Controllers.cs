@@ -1,24 +1,24 @@
-using Azure;
+using System.Data;
 using Google.Protobuf;
 using Microsoft.Data.SqlClient;
 using MS_Lib;
 using MS_RD.Models;
+using MSLib.Proto;
 using MSRD.Proto;
-using Response = MSLib.Proto.Response;
 
 namespace MS_RD.Controllers;
 
-internal class FreezbeeController
+internal class IngredientControllers
 {
-    internal static async Task<Response> GetFreezbee(IRequest r)
+    internal static async Task<Response> GetIngredients(IRequest r)
     {
-        List<Freezbee>? results = null;
+        List<Ingredient>? results = null;
         int statusCode;
         string statusDescription;
 
         try
         {
-            results = await FreezbeeModel.GetFreezbee();
+            results = await IngredientModel.GetIngredients();
 
             if (results.Count == 0)
             {
@@ -46,27 +46,27 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "Freezbee"
+            BodyType = "Ingredient"
         };
         
-        foreach (Freezbee f in results)
+        foreach (Ingredient f in results)
         {
             response.Body.Add(f.ToByteString());
         }
         return response;
     }
-    
-    internal static async Task<Response> GetFreezbeeById(IRequest r)
+    internal static async Task<Response> GetIngredientById(IRequest r)
     {
-        Freezbee? results = null;
+        Ingredient? results = null;
         int statusCode;
         string statusDescription;
-        Freezbee requete = (Freezbee)r;
+
+        Ingredient i = (Ingredient)r;
 
         try
         {
-            results = await FreezbeeModel.GetFreezbeeById(requete.IdModele);
-
+            results = await IngredientModel.GetIngredientById(i.Id);
+            
             if (results == null)
             {
                 statusCode = 404;
@@ -77,6 +77,7 @@ internal class FreezbeeController
                 statusCode = 200;
                 statusDescription = "OK";
             }
+
         }
         catch (SqlException)
         {
@@ -93,24 +94,25 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "Freezbee",
+            BodyType = "Ingredient"
         };
         
+
         response.Body.Add(results.ToByteString());
         
         return response;
     }
-    
-    internal static async Task<Response> GetFreezbeeByName(IRequest r)
+    internal static async Task<Response> GetIngredientByName(IRequest r)
     {
-        List<Freezbee>? results = null;
+        List<Ingredient>? results = null;
         int statusCode;
         string statusDescription;
-        Freezbee requete = (Freezbee)r;
+
+        Ingredient i = (Ingredient)r;
 
         try
         {
-            results = await FreezbeeModel.GetFreezbeeByName(requete.NameModele);
+            results = await IngredientModel.GetIngredientByName(i.Name);
 
             if (results.Count == 0)
             {
@@ -138,27 +140,27 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "Freezbee",
+            BodyType = "Ingredient"
         };
-
-        foreach (Freezbee f in results)
+        
+        foreach (Ingredient f in results)
         {
             response.Body.Add(f.ToByteString());
         }
-        
         return response;
     }
-    
-    internal static async Task<Response> GetFreezbeeByGamme(IRequest r)
+
+    internal static async Task<Response> GetFreezbeesFromIngredient(IRequest r)
     {
-        List<Freezbee>? results = null;
+        List<FreezbeeI>? results = null;
         int statusCode;
         string statusDescription;
-        Freezbee requete = (Freezbee)r;
-        
+
+        Ingredient i = (Ingredient)r;
+
         try
         {
-            results = await FreezbeeModel.GetFreezbeeByGamme(requete.GammeModele);
+            results = await IngredientModel.GetFreezbeesFromIngredient(i.Id);
 
             if (results.Count == 0)
             {
@@ -186,171 +188,26 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "Freezbee",
+            BodyType = "Ingredient"
         };
 
-        foreach (Freezbee f in results)
+        foreach (FreezbeeI f in results)
         {
             response.Body.Add(f.ToByteString());
         }
 
         return response;
     }
-    
-    internal static async Task<Response> GetIngredientsFromFreezbee(IRequest r)
-    {
-        List<IngredientFreezbee>? results = null;
-        int statusCode;
-        string statusDescription;
-        Freezbee requete = (Freezbee)r;
-
-        try
-        {
-            results = await FreezbeeModel.GetIngredientsFromFreezbee(requete.IdModele);
-
-            if (results.Count == 0)
-            {
-                statusCode = 204;
-                statusDescription = "No Content";
-            }
-            else
-            {
-                statusCode = 200;
-                statusDescription = "OK";
-            }
-        }
-        catch (SqlException)
-        {
-            statusCode = 500;
-            statusDescription = "Internal Server Error";
-        }
-        catch (TimeoutException)
-        {
-            statusCode = 504;
-            statusDescription = "Database TimeOut";
-        }
-
-        Response response = new Response()
-        {
-            StatusCode = statusCode,
-            StatusDescription = statusDescription,
-            BodyType = "IngredientFreezbee",
-        };
-
-        foreach (IngredientFreezbee ingredient in results)
-        {
-            response.Body.Add(ingredient.ToByteString());
-        }
-        
-        return response;
-    }
-    
-    internal static async Task<Response> GetCaracteristiquesFromFreezbee(IRequest r)
-    {
-        List<CaracteristiqueFreezbee>? results = null;
-        int statusCode;
-        string statusDescription;
-        Freezbee requete = (Freezbee)r;
-
-        try
-        {
-            results = await FreezbeeModel.GetCaracteristiquesFromFreezbee(requete.IdModele);
-
-            if (results.Count == 0)
-            {
-                statusCode = 204;
-                statusDescription = "No Content";
-            }
-            else
-            {
-                statusCode = 200;
-                statusDescription = "OK";
-            }
-        }
-        catch (SqlException)
-        {
-            statusCode = 500;
-            statusDescription = "Internal Server Error";
-        }
-        catch (TimeoutException)
-        {
-            statusCode = 504;
-            statusDescription = "Database TimeOut";
-        }
-
-        Response response = new Response()
-        {
-            StatusCode = statusCode,
-            StatusDescription = statusDescription,
-            BodyType = "CaracteristiqueFreezbee",
-        };
-
-        foreach (CaracteristiqueFreezbee cf in results)
-        {
-            response.Body.Add(cf.ToByteString());
-        }
-
-        return response;
-    }
-    
-    internal static async Task<Response> GetProcedeFabricationsFromFreezbee(IRequest r)
-    {
-        List<ProcedeFabricationFreezbee>? results = null;
-        int statusCode;
-        string statusDescription;
-        Freezbee requete = (Freezbee)r;
-
-        try
-        {
-            results = await FreezbeeModel.GetProcedeFabricationsFromFreezbee(requete.IdModele);
-
-            if (results.Count == 0)
-            {
-                statusCode = 204;
-                statusDescription = "No Content";
-            }
-            else
-            {
-                statusCode = 200;
-                statusDescription = "OK";
-            }
-        }
-        catch (SqlException)
-        {
-            statusCode = 500;
-            statusDescription = "Internal Server Error";
-        }
-        catch (TimeoutException)
-        {
-            statusCode = 504;
-            statusDescription = "Database TimeOut";
-        }
-
-        Response response = new Response()
-        {
-            StatusCode = statusCode,
-            StatusDescription = statusDescription,
-            BodyType = "ProcedeFabricationFreezbee",
-        };
-
-        foreach (ProcedeFabricationFreezbee pf in results)
-        {
-            response.Body.Add(pf.ToByteString());
-        }
-
-        return response;
-    }
-
-    internal static async Task<Response> AddFreezbee(IRequest r)
+    internal static async Task<Response> AddIngredient(IRequest r)
     {
         int statusCode;
         string statusDescription;
 
-        Freezbee f = (Freezbee)r;
+        Ingredient f = (Ingredient)r;
 
         try
         {
-            await FreezbeeModel.AddFreezbee(f.NameModele, f.Description, f.PUHT, f.GammeModele);
+            await IngredientModel.AddIngredient(f.Name, f.Description);
             statusCode = 200;
             statusDescription = "OK";
         }
@@ -380,17 +237,16 @@ internal class FreezbeeController
 
         return response;
     }
-
-    internal static async Task<Response> AddIngredientToFreezbee(IRequest r)
+    internal static async Task<Response> DeleteIngredient(IRequest r)
     {
         int statusCode;
         string statusDescription;
 
-        Freezbee f = (Freezbee)r;
-       
+        Ingredient f = (Ingredient)r;
+
         try
         {
-            await FreezbeeModel.AddIngredientToFreezbee(f.IdModele, f.Ingredients[0].Id, f.Ingredients[0].Grammage);
+            await IngredientModel.DeleteIngredient(f.Id);
             statusCode = 200;
             statusDescription = "OK";
         }
@@ -420,17 +276,16 @@ internal class FreezbeeController
 
         return response;
     }
-
-    internal static async Task<Response> AddCaracteristiqueToFreezbee(IRequest r)
+    internal static async Task<Response> UpdateModele(IRequest r)
     {
         int statusCode;
         string statusDescription;
 
-        Freezbee f = (Freezbee)r;
-       
+        FreezbeeI f = (FreezbeeI)r;
+
         try
         {
-            await FreezbeeModel.AddCaracteristiqueToFreezbee(f.IdModele, f.Caracteristiques[0].Id);
+            await IngredientModel.UpdateModele(f.Id, f.Name, f.Description);
             statusCode = 200;
             statusDescription = "OK";
         }
@@ -460,6 +315,4 @@ internal class FreezbeeController
 
         return response;
     }
-    
-    
 }

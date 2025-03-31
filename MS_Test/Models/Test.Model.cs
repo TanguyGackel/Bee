@@ -89,7 +89,7 @@ internal class TestModel
         return toReturn;
     }
 
-    internal static void UpdateTest(int idTest, bool validate)
+    internal static async Task<int> UpdateTest(int idTest, bool validate)
     {
         if (idTest < 0)
         {
@@ -103,7 +103,7 @@ internal class TestModel
         cmd.Parameters.AddWithValue("@valide_field", validate);
         cmd.Parameters["@valide_field"].Direction = ParameterDirection.Input;
         
-        dbConnector.SendNonQueryRequest(cmd);
+        return await dbConnector.SendNonQueryRequest(cmd);
     }
 
     internal static async Task<List<ProcedeFabrication>> GetTestProcedeById(int idTest)

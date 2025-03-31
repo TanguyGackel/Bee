@@ -60,7 +60,7 @@ internal class FreezbeeController
 
     internal static async Task<Response> GetFreezbeeById(IRequest req)
     {
-        Freezbee? result;
+        Freezbee? result = null;
         int statusCode;
         string statusDescription;
 
@@ -95,17 +95,27 @@ internal class FreezbeeController
             statusCode = 422;
             statusDescription = "Unprocessable entity";
         }
-
-        return new Response();
+        
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "Freezbee"
+        };
+        
+        response.Body.Add(result.ToByteString());
+        return response;
+        
     }
 
     internal static async Task<Response> GetFreezbeeByName(IRequest req)
     {
-        List<Freezbee> result;
+        List<Freezbee>? result = null;
         int statusCode;
         string statusDescription;
 
         Freezbee f = (Freezbee)req;
+        
         try
         {
             result = await FreezbeeModel.GetFreezbeeByName(f.NameModele);
@@ -130,12 +140,24 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database timeout";
         }
-        return new Response();
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "Freezbee"
+        };
+        
+        foreach (Freezbee freezbee in result)
+        {
+            response.Body.Add(freezbee.ToByteString());
+        }
+
+        return response;
     }
     
     internal static async Task<Response> GetFreezbeeByGamme(IRequest req)
     {
-        List<Freezbee> result;
+        List<Freezbee>? result = null;
         int statusCode;
         string statusDescription;
         Freezbee f = (Freezbee)req;
@@ -164,12 +186,24 @@ internal class FreezbeeController
             statusCode = 504;
             statusDescription = "Database timeout";
         }
-        return new Response();
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "Freezbee"
+        };
+        
+        foreach (Freezbee freezbee in result)
+        {
+            response.Body.Add(freezbee.ToByteString());
+        }
+
+        return response;
     }
     
     internal static async Task<Response> GetFreezbeeTestById(IRequest req)
     {
-        List<TestFreezbee> result;
+        List<TestFreezbee>? result = null;
         int statusCode;
         string statusDescription;
         Freezbee f = (Freezbee)req;
@@ -203,7 +237,19 @@ internal class FreezbeeController
             statusCode = 422;
             statusDescription = "Unprocessable entity";
         }
-        return new Response();
+        Response response = new Response()
+        {
+            StatusCode = statusCode,
+            StatusDescription = statusDescription,
+            BodyType = "TestFreezbee"
+        };
+
+        foreach (TestFreezbee testF in result)
+        {
+            response.Body.Add(testF.ToByteString());
+        }
+
+        return response;
     }
     
 }
