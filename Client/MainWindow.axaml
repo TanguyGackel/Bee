@@ -2,8 +2,65 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
         x:Class="Client.MainWindow"
-        Title="Client">
-    Welcome to Avalonia!
+        Title="KillerBee Client"
+        Background="White">
+
+    <DockPanel Margin="10">
+        <!-- Barre de navigation en haut avec fond gris et coins arrondis -->
+        <Border DockPanel.Dock="Top" Background="LightGray" CornerRadius="8" Padding="10" Margin="10">
+            <DockPanel LastChildFill="True">
+                <!-- Boutons de navigation avec effet de sélection -->
+                <Button x:Name="FreezBeeButton" Content="FreezBee" Margin="5" Width="100" Click="Button_Click" Background="LightGray" Foreground="Black" DockPanel.Dock="Left">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="Gray"/>
+                        </Style>
+                        <Style Selector="Button:pressed">
+                            <Setter Property="Background" Value="DarkGray"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button x:Name="IngredientsButton" Content="Ingrédients" Margin="5" Width="100" Click="Button_Click" Background="LightGray" Foreground="Black" DockPanel.Dock="Left">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="Gray"/>
+                        </Style>
+                        <Style Selector="Button:pressed">
+                            <Setter Property="Background" Value="DarkGray"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button x:Name="RecettesButton" Content="Recettes" Margin="5" Width="100" Click="Button_Click" Background="LightGray" Foreground="Black" DockPanel.Dock="Left">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover">
+                            <Setter Property="Background" Value="Gray"/>
+                        </Style>
+                        <Style Selector="Button:pressed">
+                            <Setter Property="Background" Value="DarkGray"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+
+                <!-- Barre de recherche à droite -->
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <TextBlock Text="🔎" VerticalAlignment="Center" Margin="0 5 5 5" Foreground="Black"/>
+                    <TextBox x:Name="SearchTextBox" Width="200" Background="White" Foreground="Black"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Zone de contenu -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Background="White">
+            <StackPanel x:Name="ContentStackPanel">
+                <!-- Contenu à afficher en fonction de la sélection -->
+                <TextBlock x:Name="FreezBeeContent" Text="Contenu de FreezBee..." IsVisible="False" Margin="10" FontSize="16" Foreground="Black"/>
+                <TextBlock x:Name="IngredientsContent" Text="Contenu des Ingrédients..." IsVisible="False" Margin="10" FontSize="16" Foreground="Black"/>
+                <TextBlock x:Name="RecettesContent" Text="Contenu des Recettes..." IsVisible="False" Margin="10" FontSize="16" Foreground="Black"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </Window>
