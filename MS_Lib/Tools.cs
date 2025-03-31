@@ -30,6 +30,7 @@ public static class Tools
     public static void ReadConfFile(Dictionary<string, string> conf, string path)
     {
         using StreamReader reader = new StreamReader(path);
+        conf.Add("instanceName", reader.ReadLine());
         conf.Add("ipServer", reader.ReadLine());
         conf.Add("portServer", reader.ReadLine());
         conf.Add("dbConnectionType", reader.ReadLine());
@@ -46,6 +47,8 @@ public static class Tools
 
     public static void ReadInput(IDictionary<string, string> conf)
     {
+        Console.WriteLine("Nom de l'instance :");
+        conf.Add("instanceName", Console.ReadLine());
         Console.Write("Ip du serveur : ");
         conf.Add("ipServer", Console.ReadLine());
         Console.Write("Port du serveur : ");

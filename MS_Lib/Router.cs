@@ -32,7 +32,6 @@ public class Router
 public abstract class Route
 {
     protected Router Router;
-    protected Type Type;
 
     protected Route(Router router)
     {
@@ -65,7 +64,6 @@ public abstract class Route
         Type type = Router.Types.First(t => t.Key.Equals(packet.BodyType)).Value;
         Object instanceC = Activator.CreateInstance(type);
 
-        PropertyInfo[] f = type.GetProperties(BindingFlags.Public | BindingFlags.Static);
         PropertyInfo propertyInfo = type.GetProperty("Parser", BindingFlags.Public | BindingFlags.Static);
         Object instanceO = propertyInfo.GetValue(instanceC);
 

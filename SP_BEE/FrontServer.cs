@@ -1,100 +1,53 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using BEE;
-using Google.Protobuf;
-using MSLib.Proto;
 
-namespace MS_Lib;
+namespace SP_BEE;
 
-public class NetworkManager
+internal class FrontServer
 {
-    private NetworkManager()
+    private FrontServer()
     {
         Cts = new CancellationTokenSource();
-        _threadPool = new ThreadPool(Cts.Token);
-        _routes = new Dictionary<string, Route>();
-        _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _threadPool = new ThreadPoolFront(Cts.Token);
     }
 
-    private static NetworkManager? _instance;
-    public static NetworkManager Instance => _instance ??= new NetworkManager();
-
+    private static FrontServer? _instance;
+    internal static FrontServer Instance => _instance ??= new FrontServer();
+    private readonly ThreadPoolFront _threadPool;
     public readonly CancellationTokenSource Cts;
-    public readonly Dictionary<string, Route> _routes;
     
-    private readonly Socket _self;
-    private readonly ThreadPool _threadPool;
-
-    public void AddRoute(string s, Route r)
+    internal void Start(IPAddress ip, int port)
     {
-        _routes.Add(s, r);
-    }
-    
-    public void Start(string name, string type, IPAddress ip, int port, IEnumerable<Client> clients)
-    {
-
-        ToRegister infos = new ToRegister()
-        {
-            Name = name,
-            Ip = ip.ToString(),
-            Port = port,
-            Type = type
-        };
-        foreach (var t in clients)
-            Handshake(t, infos);
-        
-        CreateServer(ip, port);
-    }
-
-    public void CreateServer(IPAddress ip, int port)
-    {
-        
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
-        _self.Bind(localEndPoint);
+        Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        
+        server.Bind(localEndPoint);
         Console.WriteLine("Ready to listen");
-        _self.Listen();
+        server.Listen();
 
-        while (!Cts.Token.IsCancellationRequested)
+        while (true)
         {
             try
             {
-                _threadPool.EnqueueTask(_self.Accept());
+                _threadPool.EnqueueTask(server.Accept());
                 Console.WriteLine("Received a request, enqueued it");
             }
-            catch (Exception) //TODO
+            catch (Exception e)
             {
                 
             }
         }
     }
-    
-    public void Handshake(Client c, ToRegister infos)
-    {
-        IPEndPoint ipEndPoint;
-        
-        if (c.ip != null)
-            ipEndPoint = new IPEndPoint(c.ip, c.port);
-        else if (c.domainName != null)
-            ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(c.domainName)[0], c.port);
-        else
-            throw new ArgumentException("Service should have either an ip address or a domain name");
-
-        Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        client.Connect(ipEndPoint);
-
-        client.Send(infos.ToByteArray());
-
-    }
 }
 
-internal class ThreadPool
+internal class ThreadPoolFront
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
     private CancellationToken ct;
     
-    internal ThreadPool(CancellationToken token)
+    internal ThreadPoolFront(CancellationToken token)
     {
         ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
@@ -140,10 +93,8 @@ internal class ThreadPool
 
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-        Packet packet = Packet.Parser.ParseFrom(body);
-        byte[] response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
 
-        await client.SendAsync(response);
+        // await client.SendAsync(response);
     }
 
     public void EnqueueTask(Socket task)
@@ -157,21 +108,21 @@ internal class ThreadPool
     }
 }
 
-public class Client
+public class SocketClient
 {
-    public Client(IPAddress ip, int port)
+    public SocketClient(IPAddress ip, int port)
     {
         this.ip = ip;
         this.port = port;
     }
 
-    public Client(string domainName, int port)
+    public SocketClient(string domainName, int port)
     {
         this.domainName = domainName;
         this.port = port;
     }
     
-    public Client(string? domainName, IPAddress? ip, int port)
+    public SocketClient(string? domainName, IPAddress? ip, int port)
     {
         this.ip = ip;
         this.domainName = domainName;

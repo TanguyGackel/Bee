@@ -52,7 +52,7 @@ internal class Program
         IPAddress.TryParse(conf["ipServer"], out IPAddress ip);
         int.TryParse(conf["portServer"], out int port);
         
-        nm.Start(ip, port, clients);
+        nm.Start(conf["instanceName"], "TEST", ip, port, clients);
 
     }
 }
