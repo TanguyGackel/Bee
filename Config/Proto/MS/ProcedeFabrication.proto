@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package MSRD.proto;
+
+message ProcedeFabrication{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated TestPF tests = 4;
+  repeated EtapePF etapes = 5;
+  ModelePF modele = 6; 
+  
+}
+
+message ModelePF{
+  int32 id = 1;
+  string name = 2;
+}
+
+message TestPF{
+  int32 id = 1;
+  string name = 2;
+  bool Validate = 3;
+  string type = 4;
+}
+
+message EtapePF{
+  int32 id = 1;
+  string name = 2;
+}
