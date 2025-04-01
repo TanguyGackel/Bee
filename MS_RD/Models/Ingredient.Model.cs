@@ -31,7 +31,7 @@ internal static class IngredientModel
         return toReturn;
     }
     
-    internal static async Task<Ingredient>? GetIngredientById(int idIngredient)
+    internal static async Task<Ingredient?> GetIngredientById(int idIngredient)
     {
         if (idIngredient < 0)
         {
@@ -49,10 +49,11 @@ internal static class IngredientModel
 
         while (result.Read())
         {
+
             toReturn = new Ingredient()
             {
                 Name = (string)result["nom"],
-                Description = (string)result["description"],
+                Description = (string)result["description"]
             };
         }
         cmd.Connection?.Close();

@@ -48,11 +48,17 @@ internal class IngredientControllers
             StatusDescription = statusDescription,
             BodyType = "Ingredient"
         };
-        
-        foreach (Ingredient f in results)
+
+        if (results != null)
+            foreach (Ingredient f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
+        
         return response;
     }
     internal static async Task<Response> GetIngredientById(IRequest r)
@@ -142,10 +148,15 @@ internal class IngredientControllers
             StatusDescription = statusDescription,
             BodyType = "Ingredient"
         };
-        
-        foreach (Ingredient f in results)
+
+        if (results != null)
+            foreach (Ingredient f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
         return response;
     }
@@ -191,11 +202,15 @@ internal class IngredientControllers
             BodyType = "Ingredient"
         };
 
-        foreach (FreezbeeI f in results)
+        if (results != null)
+            foreach (FreezbeeI f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
     internal static async Task<Response> AddIngredient(IRequest r)
@@ -232,7 +247,7 @@ internal class IngredientControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -271,7 +286,7 @@ internal class IngredientControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -310,7 +325,7 @@ internal class IngredientControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;

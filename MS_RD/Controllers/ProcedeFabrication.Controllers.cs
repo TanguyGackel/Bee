@@ -49,10 +49,15 @@ internal class ProcedeFabricationControllers
             StatusDescription = statusDescription,
             BodyType = "ProcedeFabrication"
         };
-        
-        foreach (ProcedeFabrication pf in results)
+
+        if (results != null)
+            foreach (ProcedeFabrication pf in results)
+            {
+                response.Body.Add(pf.ToByteString());
+            }
+        else
         {
-            response.Body.Add(pf.ToByteString());
+            response.BodyType = "Null";
         }
         return response;
     }
@@ -153,7 +158,10 @@ internal class ProcedeFabricationControllers
             {
                 response.Body.Add(f.ToByteString());
             }
-
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
     }
 
@@ -206,7 +214,10 @@ internal class ProcedeFabricationControllers
             {
                 response.Body.Add(pf.ToByteString());
             }
-
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
 
     }
@@ -260,7 +271,10 @@ internal class ProcedeFabricationControllers
             {
                 response.Body.Add(pf.ToByteString());
             }
-
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
 
     }
@@ -314,7 +328,10 @@ internal class ProcedeFabricationControllers
             {
                 response.Body.Add(e.ToByteString());
             }
-
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
     }
 
@@ -350,7 +367,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
 
         };
         return response;
@@ -389,7 +406,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -428,7 +445,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -466,7 +483,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -505,7 +522,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -545,7 +562,7 @@ internal class ProcedeFabricationControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
