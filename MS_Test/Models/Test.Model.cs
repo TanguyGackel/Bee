@@ -33,7 +33,7 @@ internal class TestModel
         return toReturn;
     }
 
-    internal static async Task<Test?> GetTestById(int idTest)
+    internal static async Task<Test> GetTestById(int idTest)
     {
         if (idTest < 0)
         {
@@ -47,17 +47,15 @@ internal class TestModel
         
         SqlDataReader result = await dbConnector.SendQueryRequest(cmd);
 
-        Test? toReturn = null;
+        Test toReturn = new Test();
 
         while (result.Read())
         {
-            toReturn = new Test()
-            {
-                NameTest = (string)result["nom"],
-                Description = (string)result["description"],
-                Type = (string)result["type"],
-                Validate = (bool)result["valide"]
-            };
+            toReturn.NameTest = (string)result["nom"];
+            toReturn.Description = (string)result["description"];
+            toReturn.Type = (string)result["type"];
+            toReturn.Validate = (bool)result["valide"];
+
         }
         cmd.Connection?.Close();
         return toReturn;

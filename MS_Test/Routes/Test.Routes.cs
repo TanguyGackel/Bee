@@ -9,6 +9,6 @@ internal class TestRoutes : Route
     internal TestRoutes() : base(new Router())
     {
         Add(typeof(TestControllers));
-        Router.Types.Add("Test", typeof(Test));
+        Router.AddType("Test", typeof(Test));
     }
 }

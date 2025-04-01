@@ -9,14 +9,12 @@ internal class FrontServer
 {
     private FrontServer()
     {
-        Cts = new CancellationTokenSource();
-        _threadPool = new ThreadPoolFront(Cts.Token);
+        _threadPool = new ThreadPoolFront();
     }
 
     private static FrontServer? _instance;
     internal static FrontServer Instance => _instance ??= new FrontServer();
     private readonly ThreadPoolFront _threadPool;
-    public readonly CancellationTokenSource Cts;
     
     internal void Start(IPAddress ip, int port)
     {
@@ -24,19 +22,19 @@ internal class FrontServer
         Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         server.Bind(localEndPoint);
-        Console.WriteLine("Ready to listen");
         server.Listen();
-
+        Console.WriteLine("Ready To Listen");
         while (true)
         {
             try
             {
                 _threadPool.EnqueueTask(server.Accept());
-                Console.WriteLine("Received a request, enqueued it");
+                Console.WriteLine("Enqueued Task");
+
             }
             catch (Exception e)
             {
-                
+                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
             }
         }
     }
@@ -46,11 +44,9 @@ internal class ThreadPoolFront
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
-    private CancellationToken ct;
     
-    internal ThreadPoolFront(CancellationToken token)
+    internal ThreadPoolFront()
     {
-        ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
             _threads[i] = new Thread(StartWorking) { IsBackground = true };
@@ -60,10 +56,17 @@ internal class ThreadPoolFront
 
     private void StartWorking()
     {
-        foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
+        foreach (Socket task in _tasksQueue.GetConsumingEnumerable())
         {
-            Console.WriteLine("Begin process of a new task");
-            HandleRequest(task);
+            try
+            {
+                Console.WriteLine("Start new task");
+                HandleRequest(task);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            }
         }
     }
 
@@ -76,14 +79,7 @@ internal class ThreadPoolFront
             
         while (length == 512)
         {
-            try
-            {
-                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
-            }
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
 
             maxLength += length;
             byte[] temp = new byte[bodyTemp.Length + length];
@@ -95,8 +91,36 @@ internal class ThreadPoolFront
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
-        SPPacket packet = SPPacket.Parser.ParseFrom(body);
-        byte[] resp = LoadBalancer.SendRequest(packet);
+        SPPacket packet;
+        byte[] resp;
+
+        try
+        {
+            Console.WriteLine("Received : ");
+            foreach (byte b in body)
+                Console.Write(b);
+            Console.WriteLine();
+            packet = SPPacket.Parser.ParseFrom(body);
+        }
+        catch(Exception)
+        {
+            await client.SendAsync("FO"u8.ToArray());
+            throw;
+        }
+        
+        try
+        {
+            resp = LoadBalancer.SendRequest(packet);
+            Console.WriteLine("Ready to send back : ");
+            foreach (byte b in resp)
+                Console.Write(b);
+            Console.WriteLine();
+        }
+        catch(Exception)
+        {
+            await client.SendAsync("GTFO"u8.ToArray());
+            throw;
+        }
         
         await client.SendAsync(resp);
     }
@@ -105,7 +129,7 @@ internal class ThreadPoolFront
 
     internal void EnqueueTask(Socket task)
     {
-        _tasksQueue.Add(task, ct);
+        _tasksQueue.Add(task);
     }
     
     internal void Shutdown()

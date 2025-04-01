@@ -20,15 +20,10 @@ internal class MSRegister
     {
         Console.WriteLine("Registering a new micro service");
         
-        IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(register.Ip), register.Port);
-        Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        socket.Connect(ipEndPoint);
-        
         Register.Add(new MicroService()
         {
             name = register.Name,
             type = register.Type,
-            socket = socket,
             ip = IPAddress.Parse(register.Ip),
             port = register.Port,
             id = -1
@@ -50,7 +45,6 @@ internal class MicroService
 {
     internal string name;
     internal string type;
-    internal Socket socket;
     internal IPAddress ip;
     internal int port;
     internal int id;

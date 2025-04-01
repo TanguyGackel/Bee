@@ -13,7 +13,8 @@ internal static class LoadBalancer
     {
         mut.WaitOne();
         List<MicroService> mss = MSRegister.Instance.Register;
-
+        Counts.Clear();
+        
         foreach (MicroService ms in mss)
         {
             List<Count> list = Counts.Where(p => p.type == ms.type).ToList();
@@ -36,10 +37,7 @@ internal static class LoadBalancer
 
                 ms.id = only.max-1;
             }
-            else
-            {
-                //TODO throw ? jamais sensé arriver
-            }
+
         }
 
         mut.ReleaseMutex();
@@ -47,31 +45,45 @@ internal static class LoadBalancer
     
     internal static byte[] SendRequest(SPPacket packet)
     {
-        mut.WaitOne(0);
+        Console.WriteLine("Searching a microservices to send data");
+        mut.WaitOne();
+        Count c = Counts.Find(p => p.type == packet.Msname);
+        mut.ReleaseMutex();
+        Console.WriteLine("Found" + c.max + " microservices");
+        
         bool flag = false;
 
-        Count c = Counts.Find(p => p.type == packet.Msname);
         Socket client;
         while (true)
         {
             MicroService ms = MSRegister.Instance.Register.Find(p => p.type == packet.Msname && p.id == c.count) ??
                               throw new InvalidOperationException();
+            Console.WriteLine("Ready to contact microservice " + ms.id + ", name : " + ms.name);
             c.count = (c.count + 1) / c.max;
 
             try
             {
-                ms.socket.Send(packet.Body.ToByteArray());
-                client = ms.socket;
+                IPEndPoint ipEndPoint = new IPEndPoint(ms.ip, ms.port);
+                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(ipEndPoint);
+                Console.WriteLine("Sending packet");
+                socket.Send(packet.Body.ToByteArray());
+                client = socket;
                 break;
             }
-            catch (Exception e)
+            catch (Exception)
             {
+                Console.Error.WriteLine("Micro service couldn't be contacted, deleting it from the list");
                 MSRegister.Instance.DeleteMicroService(ms.name);
                 flag = true;
             }
         }
-        if(flag)
+
+        if (flag)
+        {
+            Console.WriteLine("Need to reload LB config");
             ReloadLB();
+        }
         
         byte[] buffer = new byte[512];
         int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
@@ -79,15 +91,8 @@ internal static class LoadBalancer
         byte[] bodyTemp = buffer.ToArray();
             
         while (length == 512)
-        {
-            try
-            {
-                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
-            }
+        { 
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
 
             maxLength += length;
             byte[] temp = new byte[bodyTemp.Length + length];
@@ -95,7 +100,8 @@ internal static class LoadBalancer
             Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
             bodyTemp = temp;
         }
-
+        
+        client.Close();
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
         return body;

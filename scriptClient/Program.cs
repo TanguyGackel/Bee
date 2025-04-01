@@ -16,15 +16,12 @@ internal class Program
         IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
         
         socket.Connect(ipEndPoint);
-
-        Freezbee freezbee = new Freezbee();
-
+        
         Packet packet = new Packet()
         {
             Route = "Freezbee",
             Fonction = "GetFreezbee",
-            BodyType = "Freezbee",
-            Body = freezbee.ToByteString()
+            BodyType = "Freezbee"
         };
 
         SPPacket spPacket = new SPPacket()
@@ -63,6 +60,7 @@ internal class Program
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
         Response resp = Response.Parser.ParseFrom(body);
+        Console.WriteLine(resp.StatusCode);
 
         foreach (ByteString b in resp.Body)
         {
