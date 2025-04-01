@@ -7,14 +7,32 @@ internal class Program
 {
     internal static void Main(string[] args)
     {
+        DateTime d = DateTime.Now;
+        
+        StreamWriter Output = new StreamWriter("./Output." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
+        {
+            AutoFlush = true
+        };
+        StreamWriter Error = new StreamWriter("./Error." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
+        {
+            AutoFlush = true
+        };
+        
+        
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
 
-        // if (args[1] == "f" && args[2].IsNullOrEmpty())
-        //     Tools.ReadConfFile(conf, args[2]);
-        // else
-        Tools.ReadInput(conf);
-
+        if (args.Length >= 2)
+        {
+            if (args[0] == "-f")
+                Tools.ReadConfFile(conf, args[1]);
+            else
+                throw new Exception();
+        }
+        else
+            Tools.ReadInput(conf);
+        Console.SetOut(Output);
+        Console.SetError(Error);
 
         DatabaseConnector db = DatabaseConnector.Instance;
         db.Type = conf["dbConnectionType"] == "Credentials" ? ConnectionType.Password : ConnectionType.WindowsAuthentication;
@@ -52,7 +70,7 @@ internal class Program
         IPAddress.TryParse(conf["ipServer"], out IPAddress ip);
         int.TryParse(conf["portServer"], out int port);
         
-        nm.Start(ip, port, clients);
+        nm.Start(conf["instanceName"], "RD", ip, port, clients);
     }
 
     

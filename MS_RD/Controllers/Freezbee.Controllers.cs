@@ -48,11 +48,17 @@ internal class FreezbeeController
             StatusDescription = statusDescription,
             BodyType = "Freezbee"
         };
-        
-        foreach (Freezbee f in results)
+
+        if (results != null)
+            foreach (Freezbee f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
+
         return response;
     }
     
@@ -141,11 +147,15 @@ internal class FreezbeeController
             BodyType = "Freezbee",
         };
 
-        foreach (Freezbee f in results)
+        if (results != null)
+            foreach (Freezbee f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
-        
         return response;
     }
     
@@ -189,11 +199,15 @@ internal class FreezbeeController
             BodyType = "Freezbee",
         };
 
-        foreach (Freezbee f in results)
+        if (results != null)
+            foreach (Freezbee f in results)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
     
@@ -237,11 +251,15 @@ internal class FreezbeeController
             BodyType = "IngredientFreezbee",
         };
 
-        foreach (IngredientFreezbee ingredient in results)
+        if (results != null)
+            foreach (IngredientFreezbee ingredient in results)
+            {
+                response.Body.Add(ingredient.ToByteString());
+            }
+        else
         {
-            response.Body.Add(ingredient.ToByteString());
+            response.BodyType = "Null";
         }
-        
         return response;
     }
     
@@ -285,11 +303,15 @@ internal class FreezbeeController
             BodyType = "CaracteristiqueFreezbee",
         };
 
-        foreach (CaracteristiqueFreezbee cf in results)
+        if (results != null)
+            foreach (CaracteristiqueFreezbee cf in results)
+            {
+                response.Body.Add(cf.ToByteString());
+            }
+        else
         {
-            response.Body.Add(cf.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
     
@@ -333,11 +355,15 @@ internal class FreezbeeController
             BodyType = "ProcedeFabricationFreezbee",
         };
 
-        foreach (ProcedeFabricationFreezbee pf in results)
+        if (results != null)
+            foreach (ProcedeFabricationFreezbee pf in results)
+            {
+                response.Body.Add(pf.ToByteString());
+            }
+        else
         {
-            response.Body.Add(pf.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
 
@@ -375,7 +401,7 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -415,7 +441,7 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;
@@ -455,7 +481,7 @@ internal class FreezbeeController
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null",
         };
 
         return response;

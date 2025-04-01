@@ -70,59 +70,75 @@ internal class ThreadPoolFront
         }
     }
 
-    private async void HandleRequest(Socket client)
+    private async Task HandleRequest(Socket client)
     {
-        byte[] buffer = new byte[512];
-        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-        int maxLength = length;
-        byte[] bodyTemp = buffer.ToArray();
-            
-        while (length == 512)
-        {
-            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-
-            maxLength += length;
-            byte[] temp = new byte[bodyTemp.Length + length];
-            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
-            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
-            bodyTemp = temp;
-        }
-
-        byte[] body = new byte[maxLength];
-        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-
-        SPPacket packet;
-        byte[] resp;
-
         try
         {
-            Console.WriteLine("Received : ");
-            foreach (byte b in body)
-                Console.Write(b);
-            Console.WriteLine();
-            packet = SPPacket.Parser.ParseFrom(body);
+            while (client.Connected)
+            {
+                byte[] buffer = new byte[512];
+                int length;
+
+                length = await client.ReceiveAsync(buffer, SocketFlags.None);
+                int maxLength = length;
+                byte[] bodyTemp = buffer.ToArray();
+
+                while (length == 512)
+                {
+                    length = await client.ReceiveAsync(buffer, SocketFlags.None);
+
+                    maxLength += length;
+                    byte[] temp = new byte[bodyTemp.Length + length];
+                    Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+                    Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+                    bodyTemp = temp;
+                }
+
+                byte[] body = new byte[maxLength];
+                Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+                SPPacket packet;
+                byte[] resp;
+
+                try
+                {
+                    Console.WriteLine("Received : ");
+                    foreach (byte b in body)
+                        Console.Write(b);
+                    Console.WriteLine();
+                    packet = SPPacket.Parser.ParseFrom(body);
+                }
+                catch (Exception)
+                {
+                    await client.SendAsync("FO"u8.ToArray());
+                    return;
+                }
+
+                try
+                {
+                    resp = LoadBalancer.SendRequest(packet);
+                    Console.WriteLine("Ready to send back : ");
+                    foreach (byte b in resp)
+                        Console.Write(b);
+                    Console.WriteLine();
+                }
+                catch (Exception)
+                {
+                    await client.SendAsync("GTFO"u8.ToArray());
+                    return;
+                }
+
+                await client.SendAsync(resp);
+            }
         }
-        catch(Exception)
+        catch (Exception e)
         {
-            await client.SendAsync("FO"u8.ToArray());
-            throw;
+            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
         }
-        //TODO
-        try
+        finally
         {
-            resp = LoadBalancer.SendRequest(packet);
-            Console.WriteLine("Ready to send back : ");
-            foreach (byte b in resp)
-                Console.Write(b);
-            Console.WriteLine();
+            client.Close();
         }
-        catch(Exception)
-        {
-            await client.SendAsync("GTFO"u8.ToArray());
-            throw;
-        }
-        
-        await client.SendAsync(resp);
     }
     
     
