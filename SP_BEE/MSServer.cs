@@ -97,6 +97,7 @@ internal class ThreadPoolMS
 
         ToRegister tr = ToRegister.Parser.ParseFrom(body);
         MSRegister.Instance.RegisterNewMicroService(tr);
+        LoadBalancer.ReloadLB();
         byte[] ack = "<|ACK|>"u8.ToArray();
 
         client.Send(ack);

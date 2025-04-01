@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using BEE;
 
 namespace SP_BEE;
 
@@ -94,42 +95,21 @@ internal class ThreadPoolFront
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
-        // await client.SendAsync(response);
+        SPPacket packet = SPPacket.Parser.ParseFrom(body);
+        byte[] resp = LoadBalancer.SendRequest(packet);
+        
+        await client.SendAsync(resp);
     }
+    
+    
 
-    public void EnqueueTask(Socket task)
+    internal void EnqueueTask(Socket task)
     {
         _tasksQueue.Add(task, ct);
     }
     
-    public void Shutdown()
+    internal void Shutdown()
     {
         _tasksQueue.CompleteAdding();
     }
-}
-
-public class SocketClient
-{
-    public SocketClient(IPAddress ip, int port)
-    {
-        this.ip = ip;
-        this.port = port;
-    }
-
-    public SocketClient(string domainName, int port)
-    {
-        this.domainName = domainName;
-        this.port = port;
-    }
-    
-    public SocketClient(string? domainName, IPAddress? ip, int port)
-    {
-        this.ip = ip;
-        this.domainName = domainName;
-        this.port = port;
-    }
-    
-    public IPAddress? ip { get; private set; }
-    public int port { get; private set; }
-    public string? domainName { get; private set; }
 }

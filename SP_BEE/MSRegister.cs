@@ -6,7 +6,7 @@ namespace SP_BEE;
 
 internal class MSRegister
 {
-    private readonly List<MicroService> Register;
+    internal readonly List<MicroService> Register;
     
     private MSRegister()
     {
@@ -22,14 +22,16 @@ internal class MSRegister
         
         IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(register.Ip), register.Port);
         Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
+        socket.Connect(ipEndPoint);
+        
         Register.Add(new MicroService()
         {
             name = register.Name,
             type = register.Type,
             socket = socket,
             ip = IPAddress.Parse(register.Ip),
-            port = register.Port
+            port = register.Port,
+            id = -1
         });
     }
 
@@ -51,4 +53,5 @@ internal class MicroService
     internal Socket socket;
     internal IPAddress ip;
     internal int port;
+    internal int id;
 }
