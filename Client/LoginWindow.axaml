@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
+        x:Class="Client.LoginWindow"
+        Title="KillerBee Client"
+        Background="White">
+
+    <DockPanel Margin="10">
+        <!-- Barre de navigation en haut avec fond gris et coins arrondis -->
+        <Border DockPanel.Dock="Top" Background="LightGray" CornerRadius="8" Padding="10" Margin="10">
+            <TextBlock Text="KillerBee" FontFamily="Naruto" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black"/>
+        </Border>
+
+        <!-- Zone de contenu avec formulaire de connexion -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Connexion" FontSize="24" Margin="0 20 0 0" Foreground="Black"/>
+            <TextBox x:Name="UsernameTextBox" Watermark="Nom d'utilisateur" Width="300" Margin="0 10 0 0" Background="White" Foreground="Black"/>
+            <TextBox x:Name="PasswordTextBox" Watermark="Mot de passe" Width="300" Margin="0 10 0 0" Background="White" Foreground="Black" PasswordChar="•"/>
+            <Button x:Name="LoginButton" Content="Connexion" Width="300" Height="50" Background="LightGray" Foreground="Black" FontSize="18" Margin="0 20 0 0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="Gray"/>
+                    </Style>
+                    <Style Selector="Button:pressed">
+                        <Setter Property="Background" Value="DarkGray"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+        </StackPanel>
+    </DockPanel>
+</Window>

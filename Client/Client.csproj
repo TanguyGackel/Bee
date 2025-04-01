@@ -20,4 +20,15 @@
         </PackageReference>
         <PackageReference Include="Google.Protobuf" Version="3.30.2" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="LoginWindow.axaml.cs">
+        <DependentUpon>LoginWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="MessageWindow.axaml.cs">
+        <DependentUpon>MessageWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>
