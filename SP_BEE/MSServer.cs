@@ -46,7 +46,7 @@ internal class ThreadPoolMS
     
     internal ThreadPoolMS()
     {
-        for (int i = 0; i < Environment.ProcessorCount; i++)
+        for (int i = 0; i < 1; i++)
         {
             _threads[i] = new Thread(StartWorking) { IsBackground = true };
             _threads[i].Start();
@@ -70,52 +70,60 @@ internal class ThreadPoolMS
 
     private void HandleRequest(Socket client)
     {
-        byte[] buffer = new byte[512];
-        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-        int maxLength = length;
-        byte[] bodyTemp = buffer.ToArray();
-            
-        while (length == 512)
-        { 
-            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            
-            maxLength += length;
-            byte[] temp = new byte[bodyTemp.Length + length];
-            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
-            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
-            bodyTemp = temp;
-        }
-
-        byte[] body = new byte[maxLength];
-        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-
-        byte[] resp;
-        ToRegister tr;
         try
         {
-             tr = ToRegister.Parser.ParseFrom(body);
-        }
-        catch (Exception)
-        {
-            resp = "FO"u8.ToArray();
-            client.Send(resp);
-            throw;
-        }
+            byte[] buffer = new byte[512];
+            int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+            int maxLength = length;
+            byte[] bodyTemp = buffer.ToArray();
 
-        try
-        {
-            MSRegister.Instance.RegisterNewMicroService(tr);
-            LoadBalancer.ReloadLB();
-        }
-        catch (Exception)
-        {
-            resp = "GTFO"u8.ToArray();
-            client.Send(resp);
-            throw;
-        }
+            while (length == 512)
+            {
+                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
 
-        resp = "<|ACK|>"u8.ToArray();
-        client.Send(resp);
+                maxLength += length;
+                byte[] temp = new byte[bodyTemp.Length + length];
+                Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+                Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+                bodyTemp = temp;
+            }
+
+            byte[] body = new byte[maxLength];
+            Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+            byte[] resp;
+            ToRegister tr;
+            try
+            {
+                tr = ToRegister.Parser.ParseFrom(body);
+            }
+            catch (Exception)
+            {
+                resp = "FO"u8.ToArray();
+                client.Send(resp);
+                return;
+            }
+
+            try
+            {
+                MSRegister.Instance.RegisterNewMicroService(tr);
+                LoadBalancer.ReloadLB();
+            }
+            catch (Exception)
+            {
+                resp = "GTFO"u8.ToArray();
+                client.Send(resp);
+                return;
+            }
+
+            resp = "<|ACK|>"u8.ToArray();
+            client.Send(resp);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+        }
+        
     }
     
     internal void EnqueueTask(Socket task)

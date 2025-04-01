@@ -18,8 +18,7 @@ internal class Program
             AutoFlush = true
         };
 
-        Console.SetOut(Output);
-        Console.SetError(Error);
+
         
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
@@ -33,7 +32,9 @@ internal class Program
         else
             Tools.ReadInput(conf);
 
-
+        Console.SetOut(Output);
+        Console.SetError(Error);
+        
         DatabaseConnector db = DatabaseConnector.Instance;
         db.Type = conf["dbConnectionType"] == "Credentials" ? ConnectionType.Password : ConnectionType.WindowsAuthentication;
         if (db.Type == ConnectionType.Password)

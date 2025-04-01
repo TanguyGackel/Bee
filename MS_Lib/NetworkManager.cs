@@ -131,69 +131,79 @@ internal class ThreadPool
         }
     }
 
-    private async void HandleRequest(Socket client)
+    private async Task HandleRequest(Socket client)
     {
-        byte[] buffer = new byte[512];
-        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-        int maxLength = length;
-        byte[] bodyTemp = buffer.ToArray();
-            
-        while (length == 512)
-        {
-            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-
-            maxLength += length;
-            byte[] temp = new byte[bodyTemp.Length + length];
-            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
-            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
-            bodyTemp = temp;
-        }
-
-        byte[] body = new byte[maxLength];
-        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-        
-        Packet packet;
-        byte[] response;
-
         try
         {
-            Console.WriteLine("Received : ");
-            foreach (byte b in body)
-                Console.Write(b);
-            Console.WriteLine();
-             packet = Packet.Parser.ParseFrom(body);
-        }
-        catch (Exception)
-        {
-            Response resp = new Response()
+            byte[] buffer = new byte[512];
+            int length = await client.ReceiveAsync(buffer, SocketFlags.None);
+            int maxLength = length;
+            byte[] bodyTemp = buffer.ToArray();
+
+            while (length == 512)
             {
-                StatusCode = 400,
-                StatusDescription = "FO"
-            };
-            await client.SendAsync(resp.ToByteArray());
-            throw;
+                length = await client.ReceiveAsync(buffer, SocketFlags.None);
+
+                maxLength += length;
+                byte[] temp = new byte[bodyTemp.Length + length];
+                Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+                Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+                bodyTemp = temp;
+            }
+
+            byte[] body = new byte[maxLength];
+            Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+            Packet packet;
+            byte[] response;
+
+            try
+            {
+                Console.WriteLine("Received : ");
+                foreach (byte b in body)
+                    Console.Write(b);
+                Console.WriteLine();
+                packet = Packet.Parser.ParseFrom(body);
+            }
+            catch (Exception)
+            {
+                Response resp = new Response()
+                {
+                    StatusCode = 400,
+                    StatusDescription = "FO"
+                };
+                await client.SendAsync(resp.ToByteArray());
+                return;
+            }
+
+            try
+            {
+                response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value
+                    .Call(packet);
+                Console.WriteLine("Ready to send : ");
+                foreach (byte b in response)
+                    Console.Write(b);
+                Console.WriteLine();
+            }
+            catch (Exception)
+            {
+                Response resp = new Response()
+                {
+                    StatusCode = 500,
+                    StatusDescription = "GTFO",
+                };
+                await client.SendAsync(resp.ToByteArray());
+                return;
+            }
+
+            await client.SendAsync(response);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+
         }
         
-        try
-        {
-             response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
-             Console.WriteLine("Ready to send : ");
-             foreach (byte b in response)
-                 Console.Write(b);
-             Console.WriteLine();
-        }
-        catch (Exception)
-        {
-            Response resp = new Response()
-            {
-                StatusCode = 500,
-                StatusDescription = "GTFO",
-            };
-            await client.SendAsync(resp.ToByteArray());
-            throw;
-        }
-
-        await client.SendAsync(response);
     }
 
     public void EnqueueTask(Socket task)
