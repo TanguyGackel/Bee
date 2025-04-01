@@ -94,6 +94,12 @@ internal static class ProcedeFabricationModel
 
     internal static async Task<List<ProcedeFabrication>> GetProcedeFabricationFromModele(int idModele)
     {
+        
+        if (idModele < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idProcedeFabrication should be >= 0");
+        }
+        
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_modele");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_modele", idModele);
@@ -118,6 +124,11 @@ internal static class ProcedeFabricationModel
     
     internal static async Task<List<TestPF>> GetTestsFromProcedeFabrication(int idProcedeFabrication)
     {
+        if (idProcedeFabrication < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idProcedeFabrication), idProcedeFabrication, "idProcedeFabrication should be >= 0");
+        }
+        
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_tests");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_procedeFabrication", idProcedeFabrication);
@@ -145,6 +156,11 @@ internal static class ProcedeFabricationModel
     
     internal static async Task<List<EtapePF>> GetEtapeFromProcedeFabrication(int idProcedeFabrication)
     {
+        if (idProcedeFabrication < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idProcedeFabrication), idProcedeFabrication, "idProcedeFabrication should be >= 0");
+        }
+        
         SqlCommand cmd = new SqlCommand("get_procedeFabrication_etapes");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@id_procedeFabrication", idProcedeFabrication);
@@ -171,6 +187,11 @@ internal static class ProcedeFabricationModel
     #region Add
     internal static async Task<int> AddProcedeFabrication(string nom, string description, int idModele)
     {
+        if (idModele < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(idModele), idModele, "idModele should be >= 0");
+        }
+        
         SqlCommand cmd = new SqlCommand("add_procedeFabrication");
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@nom", nom);
