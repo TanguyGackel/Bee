@@ -5,7 +5,6 @@
 #pragma warning disable 1591, 0612, 3021, 8981
 #region Designer generated code
 
-using MS_Lib;
 using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
@@ -42,7 +41,7 @@ namespace MSTest.Proto {
   }
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Test : pb::IMessage<Test>, IRequest
+  public sealed partial class Test : pb::IMessage<Test>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif

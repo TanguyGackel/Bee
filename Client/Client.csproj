@@ -30,5 +30,6 @@
         <DependentUpon>MessageWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+<!--      <Compile Remove="App.axaml.cs" />-->
     </ItemGroup>
 </Project>

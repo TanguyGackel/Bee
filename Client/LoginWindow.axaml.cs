@@ -26,8 +26,8 @@ namespace Client
 
             if (usernameTextBox != null && passwordTextBox != null)
             {
-                var username = usernameTextBox.Text;
-                var password = passwordTextBox.Text;
+                string username = usernameTextBox.Text;
+                string password = passwordTextBox.Text;
 
                 if (username == "admin" && password == "password")
                 {
