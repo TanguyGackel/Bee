@@ -3,7 +3,7 @@ using MS_Test.Controllers;
 using MSTest.Proto;
 
 namespace MS_Test.Routes;
-
+,
 internal class FreezbeeRoutes : Route
 {
     internal FreezbeeRoutes() : base(new Router())

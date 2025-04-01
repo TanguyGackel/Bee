@@ -1,0 +1,9 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Client.MessageWindow"
+        Title="Message" Width="300" Height="200">
+    <StackPanel Margin="10">
+        <TextBlock x:Name="MessageTextBlock" FontSize="16" TextWrapping="Wrap"/>
+        <Button Content="OK" Width="100" HorizontalAlignment="Center" Click="OkButton_Click"/>
+    </StackPanel>
+</Window>
