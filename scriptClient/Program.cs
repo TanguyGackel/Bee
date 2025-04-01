@@ -4,6 +4,7 @@ using BEE;
 using Google.Protobuf;
 using MSLib.Proto;
 using MSTest.Proto;
+using System.DirectoryServices.Protocols;
 
 namespace Machin;
 
@@ -11,61 +12,73 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        // Type type = Type.GetType("Machin.Program");
-        Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
         
-        socket.Connect(ipEndPoint);
-        
-        Packet packet = new Packet()
+        SearchRequest search = new SearchRequest()
         {
-            Route = "Freezbee",
-            Fonction = "GetFreezbee",
-            BodyType = "Freezbee"
-        };
-
-        SPPacket spPacket = new SPPacket()
-        {
-            Msname = "TEST",
-            Body = packet.ToByteString()
-        };
-
-        byte[] test = spPacket.ToByteArray();
-        socket.Send(spPacket.ToByteArray());
-
-        byte[] buffer = new byte[512];
-        int length = socket.Receive(buffer, buffer.Length, SocketFlags.None);
-        int maxLength = length;
-        byte[] bodyTemp = buffer.ToArray();
+            DistinguishedName = "dn",
+            Filter = "ldap_filter",
+            Scope = SearchScope.Subtree,
+            Attributes = {"DistinguishedName"},
             
-        while (length == 512)
-        {
-            try
-            {
-                length = socket.Receive(buffer, buffer.Length, SocketFlags.None);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
-            }
+        };
 
-            maxLength += length;
-            byte[] temp = new byte[bodyTemp.Length + length];
-            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
-            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
-            bodyTemp = temp;
-        }
-
-        byte[] body = new byte[maxLength];
-        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-
-        Response resp = Response.Parser.ParseFrom(body);
-        Console.WriteLine(resp.StatusCode);
-
-        foreach (ByteString b in resp.Body)
-        {
-            Freezbee f = Freezbee.Parser.ParseFrom(b);
-        }
+        string a = (string)search.Filter;
+        search.Filter = "8585";
+        // Type type = Type.GetType("Machin.Program");
+        // Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8000);
+        //
+        // socket.Connect(ipEndPoint);
+        //
+        // Packet packet = new Packet()
+        // {
+        //     Route = "Freezbee",
+        //     Fonction = "GetFreezbee",
+        //     BodyType = "Freezbee"
+        // };
+        //
+        // SPPacket spPacket = new SPPacket()
+        // {
+        //     Msname = "TEST",
+        //     Body = packet.ToByteString()
+        // };
+        //
+        // byte[] test = spPacket.ToByteArray();
+        // socket.Send(spPacket.ToByteArray());
+        //
+        // byte[] buffer = new byte[512];
+        // int length = socket.Receive(buffer, buffer.Length, SocketFlags.None);
+        // int maxLength = length;
+        // byte[] bodyTemp = buffer.ToArray();
+        //     
+        // while (length == 512)
+        // {
+        //     try
+        //     {
+        //         length = socket.Receive(buffer, buffer.Length, SocketFlags.None);
+        //     }
+        //     catch(Exception e)
+        //     {
+        //         Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
+        //     }
+        //
+        //     maxLength += length;
+        //     byte[] temp = new byte[bodyTemp.Length + length];
+        //     Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+        //     Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+        //     bodyTemp = temp;
+        // }
+        //
+        // byte[] body = new byte[maxLength];
+        // Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+        //
+        // Response resp = Response.Parser.ParseFrom(body);
+        // Console.WriteLine(resp.StatusCode);
+        //
+        // foreach (ByteString b in resp.Body)
+        // {
+        //     Freezbee f = Freezbee.Parser.ParseFrom(b);
+        // }
 
 
         // Freezbee f = new Freezbee()
