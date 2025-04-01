@@ -11,8 +11,7 @@ public class NetworkManager
 {
     private NetworkManager()
     {
-        Cts = new CancellationTokenSource();
-        _threadPool = new ThreadPool(Cts.Token);
+        _threadPool = new ThreadPool();
         _routes = new Dictionary<string, Route>();
         _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
@@ -20,7 +19,6 @@ public class NetworkManager
     private static NetworkManager? _instance;
     public static NetworkManager Instance => _instance ??= new NetworkManager();
 
-    public readonly CancellationTokenSource Cts;
     public readonly Dictionary<string, Route> _routes;
     
     private readonly Socket _self;
@@ -31,9 +29,9 @@ public class NetworkManager
         _routes.Add(s, r);
     }
     
-    public void Start(string name, string type, IPAddress ip, int port, IEnumerable<Client> clients)
+    public void Start(string name, string type, IPAddress ip, int port, List<Client> clients)
     {
-
+        int count = 0;
         ToRegister infos = new ToRegister()
         {
             Name = name,
@@ -42,7 +40,20 @@ public class NetworkManager
             Type = type
         };
         foreach (var t in clients)
-            Handshake(t, infos);
+        {
+            try
+            {
+                Handshake(t, infos);
+            }
+            catch (Exception e)
+            {
+                count++;
+                Console.Error.WriteLine(DateTime.Now + " " + e);
+            }
+
+            if (count >= clients.Count)
+                throw new Exception("Couldn't connect to any remote proxy");
+        }
         
         CreateServer(ip, port);
     }
@@ -52,25 +63,27 @@ public class NetworkManager
         
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
         _self.Bind(localEndPoint);
-        Console.WriteLine("Ready to listen");
         _self.Listen();
+        Console.WriteLine("Ready To Listen");
 
-        while (!Cts.Token.IsCancellationRequested)
+        while (true)
         {
             try
             {
-                _threadPool.EnqueueTask(_self.Accept());
-                Console.WriteLine("Received a request, enqueued it");
+                _threadPool.EnqueueTask(_self.Accept()); 
+                Console.WriteLine("Enqueued Task");
             }
-            catch (Exception) //TODO
+            catch (Exception e)
             {
-                
+                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
             }
+            
         }
     }
     
     public void Handshake(Client c, ToRegister infos)
     {
+        Console.WriteLine("Doing a handshake");
         IPEndPoint ipEndPoint;
         
         if (c.ip != null)
@@ -92,11 +105,9 @@ internal class ThreadPool
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
-    private CancellationToken ct;
     
-    internal ThreadPool(CancellationToken token)
+    internal ThreadPool()
     {
-        ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
             _threads[i] = new Thread(StartWorking) { IsBackground = true };
@@ -106,10 +117,17 @@ internal class ThreadPool
 
     private void StartWorking()
     {
-        foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
+        foreach (Socket task in _tasksQueue.GetConsumingEnumerable())
         {
-            Console.WriteLine("Begin process of a new task");
-            HandleRequest(task);
+            try
+            {
+                Console.WriteLine("Start new task");
+                HandleRequest(task);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            }
         }
     }
 
@@ -122,14 +140,7 @@ internal class ThreadPool
             
         while (length == 512)
         {
-            try
-            {
-                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
-            }
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
 
             maxLength += length;
             byte[] temp = new byte[bodyTemp.Length + length];
@@ -140,15 +151,54 @@ internal class ThreadPool
 
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-        Packet packet = Packet.Parser.ParseFrom(body);
-        byte[] response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
+        
+        Packet packet;
+        byte[] response;
+
+        try
+        {
+            Console.WriteLine("Received : ");
+            foreach (byte b in body)
+                Console.Write(b);
+            Console.WriteLine();
+             packet = Packet.Parser.ParseFrom(body);
+        }
+        catch (Exception)
+        {
+            Response resp = new Response()
+            {
+                StatusCode = 400,
+                StatusDescription = "FO"
+            };
+            await client.SendAsync(resp.ToByteArray());
+            throw;
+        }
+        
+        try
+        {
+             response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value.Call(packet);
+             Console.WriteLine("Ready to send : ");
+             foreach (byte b in response)
+                 Console.Write(b);
+             Console.WriteLine();
+        }
+        catch (Exception)
+        {
+            Response resp = new Response()
+            {
+                StatusCode = 500,
+                StatusDescription = "GTFO",
+            };
+            await client.SendAsync(resp.ToByteArray());
+            throw;
+        }
 
         await client.SendAsync(response);
     }
 
     public void EnqueueTask(Socket task)
     {
-        _tasksQueue.Add(task, ct);
+        _tasksQueue.Add(task);
     }
     
     public void Shutdown()
@@ -159,18 +209,6 @@ internal class ThreadPool
 
 public class Client
 {
-    public Client(IPAddress ip, int port)
-    {
-        this.ip = ip;
-        this.port = port;
-    }
-
-    public Client(string domainName, int port)
-    {
-        this.domainName = domainName;
-        this.port = port;
-    }
-    
     public Client(string? domainName, IPAddress? ip, int port)
     {
         this.ip = ip;
@@ -178,7 +216,7 @@ public class Client
         this.port = port;
     }
     
-    public IPAddress? ip { get; private set; }
-    public int port { get; private set; }
-    public string? domainName { get; private set; }
+    public IPAddress? ip;
+    public int port;
+    public string? domainName;
 }

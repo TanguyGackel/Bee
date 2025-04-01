@@ -80,7 +80,7 @@ public sealed class DatabaseConnector
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.Error.WriteLine(DateTime.Now + " " + e);
             throw;
         }
     }
@@ -98,7 +98,7 @@ public sealed class DatabaseConnector
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.Error.WriteLine(DateTime.Now + " " + e);
             throw;
         }
         

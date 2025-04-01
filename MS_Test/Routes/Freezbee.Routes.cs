@@ -9,6 +9,6 @@ internal class FreezbeeRoutes : Route
     internal FreezbeeRoutes() : base(new Router())
     {
         Add(typeof(FreezbeeController));
-        Router.Types.Add("Freezbee", typeof(Freezbee));
+        Router.AddType("Freezbee", typeof(Freezbee));
     }
 }

@@ -9,14 +9,12 @@ internal class MSServer
 {
     private MSServer()
     {
-        Cts = new CancellationTokenSource();
-        _threadPool = new ThreadPoolMS(Cts.Token);
+        _threadPool = new ThreadPoolMS();
     }
 
     private static MSServer? _instance;
     internal static MSServer Instance => _instance ??= new MSServer();
     private readonly ThreadPoolMS _threadPool;
-    internal readonly CancellationTokenSource Cts;
     
     internal void Start(IPAddress ip, int port)
     {
@@ -24,7 +22,6 @@ internal class MSServer
         Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         server.Bind(localEndPoint);
-        Console.WriteLine("Ready to listen");
         server.Listen();
 
         while (true)
@@ -32,11 +29,11 @@ internal class MSServer
             try
             {
                 _threadPool.EnqueueTask(server.Accept());
-                Console.WriteLine("Received a request, enqueued it");
+                Console.WriteLine("Proxy has been contacted by a new microservice");
             }
             catch (Exception e)
             {
-                
+                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
             }
         }
     }
@@ -46,11 +43,9 @@ internal class ThreadPoolMS
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
-    private CancellationToken ct;
     
-    internal ThreadPoolMS(CancellationToken token)
+    internal ThreadPoolMS()
     {
-        ct = token;
         for (int i = 0; i < Environment.ProcessorCount; i++)
         {
             _threads[i] = new Thread(StartWorking) { IsBackground = true };
@@ -60,10 +55,16 @@ internal class ThreadPoolMS
 
     private void StartWorking()
     {
-        foreach (Socket task in _tasksQueue.GetConsumingEnumerable(ct))
+        foreach (Socket task in _tasksQueue.GetConsumingEnumerable())
         {
-            Console.WriteLine("Begin process of a new task");
-            HandleRequest(task);
+            try
+            {
+                HandleRequest(task);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            }
         }
     }
 
@@ -75,16 +76,9 @@ internal class ThreadPoolMS
         byte[] bodyTemp = buffer.ToArray();
             
         while (length == 512)
-        {
-            try
-            {
-                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Erreur qui me casse les bonbons mais pas le temps de corriger : " + e.Message);
-            }
-
+        { 
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+            
             maxLength += length;
             byte[] temp = new byte[bodyTemp.Length + length];
             Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
@@ -95,16 +89,38 @@ internal class ThreadPoolMS
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
-        ToRegister tr = ToRegister.Parser.ParseFrom(body);
-        MSRegister.Instance.RegisterNewMicroService(tr);
-        byte[] ack = "<|ACK|>"u8.ToArray();
+        byte[] resp;
+        ToRegister tr;
+        try
+        {
+             tr = ToRegister.Parser.ParseFrom(body);
+        }
+        catch (Exception)
+        {
+            resp = "FO"u8.ToArray();
+            client.Send(resp);
+            throw;
+        }
 
-        client.Send(ack);
+        try
+        {
+            MSRegister.Instance.RegisterNewMicroService(tr);
+            LoadBalancer.ReloadLB();
+        }
+        catch (Exception)
+        {
+            resp = "GTFO"u8.ToArray();
+            client.Send(resp);
+            throw;
+        }
+
+        resp = "<|ACK|>"u8.ToArray();
+        client.Send(resp);
     }
     
     internal void EnqueueTask(Socket task)
     {
-        _tasksQueue.Add(task, ct);
+        _tasksQueue.Add(task);
     }
     
     internal void Shutdown()

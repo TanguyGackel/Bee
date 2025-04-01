@@ -48,10 +48,15 @@ internal class FreezbeeController
             StatusDescription = statusDescription,
             BodyType = "Freezbee"
         };
-        
-        foreach (Freezbee f in result)
+
+        if (result != null)
+            foreach (Freezbee f in result)
+            {
+                response.Body.Add(f.ToByteString());
+            }
+        else
         {
-            response.Body.Add(f.ToByteString());
+            response.BodyType = "Null";
         }
 
         return response;
@@ -146,12 +151,16 @@ internal class FreezbeeController
             StatusDescription = statusDescription,
             BodyType = "Freezbee"
         };
-        
-        foreach (Freezbee freezbee in result)
-        {
-            response.Body.Add(freezbee.ToByteString());
-        }
 
+        if (result != null)
+            foreach (Freezbee freezbee in result)
+            {
+                response.Body.Add(freezbee.ToByteString());
+            }
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
     }
     
@@ -192,12 +201,16 @@ internal class FreezbeeController
             StatusDescription = statusDescription,
             BodyType = "Freezbee"
         };
-        
-        foreach (Freezbee freezbee in result)
-        {
-            response.Body.Add(freezbee.ToByteString());
-        }
 
+        if (result != null)
+            foreach (Freezbee freezbee in result)
+            {
+                response.Body.Add(freezbee.ToByteString());
+            }
+        else
+        {
+            response.BodyType = "Null";
+        }
         return response;
     }
     
@@ -244,11 +257,15 @@ internal class FreezbeeController
             BodyType = "TestFreezbee"
         };
 
-        foreach (TestFreezbee testF in result)
+        if (result != null)
+            foreach (TestFreezbee testF in result)
+            {
+                response.Body.Add(testF.ToByteString());
+            }
+        else
         {
-            response.Body.Add(testF.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
     

@@ -47,9 +47,14 @@ internal class TestControllers
             BodyType = "Test"
         };
 
-        foreach (Test t in result)
+        if (result != null)
+            foreach (Test t in result)
+            {
+                response.Body.Add(t.ToByteString());
+            }
+        else
         {
-            response.Body.Add(t.ToByteString());
+            response.BodyType = "Null";
         }
 
         return response;
@@ -145,11 +150,15 @@ internal class TestControllers
             BodyType = "Test",
         };
 
-        foreach (Test test in result)
+        if (result != null)
+            foreach (Test test in result)
+            {
+                response.Body.Add(test.ToByteString());
+            }
+        else
         {
-           response.Body.Add(test.ToByteString()); 
+            response.BodyType = "Null";
         }
-
         return response;
     }
 
@@ -186,7 +195,7 @@ internal class TestControllers
         {
             StatusCode = statusCode,
             StatusDescription = statusDescription,
-            BodyType = "null",
+            BodyType = "Null"
         };
 
         return response;
@@ -238,11 +247,15 @@ internal class TestControllers
             BodyType = "ProcedeFabrication",
         };
 
-        foreach (ProcedeFabrication pf in result)
+        if (result != null)
+            foreach (ProcedeFabrication pf in result)
+            {
+                response.Body.Add(pf.ToByteString());
+            }
+        else
         {
-            response.Body.Add(pf.ToByteString());
+            response.BodyType = "Null";
         }
-
         return response;
     }
 

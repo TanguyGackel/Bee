@@ -7,13 +7,31 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        DateTime d = DateTime.Now;
+        
+        StreamWriter Output = new StreamWriter("./Output." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
+        {
+            AutoFlush = true
+        };
+        StreamWriter Error = new StreamWriter("./Error." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
+        {
+            AutoFlush = true
+        };
+
+        Console.SetOut(Output);
+        Console.SetError(Error);
+        
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
-
-        if (args[0] == "-f" && !args[1].IsNullOrEmpty())
-            Tools.ReadConfFile(conf, args[1]);
-        // else
-        // Tools.ReadInput(conf);
+        if (args.Length >= 2)
+        {
+            if (args[0] == "-f")
+                Tools.ReadConfFile(conf, args[1]);
+            else
+                throw new Exception();
+        }
+        else
+            Tools.ReadInput(conf);
 
 
         DatabaseConnector db = DatabaseConnector.Instance;
