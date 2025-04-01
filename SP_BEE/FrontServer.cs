@@ -113,7 +113,25 @@ internal class ThreadPoolFront
                     await client.SendAsync("FO"u8.ToArray());
                     return;
                 }
+                //TODO
+                Authentication authentication = Authentication.Instance;
+                try
+                {
+                    User user = await authentication.searchAD(packet.Username);
+                    //TODO parse ad group
+                    if (await authentication.AuthenticateUser(user.dn, packet.Password))
+                    {
+                        Console.WriteLine("Client authenticated");
+                    }
 
+                }
+                catch(Exception e) 
+                {
+                    await client.SendAsync("GTFO"u8.ToArray());
+                    Console.Error.WriteLine("Authentication failed");
+                    return;
+                }
+                
                 try
                 {
                     resp = LoadBalancer.SendRequest(packet);

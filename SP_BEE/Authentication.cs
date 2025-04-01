@@ -14,15 +14,22 @@ public class Authentication
     private int _ldapport;
 
 
-    public Authentication(string usernamead, string passwordad, string domain, string adserver, int port)
+    private Authentication()
+    {
+
+    }
+
+    private static Authentication? _instance;
+
+    internal static Authentication Instance => _instance ??= new Authentication();
+
+    internal void fill(string usernamead, string passwordad, string domain, string adserver, int port)
     {
         _adusername = usernamead;
         _adpassword = passwordad;
         _addomain = domain;
         _adserver = adserver;
         _ldapport = port;
-        // _password = password;
-        // _username = username;
     }
 
     // public DirectoryEntry ConnectToAD()
@@ -190,6 +197,30 @@ public class Authentication
             return false;
         }
 
+    }
+    public static string ReadPassword()
+    {
+        string pwd = string.Empty;
+        ConsoleKey key;
+
+        do
+        {
+            ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+            key = keyInfo.Key;
+
+            if (key == ConsoleKey.Backspace && pwd.Length > 0)
+            {
+                Console.Write("\b \b");
+                pwd = pwd[0..^1];
+            }
+            else if (!char.IsControl(keyInfo.KeyChar))
+            {
+                Console.Write("*");
+                pwd += keyInfo.KeyChar;
+            }
+        } while (key != ConsoleKey.Enter);
+        Console.WriteLine();
+        return pwd;
     }
     
 }
