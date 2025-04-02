@@ -195,26 +195,50 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
 
-    private string _startText = "Freezbee";
+    private string _freezbeeText = "Freezbees";
 
-    public string StartText
+    public string FreezbeeText
     {
-        get => _startText;
+        get => _freezbeeText;
         set
         {
-            _startText = value;
+            _freezbeeText = value;
             OnPropertyChanged();
         }
     }
 
-    private string _configurationText = "Configuration";
+    private string _ingredientText = "Ingrédients";
 
-    public string ConfigurationText
+    public string IngredientText
     {
-        get => _configurationText;
+        get => _ingredientText;
         set
         {
-            _configurationText = value;
+            _ingredientText = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    private string _procedeText = "Procédés de fabrication";
+
+    public string ProcedeText
+    {
+        get => _procedeText;
+        set
+        {
+            _procedeText = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    private string _testText = "Tests";
+
+    public string TestText
+    {
+        get => _testText;
+        set
+        {
+            _testText = value;
             OnPropertyChanged();
         }
     }
