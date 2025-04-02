@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using BEE;
 using Google.Protobuf;
+using MS_Lib;
 using MSLib.Proto;
 using MSTest.Proto;
 
@@ -9,7 +11,7 @@ namespace Machin;
 
 internal class Program
 {
-    static Response retrieveResp(Socket socket)
+    static byte[] retrieveResp(Socket socket)
     {
         byte[] buffer = new byte[512];
         int length = socket.Receive(buffer, buffer.Length, SocketFlags.None);
@@ -37,53 +39,65 @@ internal class Program
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
-        return Response.Parser.ParseFrom(body);
+        return body;
     }
     
     
     static void Main(string[] args)
     {
+        
         Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
         socket1.Connect(ipEndPoint1);
-        
-        Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
-        // socket2.Connect(ipEndPoint2);
-        
+        //
+        // Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
+        // // socket2.Connect(ipEndPoint2);
+        //
         Packet packetGetFreezbee = new Packet()
         {
             Route = "Freezbee",
             Fonction = "GetFreezbee",
             BodyType = "Freezbee"
         };
-
+        
         SPPacket spPacketGetFreezbee = new SPPacket()
         {
             Msname = "TEST",
             Body = packetGetFreezbee.ToByteString()
         };
 
-        byte[] getFreezbee = spPacketGetFreezbee.ToByteArray();
+        byte[] keyclient = AES.getKey("127.0.0.1");
+        byte[] iv = AES.getIV(0);
+        
+        byte[] cypher = AES.chiffre(spPacketGetFreezbee.ToByteArray(), keyclient, iv);
+        socket1.Send(cypher);
+
+        byte[] resp = retrieveResp(socket1);
+        byte[] decypher = AES.dechiffre(resp, keyclient, iv);
+
+        Response sp = Response.Parser.ParseFrom(decypher);
+        Console.WriteLine(sp.StatusCode);
+
+        // SPPacket D = SPPacket.Parser.ParseFrom(c);
+        // Console.WriteLine("d : " + D.Msname);
 
 
-
-
-        for (;;)
-        {
-            Console.WriteLine("Sending a new request :");
-            socket1.Send(getFreezbee);
-            Response r = retrieveResp(socket1);
-            Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);
-
-            foreach (ByteString b in r.Body)
-            {
-                Freezbee f = Freezbee.Parser.ParseFrom(b);
-                Console.WriteLine("id : " + f.IdModele + ", nom : " + f.NameModele);
-            }
-            Console.WriteLine("Sleeping 50 ms");
-            Thread.Sleep(1000);
-        }
+        // for (;;)
+        // {
+        //     Console.WriteLine("Sending a new request :");
+        //     socket1.Send(getFreezbee);
+        //     Response r = retrieveResp(socket1);
+        //     Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);
+        //
+        //     foreach (ByteString b in r.Body)
+        //     {
+        //         Freezbee f = Freezbee.Parser.ParseFrom(b);
+        //         Console.WriteLine("id : " + f.IdModele + ", nom : " + f.NameModele);
+        //     }
+        //     Console.WriteLine("Sleeping 50 ms");
+        //     Thread.Sleep(1000);
+        // }
 
         // socket2.Send(getFreezbee);
         // r = retrieveResp(socket2);
@@ -106,8 +120,8 @@ internal class Program
         //         }
         //     } 
         //     ); 
-        
-        
+
+
         // socket1.Send(getFreezbee);
         // r = retrieveResp(socket1);
         // Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);

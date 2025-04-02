@@ -7,6 +7,8 @@ internal class Program
     {
         Console.WriteLine("IP du server qui réceptionne les MS :");
         IPAddress ipMS = IPAddress.Parse(Console.ReadLine());
+        LoadBalancer.ip = ipMS.ToString();
+        
         Console.WriteLine("Port du server qui réceptionne les MS :");
         int portMS = int.Parse(Console.ReadLine());
         Console.WriteLine("IP du server qui réceptionne les front :");

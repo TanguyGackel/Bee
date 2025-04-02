@@ -31,6 +31,8 @@ public class NetworkManager
     
     public void Start(string name, string type, IPAddress ip, int port, List<Client> clients)
     {
+        _threadPool.SetIP(ip.ToString());
+
         int count = 0;
         ToRegister infos = new ToRegister()
         {
@@ -105,7 +107,8 @@ internal class ThreadPool
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
-    
+    private string ip;
+
     internal ThreadPool()
     {
         for (int i = 0; i < Environment.ProcessorCount; i++)
@@ -114,7 +117,10 @@ internal class ThreadPool
             _threads[i].Start();
         }
     }
-
+    public void SetIP(string ip)
+    {
+        this.ip = ip;
+    }
     private void StartWorking()
     {
         foreach (Socket task in _tasksQueue.GetConsumingEnumerable())
@@ -133,8 +139,17 @@ internal class ThreadPool
 
     private async Task HandleRequest(Socket client)
     {
+        int count = 0;
+        IPEndPoint ipEndPointClient = (IPEndPoint) client.RemoteEndPoint;
+        string clientIp = ipEndPointClient.Address.ToString();
+        byte[] keyClient = AES.getKey(clientIp);
+        byte[] keyServer = AES.getKey(this.ip);
+        
         try
         {
+            byte[] iv = new byte[16];
+            await client.ReceiveAsync(iv, SocketFlags.None);
+            
             byte[] buffer = new byte[512];
             int length = await client.ReceiveAsync(buffer, SocketFlags.None);
             int maxLength = length;
@@ -163,7 +178,9 @@ internal class ThreadPool
                 foreach (byte b in body)
                     Console.Write(b);
                 Console.WriteLine();
-                packet = Packet.Parser.ParseFrom(body);
+                byte[] decyphered = AES.dechiffre(body, keyClient, iv);
+
+                packet = Packet.Parser.ParseFrom(decyphered);
             }
             catch (Exception)
             {
@@ -196,7 +213,8 @@ internal class ThreadPool
                 return;
             }
 
-            await client.SendAsync(response);
+            byte[] cypher = AES.chiffre(response, keyServer, iv);
+            await client.SendAsync(cypher);
         }
         catch (Exception e)
         {

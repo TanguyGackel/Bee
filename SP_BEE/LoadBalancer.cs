@@ -8,6 +8,7 @@ internal static class LoadBalancer
 {
     private static List<Count> Counts = new List<Count>();
     private static Mutex mut = new Mutex();
+    public static string ip;
 
     internal static void ReloadLB()
     {
@@ -45,6 +46,10 @@ internal static class LoadBalancer
     
     internal static byte[] SendRequest(SPPacket packet)
     {
+        byte[] keyClient = AES.getKey(ip);
+        byte[] iv = AES.getIV("GetTheFOutOfMyNetwork" + DateTime.Now.Millisecond);
+        byte[] cyphered = AES.chiffre(packet.Body.ToByteArray(), keyClient, iv);
+        
         Console.WriteLine("Searching a microservices to send data");
         mut.WaitOne();
         Count c = Counts.Find(p => p.type == packet.Msname);
@@ -53,7 +58,7 @@ internal static class LoadBalancer
         
         bool flag = false;
 
-        Socket client;
+        Socket server;
         while (true)
         {
             MicroService ms = MSRegister.Instance.Register.Find(p => p.type == packet.Msname && p.id == c.count) ??
@@ -67,8 +72,10 @@ internal static class LoadBalancer
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(ipEndPoint);
                 Console.WriteLine("Sending packet");
-                socket.Send(packet.Body.ToByteArray());
-                client = socket;
+
+                socket.Send(iv);
+                socket.Send(cyphered);
+                server = socket;
                 break;
             }
             catch (Exception)
@@ -84,15 +91,18 @@ internal static class LoadBalancer
             Console.WriteLine("Need to reload LB config");
             ReloadLB();
         }
+
+        IPEndPoint end = (IPEndPoint) server.RemoteEndPoint;
+        byte[] serverKey = AES.getKey(end.Address.ToString());
         
         byte[] buffer = new byte[512];
-        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+        int length = server.Receive(buffer, buffer.Length, SocketFlags.None);
         int maxLength = length;
         byte[] bodyTemp = buffer.ToArray();
             
         while (length == 512)
         { 
-            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+            length = server.Receive(buffer, buffer.Length, SocketFlags.None);
 
             maxLength += length;
             byte[] temp = new byte[bodyTemp.Length + length];
@@ -101,10 +111,12 @@ internal static class LoadBalancer
             bodyTemp = temp;
         }
         
-        client.Close();
+        server.Close();
         byte[] body = new byte[maxLength];
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-        return body;
+        
+        
+        return AES.dechiffre(body, serverKey, iv);
 
     }
     

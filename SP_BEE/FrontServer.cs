@@ -18,6 +18,8 @@ internal class FrontServer
     
     internal void Start(IPAddress ip, int port)
     {
+        _threadPool.SetIP(ip.ToString());
+        
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
         Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
@@ -44,6 +46,7 @@ internal class ThreadPoolFront
 {
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
+    private string ip;
     
     internal ThreadPoolFront()
     {
@@ -54,6 +57,11 @@ internal class ThreadPoolFront
         }
     }
 
+    public void SetIP(string ip)
+    {
+        this.ip = ip;
+    }
+    
     private void StartWorking()
     {
         foreach (Socket task in _tasksQueue.GetConsumingEnumerable())
@@ -72,10 +80,18 @@ internal class ThreadPoolFront
 
     private async Task HandleRequest(Socket client)
     {
+        int count = 0;
+        IPEndPoint ipEndPointClient = (IPEndPoint) client.RemoteEndPoint;
+        string clientIp = ipEndPointClient.Address.ToString();
+        byte[] keyClient = AES.getKey(clientIp);
+        byte[] keyServer = AES.getKey(this.ip);
+        
         try
         {
             while (client.Connected)
             {
+                byte[] iv = AES.getIV(count);
+
                 byte[] buffer = new byte[512];
                 int length;
 
@@ -106,14 +122,16 @@ internal class ThreadPoolFront
                     foreach (byte b in body)
                         Console.Write(b);
                     Console.WriteLine();
-                    packet = SPPacket.Parser.ParseFrom(body);
+                    byte[] decyphered = AES.dechiffre(body, keyClient, iv);
+
+                    packet = SPPacket.Parser.ParseFrom(decyphered);
                 }
                 catch (Exception)
                 {
                     await client.SendAsync("FO"u8.ToArray());
                     return;
                 }
-
+                
                 try
                 {
                     resp = LoadBalancer.SendRequest(packet);
@@ -128,7 +146,18 @@ internal class ThreadPoolFront
                     return;
                 }
 
-                await client.SendAsync(resp);
+                byte[] cypher = AES.chiffre(resp, keyServer, iv);
+                
+                await client.SendAsync(cypher);
+
+                try
+                {
+                    count++;
+                }
+                catch (OverflowException)
+                {
+                    count = 0;
+                }
             }
         }
         catch (Exception e)
