@@ -131,6 +131,31 @@ internal class ThreadPoolFront
                     await client.SendAsync("FO"u8.ToArray());
                     return;
                 }
+                //TODO
+                Authentication authentication = Authentication.Instance;
+                try
+                {
+                    User user = await authentication.searchAD(packet.Username);
+                    
+                    string groupname = "";
+                    if (!authentication.CheckGroup(groupname, user.groups))
+                    {
+                        Console.Error.WriteLine("Client doesn't have the rights");
+                        return;
+                    }
+                    
+                    if (await authentication.AuthenticateUser(user.sam, packet.Password))
+                    {
+                        Console.WriteLine("Client authenticated");
+                    }
+
+                }
+                catch(Exception e) 
+                {
+                    await client.SendAsync("GTFO"u8.ToArray());
+                    Console.Error.WriteLine("Authentication failed");
+                    return;
+                }
                 
                 try
                 {

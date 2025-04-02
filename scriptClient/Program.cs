@@ -43,7 +43,7 @@ internal class Program
     }
     
     
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         
         Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -120,8 +120,8 @@ internal class Program
         //         }
         //     } 
         //     ); 
-
-
+        
+        
         // socket1.Send(getFreezbee);
         // r = retrieveResp(socket1);
         // Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);
@@ -189,6 +189,25 @@ internal class Program
         // //     ProcedeFabrication pf = ProcedeFabrication.Parser.ParseFrom(b);
         // //     Console.WriteLine("ID: " + pf.Id + " Name " + pf.Name + " Description " + pf.Description);
         // // }
+        
+        Authentication authentication = Authentication.Instance;
+
+        string usernameDN = "svcBee";
+        string password = "sdfgSDFG1&";
+        
+        authentication.fill(usernameDN, password, "bee.bee", "srvbee01.bee.bee",389);
+
+        User user = await authentication.searchAD("james.brown");
+        
+        Console.WriteLine("User:" + user.dn + "Group: " + user.groups[0] + " SAM: " + user.sam);
+
+        bool check = await authentication.AuthenticateUser(user.sam, "cr$3Dkv4*");
+        
+        Console.WriteLine(check);
+
+        bool isGroup = authentication.CheckGroup("GG_SHARE_PROD", user.groups);
+        
+        Console.WriteLine("is in group: " + isGroup);
 
     }
 }
