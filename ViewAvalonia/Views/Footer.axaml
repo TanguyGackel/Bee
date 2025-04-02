@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="using:ViewAvalonia.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="ViewAvalonia.Views.Footer">
+
+        <Design.DataContext>
+            <vm:FooterViewModel/>
+        </Design.DataContext>
+
+        <Grid Classes="Footer">
+            <Button Classes="Exit" Command="{Binding ClickExit}" Content="{Binding TextExit}"/>
+            <StackPanel Classes="Footer">
+                <Label>KillerBee</Label>
+            </StackPanel>
+        </Grid>
+</UserControl>
+

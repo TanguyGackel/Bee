@@ -2,13 +2,38 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:BeeClient"
         xmlns:views="clr-namespace:BeeClient"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="BeeClient.MainWindow"
-        Title="BeeClient">
+        Title="BeeClient"
+        x:DataType="views:MainWindowViewModel">
 
         
-        <views:Head Grid.Row="0"></views:Head>
+        <Design.DataContext>
+                <vm:MainWindowViewModel/>
+        </Design.DataContext>
+        
+        <Grid RowDefinitions="Auto, *,Auto" Background="Red" IsVisible="True">
+                <views:Head Grid.Row="0"></views:Head>
+                
+                
+                <TabControl Grid.Row="1">
+                        
+                        <Grid>
+                                <DataGrid Name="ListFreezbee" ItemsSource="{Binding Lists}" AutoGenerateColumns="False">
+                                        <DataGrid.Columns>
+                                                <DataGridTextColumn IsReadOnly="True" Header="{Binding DatagridId}" Binding="{Binding Id}"/>
+                                                <DataGridTextColumn IsReadOnly="True" Header="{Binding DatagridName}" Binding="{Binding Nom}"/>
+                                        </DataGrid.Columns>
+                                </DataGrid>
+                        </Grid>
+                        
+                </TabControl>
+                
                 
  
+        </Grid>
+        
+        
 </Window>
