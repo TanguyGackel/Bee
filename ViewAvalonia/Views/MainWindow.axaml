@@ -65,9 +65,9 @@
                                     <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
                                     <DataGridTemplateColumn Header="Info">
                                         <DataGridTemplateColumn.CellTemplate>   
-                                            <DataTemplate>
-                                                <Button>+</Button>
-                                            </DataTemplate>
+                                                <DataTemplate>
+                                                    <Button Classes="Appliquer" Name="ApplyButton" Content="Connection" Command="{Binding GetInfoById}"/>
+                                                </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
