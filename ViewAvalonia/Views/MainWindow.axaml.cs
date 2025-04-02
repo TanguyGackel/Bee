@@ -16,6 +16,49 @@ public class MainWindow : Window
 
 public sealed class MainWindowViewModel : ViewModel
 {
+    #region Login
+    private string _login = "";
+
+    public string Login
+    {
+        get => _login;
+        set
+        {
+            _login = value;
+            OnPropertyChanged();
+        }
+    }   
+    
+    private string _password = "";
+
+    public string Password
+    {
+        get => _password;
+        set
+        {
+            _password = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public void Connection()
+    {
+        ConnectionPageVisible = !ConnectionPageVisible;
+    }
+    
+    private bool _connectionPageVisible = true;
+    
+    public bool ConnectionPageVisible
+    {
+        get => _connectionPageVisible;
+        set
+        {
+            _connectionPageVisible = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion
+    
     private ObservableCollection<Backup> _backups = new();
 
     public ObservableCollection<Backup> Backups
@@ -126,7 +169,7 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
 
-    private string _welcomeText = "Welcome";
+    private string _welcomeText = "Connection";
 
     public string WelcomeText
     {
@@ -137,6 +180,7 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
         }
     }
+
 
     private string _startText = "Launch Backup";
 

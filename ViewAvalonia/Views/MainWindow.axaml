@@ -17,16 +17,26 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *,Auto">
+    <Grid RowDefinitions="Auto, *,Auto" >
         <views:Header Grid.Row="0" />
 
         <Grid Classes="MainWindow" Grid.Row="1" IsVisible="{Binding Visible}">
             <TabControl>
-                <TabItem Header="{Binding WelcomeText}">
-                    <Image Source="../Assets/Logoeasysave.png" Height="300" Width="300" />
+                <TabItem Header="{Binding WelcomeText}" IsVisible="{Binding ConnectionPageVisible}">
+                    <Grid Classes="MainWindow" IsVisible="True">
+                        <StackPanel Classes="NewBackup First">
+                            <StackPanel Classes="NewBackup Second">
+                                <TextBox Classes="NewBackup" Name="LoginTextBox" Watermark="Login" Text="{Binding Login}" />
+                            </StackPanel>
+                            <StackPanel Classes="NewBackup Second">
+                                <TextBox Classes="NewBackup" PasswordChar="*" Name="PasswordTextBox" Watermark="Password" Text="{Binding Password} "/>
+                            </StackPanel>
+                            <Button Classes="Appliquer" Name="ApplyButton" Content="Connection" Command="{Binding Connection}"/>
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
-
-                <TabItem Header="{Binding StartText}">
+                
+                <TabItem Header="{Binding StartText}" IsVisible="{Binding !ConnectionPageVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
                             <Button Grid.Column="0" Classes="AddBackup" Command="{Binding modifyVisible}">+</Button>
@@ -62,7 +72,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="{Binding ConfigurationText}">
+                <TabItem Header="{Binding ConfigurationText}" IsVisible="{Binding !ConnectionPageVisible}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
