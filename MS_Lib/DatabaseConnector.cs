@@ -29,7 +29,7 @@ public sealed class DatabaseConnector
     private string _source = "";
     public string Source
     {
-        set => _source = "Data Source=(" + value + ");";
+        set => _source = "Data Source=" + value + ";";
     }
 
     private string _db = "";
@@ -52,7 +52,7 @@ public sealed class DatabaseConnector
                 case ConnectionType.Password:
                 {
                     string[] temp = value.Split(',');
-                    _credentials = "Integrated Security=false; ID=" + temp[0] + "; Password=" + temp[1] + ";";
+                    _credentials = "Integrated Security=false; User Id=" + temp[0] + "; Password=" + temp[1] + ";";
                     break;
                 }
             }

@@ -26,6 +26,7 @@ internal class MSRegister
             type = register.Type,
             ip = IPAddress.Parse(register.Ip),
             port = register.Port,
+            group = register.Group,
             id = -1
         });
     }
@@ -45,6 +46,7 @@ internal class MicroService
 {
     internal string name;
     internal string type;
+    internal string group;
     internal IPAddress ip;
     internal int port;
     internal int id;

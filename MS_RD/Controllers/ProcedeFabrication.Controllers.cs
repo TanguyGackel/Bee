@@ -106,8 +106,11 @@ internal class ProcedeFabricationControllers
             StatusDescription = statusDescription,
             BodyType = "ProcedeFabrication",
         };
-        
-        response.Body.Add(result.ToByteString());
+
+        if (result != null)
+            response.Body.Add(result.ToByteString());
+        else
+            response.BodyType = "Null";
         
         return response;
         

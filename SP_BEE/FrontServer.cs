@@ -119,9 +119,9 @@ internal class ThreadPoolFront
                 try
                 {
                     Console.WriteLine("Received : ");
-                    foreach (byte b in body)
-                        Console.Write(b);
-                    Console.WriteLine();
+                    // foreach (byte b in body)
+                    //     Console.Write(b);
+                    // Console.WriteLine();
                     byte[] decyphered = AES.dechiffre(body, keyClient, iv);
 
                     packet = SPPacket.Parser.ParseFrom(decyphered);
@@ -131,39 +131,48 @@ internal class ThreadPoolFront
                     await client.SendAsync("FO"u8.ToArray());
                     return;
                 }
-                //TODO
-                Authentication authentication = Authentication.Instance;
-                try
-                {
-                    User user = await authentication.searchAD(packet.Username);
-                    
-                    string groupname = "";
-                    if (!authentication.CheckGroup(groupname, user.groups))
-                    {
-                        Console.Error.WriteLine("Client doesn't have the rights");
-                        return;
-                    }
-                    
-                    if (await authentication.AuthenticateUser(user.sam, packet.Password))
-                    {
-                        Console.WriteLine("Client authenticated");
-                    }
-
-                }
-                catch(Exception e) 
-                {
-                    await client.SendAsync("GTFO"u8.ToArray());
-                    Console.Error.WriteLine("Authentication failed");
-                    return;
-                }
+                
+                // Console.WriteLine("Debut Auth");
+                // Authentication authentication = Authentication.Instance;
+                // try
+                // {
+                //     Console.WriteLine("SearchAD");
+                //     User user = await authentication.searchAD(packet.Username);
+                //     
+                //     Console.WriteLine("CheckGroup");
+                //     if (!authentication.CheckGroup(packet.Msname, user.groups))
+                //     {
+                //         Console.Error.WriteLine("Client doesn't have the rights");
+                //         await client.SendAsync("On t as dit degage"u8.ToArray());
+                //         return;
+                //     }
+                //     Console.WriteLine("AuthenticateUser");
+                //     if (!await authentication.AuthenticateUser(user.sam, packet.Password))
+                //     {
+                //         await client.SendAsync("Oh eh oh"u8.ToArray());
+                //
+                //         Console.Error.WriteLine("Client not authenticated");
+                //         return;
+                //
+                //     }
+                //
+                // }
+                // catch(Exception e) 
+                // {
+                //     await client.SendAsync("GTFO"u8.ToArray());
+                //     Console.Error.WriteLine("Authentication failed " + e);
+                //     return;
+                // }
+                Console.WriteLine("Fin Auth");
+                
                 
                 try
                 {
                     resp = LoadBalancer.SendRequest(packet);
                     Console.WriteLine("Ready to send back : ");
-                    foreach (byte b in resp)
-                        Console.Write(b);
-                    Console.WriteLine();
+                    // foreach (byte b in resp)
+                    //     Console.Write(b);
+                    // Console.WriteLine();
                 }
                 catch (Exception)
                 {

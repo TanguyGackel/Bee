@@ -107,8 +107,11 @@ internal class FreezbeeController
             StatusDescription = statusDescription,
             BodyType = "Freezbee"
         };
-        
-        response.Body.Add(result.ToByteString());
+
+        if (result != null)
+            response.Body.Add(result.ToByteString());
+        else
+            response.BodyType = "Null";
         return response;
         
     }

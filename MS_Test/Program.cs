@@ -22,18 +22,10 @@ internal class Program
         
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
-        if (args.Length >= 2)
-        {
-            if (args[0] == "-f")
-                Tools.ReadConfFile(conf, args[1]);
-            else
-                throw new Exception();
-        }
-        else
-            Tools.ReadInput(conf);
 
-        Console.SetOut(Output);
-        Console.SetError(Error);
+        if (args[0] == "-f")
+            Tools.ReadInput(conf);
+        else Tools.ReadConfFile(conf, args[0]);
         
         DatabaseConnector db = DatabaseConnector.Instance;
         db.Type = conf["dbConnectionType"] == "Credentials" ? ConnectionType.Password : ConnectionType.WindowsAuthentication;
@@ -49,7 +41,10 @@ internal class Program
         db.DB = conf["db"];
         db.Encryption = false;
         db.ConstructConnectionString();
-
+        Console.WriteLine("Passé");
+        Console.SetOut(Output);
+        Console.SetError(Error);
+        
         NetworkManager nm = NetworkManager.Instance;
         nm.AddRoute("Freezbee", new FreezbeeRoutes());
         nm.AddRoute("Test", new TestRoutes());
@@ -72,7 +67,7 @@ internal class Program
         IPAddress.TryParse(conf["ipServer"], out IPAddress ip);
         int.TryParse(conf["portServer"], out int port);
         
-        nm.Start(conf["instanceName"], "TEST", ip, port, clients);
+        nm.Start(conf["instanceName"], "TEST", ip, port, "GG_ACCESS_BEEAP_TEST", clients);
 
     }
 }

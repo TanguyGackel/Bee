@@ -102,10 +102,11 @@ internal class IngredientControllers
             StatusDescription = statusDescription,
             BodyType = "Ingredient"
         };
-        
 
-        response.Body.Add(results.ToByteString());
-        
+        if (results != null)
+            response.Body.Add(results.ToByteString());
+        else
+            response.BodyType = "Null";
         return response;
     }
     internal static async Task<Response> GetIngredientByName(IRequest r)

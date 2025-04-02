@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Utilclass;
 
-namespace SP_BEE;
+namespace Machin;
 
 public class Authentication
 {

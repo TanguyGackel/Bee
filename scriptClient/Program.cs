@@ -49,36 +49,53 @@ internal class Program
         Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
         socket1.Connect(ipEndPoint1);
-        // //
-        // // Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // // IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
-        // // // socket2.Connect(ipEndPoint2);
-        // //
+
+        Freezbee f = new Freezbee()
+        {
+            IdModele = 1,
+            NameModele = "",
+            GammeModele = "Premium",
+            PUHT = 1500,
+        };
+        
         Packet packetGetFreezbee = new Packet()
         {
             Route = "Freezbee",
-            Fonction = "GetFreezbee",
-            BodyType = "Freezbee"
+            Fonction = "",
+            BodyType = "Freezbee",
+            Body = f.ToByteString()
         };
         
         SPPacket spPacketGetFreezbee = new SPPacket()
         {
-            Msname = "TEST",
-            Body = packetGetFreezbee.ToByteString()
+            Msname = "RD",
+            Body = packetGetFreezbee.ToByteString(),
+            // Username = "james.brown",
+            Username = "aaron.arias",
+            // Password = "cr$3Dkv4*PxSqxlUDqeF"
+            Password = "sdfgSDFG2&"
         };
-        //
+        
         byte[] keyclient = AES.getKey("127.0.0.1");
         byte[] iv = AES.getIV(0);
-        //
+
         byte[] cypher = AES.chiffre(spPacketGetFreezbee.ToByteArray(), keyclient, iv);
         socket1.Send(cypher);
-        //
+
         byte[] resp = retrieveResp(socket1);
-        byte[] decypher = AES.dechiffre(resp, keyclient, iv);
-        //
+        Console.WriteLine(Encoding.UTF8.GetString(resp));
+        byte[] keyserver = AES.getKey("127.0.0.1");
+        byte[] decypher = AES.dechiffre(resp, keyserver, iv);
+
         Response sp = Response.Parser.ParseFrom(decypher);
+
+        foreach (ByteString b in sp.Body)
+        {
+            Freezbee f1 = Freezbee.Parser.ParseFrom(b);
+        }
+        
         Console.WriteLine(sp.StatusCode);
-        //
+        
         // // SPPacket D = SPPacket.Parser.ParseFrom(c);
         // Console.WriteLine("d : " + D.Msname);
 
@@ -190,24 +207,7 @@ internal class Program
         // //     Console.WriteLine("ID: " + pf.Id + " Name " + pf.Name + " Description " + pf.Description);
         // // }
         
-        Authentication authentication = Authentication.Instance;
-
-        string usernameDN = "svcBee";
-        string password = "sdfgSDFG1&";
         
-        authentication.fill(usernameDN, password, "bee.bee", "srvbee01.bee.bee",389);
-
-        User user = await authentication.searchAD("james.brown");
-        
-        Console.WriteLine("User:" + user.dn + "Group: " + user.groups[0] + " SAM: " + user.sam);
-
-        bool check = await authentication.AuthenticateUser(user.sam, "cr$3Dkv4*");
-        
-        Console.WriteLine(check);
-
-        bool isGroup = authentication.CheckGroup("GG_SHARE_PROD", user.groups);
-        
-        Console.WriteLine("is in group: " + isGroup);
 
     }
 }

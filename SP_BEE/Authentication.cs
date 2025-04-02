@@ -58,18 +58,21 @@ public class Authentication
 
     public async Task<User> searchAD(string username)
     {
+        Console.WriteLine("ConnecAD");
         LdapConnection ldap = await ConnectionAD();
         
         string searchBase = "OU=users,OU=lambda,DC=bee,DC=bee";
         string ldap_filter = String.Format("(&(objectClass=user)(sAMAccountName={0}))", username);
         string[] attrs = ["DistinguishedName", "SamAccountName", "memberOf"];
-
+        
+        Console.WriteLine("SearchAsync");
         LdapSearchResults searchResult = (LdapSearchResults) await ldap.SearchAsync(searchBase, LdapConnection.ScopeSub, ldap_filter, attrs, false);
 
         LdapEntry nextEntry;
 
         try
         {
+            Console.WriteLine("NextAsync");
             nextEntry = await searchResult.NextAsync();
         }
         catch(LdapException e) 
@@ -78,13 +81,15 @@ public class Authentication
             throw;
         }
 
+        Console.WriteLine("Get");
 
         LdapAttribute dn = nextEntry.Get("DistinguishedName");
         LdapAttribute sam = nextEntry.Get("samAccountName");
         LdapAttribute groups = nextEntry.Get("memberOf");
 
         List<string> groupuser = new List<string>();
-        
+        Console.WriteLine("GetGroup");
+
         foreach (string value in groups.StringValueArray)
         {
             groupuser.Add(GetGroup(value));
@@ -111,8 +116,9 @@ public class Authentication
         return match.Groups[1].Value;
     }
     
-    public bool CheckGroup(string group, List<string> usergroups)
-    { 
+    public bool CheckGroup(string ms, List<string> usergroups)
+    {
+        string group = MSRegister.Instance.Register.First(t => t.type == ms).group;
         return usergroups.Contains(group);
     }
     

@@ -24,13 +24,13 @@ namespace BEE {
     static ToRegisterReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiBDb25maWcvUHJvdG8vU1AvVG9SZWdpc3Rlci5wcm90bxIDQkVFIkIKClRv",
+            "CiBDb25maWcvUHJvdG8vU1AvVG9SZWdpc3Rlci5wcm90bxIDQkVFIlEKClRv",
             "UmVnaXN0ZXISDAoEbmFtZRgBIAEoCRIMCgR0eXBlGAIgASgJEgwKBHBvcnQY",
-            "AyABKAUSCgoCaXAYBCABKAliBnByb3RvMw=="));
+            "AyABKAUSCgoCaXAYBCABKAkSDQoFZ3JvdXAYBSABKAliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::BEE.ToRegister), global::BEE.ToRegister.Parser, new[]{ "Name", "Type", "Port", "Ip" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::BEE.ToRegister), global::BEE.ToRegister.Parser, new[]{ "Name", "Type", "Port", "Ip", "Group" }, null, null, null, null)
           }));
     }
     #endregion
@@ -76,6 +76,7 @@ namespace BEE {
       type_ = other.type_;
       port_ = other.port_;
       ip_ = other.ip_;
+      group_ = other.group_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -133,6 +134,18 @@ namespace BEE {
       }
     }
 
+    /// <summary>Field number for the "group" field.</summary>
+    public const int GroupFieldNumber = 5;
+    private string group_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Group {
+      get { return group_; }
+      set {
+        group_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -152,6 +165,7 @@ namespace BEE {
       if (Type != other.Type) return false;
       if (Port != other.Port) return false;
       if (Ip != other.Ip) return false;
+      if (Group != other.Group) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -163,6 +177,7 @@ namespace BEE {
       if (Type.Length != 0) hash ^= Type.GetHashCode();
       if (Port != 0) hash ^= Port.GetHashCode();
       if (Ip.Length != 0) hash ^= Ip.GetHashCode();
+      if (Group.Length != 0) hash ^= Group.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -197,6 +212,10 @@ namespace BEE {
         output.WriteRawTag(34);
         output.WriteString(Ip);
       }
+      if (Group.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Group);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -223,6 +242,10 @@ namespace BEE {
         output.WriteRawTag(34);
         output.WriteString(Ip);
       }
+      if (Group.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Group);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -244,6 +267,9 @@ namespace BEE {
       }
       if (Ip.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Ip);
+      }
+      if (Group.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Group);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -268,6 +294,9 @@ namespace BEE {
       }
       if (other.Ip.Length != 0) {
         Ip = other.Ip;
+      }
+      if (other.Group.Length != 0) {
+        Group = other.Group;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -304,6 +333,10 @@ namespace BEE {
             Ip = input.ReadString();
             break;
           }
+          case 42: {
+            Group = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -337,6 +370,10 @@ namespace BEE {
           }
           case 34: {
             Ip = input.ReadString();
+            break;
+          }
+          case 42: {
+            Group = input.ReadString();
             break;
           }
         }

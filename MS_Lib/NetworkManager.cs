@@ -29,7 +29,7 @@ public class NetworkManager
         _routes.Add(s, r);
     }
     
-    public void Start(string name, string type, IPAddress ip, int port, List<Client> clients)
+    public void Start(string name, string type, IPAddress ip, int port, string group, List<Client> clients)
     {
         _threadPool.SetIP(ip.ToString());
 
@@ -39,7 +39,8 @@ public class NetworkManager
             Name = name,
             Ip = ip.ToString(),
             Port = port,
-            Type = type
+            Type = type,
+            Group = group
         };
         foreach (var t in clients)
         {
@@ -175,9 +176,9 @@ internal class ThreadPool
             try
             {
                 Console.WriteLine("Received : ");
-                foreach (byte b in body)
-                    Console.Write(b);
-                Console.WriteLine();
+                // foreach (byte b in body)
+                //     Console.Write(b);
+                // Console.WriteLine();
                 byte[] decyphered = AES.dechiffre(body, keyClient, iv);
 
                 packet = Packet.Parser.ParseFrom(decyphered);
@@ -198,9 +199,9 @@ internal class ThreadPool
                 response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value
                     .Call(packet);
                 Console.WriteLine("Ready to send : ");
-                foreach (byte b in response)
-                    Console.Write(b);
-                Console.WriteLine();
+                // foreach (byte b in response)
+                //     Console.Write(b);
+                // Console.WriteLine();
             }
             catch (Exception)
             {

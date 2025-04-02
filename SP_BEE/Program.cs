@@ -5,20 +5,18 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("IP du server qui réceptionne les MS :");
-        IPAddress ipMS = IPAddress.Parse(Console.ReadLine());
-        LoadBalancer.ip = ipMS.ToString();
+        using StreamReader reader = new StreamReader("./.config");
+        LoadBalancer.ip = reader.ReadLine();
+        IPAddress ipMS = IPAddress.Parse(LoadBalancer.ip);
+        int portMS = int.Parse(reader.ReadLine());
         
-        Console.WriteLine("Port du server qui réceptionne les MS :");
-        int portMS = int.Parse(Console.ReadLine());
-        Console.WriteLine("IP du server qui réceptionne les front :");
-        IPAddress ipF = IPAddress.Parse(Console.ReadLine());
-        Console.WriteLine("Port du server qui réceptionne les front :");
-        int portF = int.Parse(Console.ReadLine());
+        IPAddress ipF = IPAddress.Parse(reader.ReadLine());
+        int portF = int.Parse(reader.ReadLine());
+        
         Authentication authentication = Authentication.Instance;
-        Console.WriteLine("Saisir username");
+        Console.WriteLine("Saisir AD username");
         string username = Authentication.ReadPassword();
-        Console.WriteLine("Saisir password");
+        Console.WriteLine("Saisir AD password");
         string password = Authentication.ReadPassword();
         
         authentication.fill(username, password, "bee.bee", "srvbee01",389);

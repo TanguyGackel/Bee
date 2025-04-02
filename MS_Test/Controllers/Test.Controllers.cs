@@ -105,8 +105,11 @@ internal class TestControllers
             StatusDescription = statusDescription,
             BodyType = "Test"
         };
-        
-        response.Body.Add(result.ToByteString());
+
+        if (result != null)
+            response.Body.Add(result.ToByteString());
+        else
+            response.BodyType = "Null";
         return response;
     }
     
