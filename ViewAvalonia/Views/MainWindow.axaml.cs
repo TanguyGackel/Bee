@@ -16,14 +16,28 @@ public class MainWindow : Window
 
 public sealed class MainWindowViewModel : ViewModel
 {
-    private ObservableCollection<Backup> _backups = new();
+    private ObservableCollection<Backup> _backups = new ObservableCollection<Backup>();
 
+    
+    private ObservableCollection<ObservableObject> _collection = new();
+    
+    
     public ObservableCollection<Backup> Backups
     {
         get => _backups;
         set
         {
             _backups = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public ObservableCollection<ObservableObject> OCollection
+    {
+        get => _collection;
+        set
+        {
+            _collection = value;
             OnPropertyChanged();
         }
     }
@@ -138,7 +152,7 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
 
-    private string _startText = "Launch Backup";
+    private string _startText = "Freezbee";
 
     public string StartText
     {
@@ -278,9 +292,14 @@ public sealed class MainWindowViewModel : ViewModel
         {
             "FullBackup", "DiffBackup"
         };
+
+        OCollection = new ObservableCollection<ObservableObject>();
+        Freezbee freezbee = new Freezbee(1, "Freezbee 1", "description", 5, "gamme");
+        OCollection.Add(freezbee);
     }
 
     public List<string> ListTypeBackup { get; set; }
+    
     
     public void modifyVisible() => Visible = !Visible;
     public void modifyButtonVisible() => ButtonVisible = !ButtonVisible;
