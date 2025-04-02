@@ -110,7 +110,7 @@ public class Authentication
 
         return match.Groups[1].Value;
     }
-    
+
     public bool CheckGroup(string group, List<string> usergroups)
     { 
         return usergroups.Contains(group);

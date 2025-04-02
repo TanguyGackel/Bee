@@ -4,6 +4,7 @@ using BEE;
 using Google.Protobuf;
 using MSLib.Proto;
 using MSTest.Proto;
+using SP_BEE;
 
 namespace Machin;
 
@@ -41,49 +42,49 @@ internal class Program
     }
     
     
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-        Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
-        socket1.Connect(ipEndPoint1);
+        // Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
+        // socket1.Connect(ipEndPoint1);
+        //
+        // Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
+        // // socket2.Connect(ipEndPoint2);
+        //
+        // Packet packetGetFreezbee = new Packet()
+        // {
+        //     Route = "Freezbee",
+        //     Fonction = "GetFreezbee",
+        //     BodyType = "Freezbee"
+        // };
+        //
+        // SPPacket spPacketGetFreezbee = new SPPacket()
+        // {
+        //     Msname = "TEST",
+        //     Body = packetGetFreezbee.ToByteString()
+        // };
+        //
+        // byte[] getFreezbee = spPacketGetFreezbee.ToByteArray();
+        //
+        //
+        //
+        //
+        // for (;;)
+        // {
+        //     Console.WriteLine("Sending a new request :");
+        //     socket1.Send(getFreezbee);
+        //     Response r = retrieveResp(socket1);
+        //     Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);
+        //
+        //     foreach (ByteString b in r.Body)
+        //     {
+        //         Freezbee f = Freezbee.Parser.ParseFrom(b);
+        //         Console.WriteLine("id : " + f.IdModele + ", nom : " + f.NameModele);
+        //     }
+        //     Console.WriteLine("Sleeping 50 ms");
+        //     Thread.Sleep(1000);
         
-        Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
-        // socket2.Connect(ipEndPoint2);
-        
-        Packet packetGetFreezbee = new Packet()
-        {
-            Route = "Freezbee",
-            Fonction = "GetFreezbee",
-            BodyType = "Freezbee"
-        };
-
-        SPPacket spPacketGetFreezbee = new SPPacket()
-        {
-            Msname = "TEST",
-            Body = packetGetFreezbee.ToByteString()
-        };
-
-        byte[] getFreezbee = spPacketGetFreezbee.ToByteArray();
-
-
-
-
-        for (;;)
-        {
-            Console.WriteLine("Sending a new request :");
-            socket1.Send(getFreezbee);
-            Response r = retrieveResp(socket1);
-            Console.WriteLine("code : " + r.StatusCode + ", description : " + r.StatusDescription);
-
-            foreach (ByteString b in r.Body)
-            {
-                Freezbee f = Freezbee.Parser.ParseFrom(b);
-                Console.WriteLine("id : " + f.IdModele + ", nom : " + f.NameModele);
-            }
-            Console.WriteLine("Sleeping 50 ms");
-            Thread.Sleep(1000);
-        }
 
         // socket2.Send(getFreezbee);
         // r = retrieveResp(socket2);
@@ -175,6 +176,25 @@ internal class Program
         // //     ProcedeFabrication pf = ProcedeFabrication.Parser.ParseFrom(b);
         // //     Console.WriteLine("ID: " + pf.Id + " Name " + pf.Name + " Description " + pf.Description);
         // // }
+        
+        Authentication authentication = Authentication.Instance;
+
+        string usernameDN = "svcBee";
+        string password = "sdfgSDFG1&";
+        
+        authentication.fill(usernameDN, password, "bee.bee", "srvbee01.bee.bee",389);
+
+        User user = await authentication.searchAD("james.brown");
+        
+        Console.WriteLine("User:" + user.dn + "Group: " + user.groups[0] + " SAM: " + user.sam);
+
+        bool check = await authentication.AuthenticateUser(user.sam, "cr$3Dkv4*");
+        
+        Console.WriteLine(check);
+
+        bool isGroup = authentication.CheckGroup("GG_SHARE_PROD", user.groups);
+        
+        Console.WriteLine("is in group: " + isGroup);
 
     }
 }

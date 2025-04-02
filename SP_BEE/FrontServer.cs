@@ -118,8 +118,15 @@ internal class ThreadPoolFront
                 try
                 {
                     User user = await authentication.searchAD(packet.Username);
-                    //TODO parse ad group
-                    if (await authentication.AuthenticateUser(user.dn, packet.Password))
+                    
+                    string groupname = "";
+                    if (!authentication.CheckGroup(groupname, user.groups))
+                    {
+                        Console.Error.WriteLine("Client doesn't have the rights");
+                        return;
+                    }
+                    
+                    if (await authentication.AuthenticateUser(user.sam, packet.Password))
                     {
                         Console.WriteLine("Client authenticated");
                     }
