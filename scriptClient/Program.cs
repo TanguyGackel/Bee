@@ -49,11 +49,11 @@ internal class Program
         Socket socket1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
         socket1.Connect(ipEndPoint1);
-        //
-        // Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        // IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
-        // // socket2.Connect(ipEndPoint2);
-        //
+        // //
+        // // Socket socket2 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        // // IPEndPoint ipEndPoint2 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8001);
+        // // // socket2.Connect(ipEndPoint2);
+        // //
         Packet packetGetFreezbee = new Packet()
         {
             Route = "Freezbee",
@@ -66,20 +66,20 @@ internal class Program
             Msname = "TEST",
             Body = packetGetFreezbee.ToByteString()
         };
-
+        //
         byte[] keyclient = AES.getKey("127.0.0.1");
         byte[] iv = AES.getIV(0);
-        
+        //
         byte[] cypher = AES.chiffre(spPacketGetFreezbee.ToByteArray(), keyclient, iv);
         socket1.Send(cypher);
-
+        //
         byte[] resp = retrieveResp(socket1);
         byte[] decypher = AES.dechiffre(resp, keyclient, iv);
-
+        //
         Response sp = Response.Parser.ParseFrom(decypher);
         Console.WriteLine(sp.StatusCode);
-
-        // SPPacket D = SPPacket.Parser.ParseFrom(c);
+        //
+        // // SPPacket D = SPPacket.Parser.ParseFrom(c);
         // Console.WriteLine("d : " + D.Msname);
 
 
