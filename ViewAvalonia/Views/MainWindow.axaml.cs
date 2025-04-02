@@ -59,28 +59,27 @@ public sealed class MainWindowViewModel : ViewModel
     }
     #endregion
     
-    private ObservableCollection<Backup> _backups = new ObservableCollection<Backup>();
-
     
     private ObservableCollection<ObservableObject> _collection = new();
     
-    
-    public ObservableCollection<Backup> Backups
-    {
-        get => _backups;
-        set
-        {
-            _backups = value;
-            OnPropertyChanged();
-        }
-    }
-
     public ObservableCollection<ObservableObject> OCollection
     {
         get => _collection;
         set
         {
             _collection = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    private bool _gridvisible = true;
+    
+    public bool GridVisible
+    {
+        get => _gridvisible;
+        set
+        {
+            _gridvisible = value;
             OnPropertyChanged();
         }
     }

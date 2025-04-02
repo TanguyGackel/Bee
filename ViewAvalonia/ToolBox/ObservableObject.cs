@@ -24,4 +24,9 @@ public class ObservableObject : ViewModel
             OnPropertyChanged();
         }
     }
+
+    public void GetInfoById()
+    {
+        
+    }
 }
