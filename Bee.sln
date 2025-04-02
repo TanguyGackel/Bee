@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scriptClient", "scriptClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SP_BEE", "SP_BEE\SP_BEE.csproj", "{C7E0CB04-B73E-436D-842E-449AEF4E0222}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeClient", "BeeClient\BeeClient.csproj", "{02D7AE2A-96CD-4347-A79F-DB3F55377D0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{C7E0CB04-B73E-436D-842E-449AEF4E0222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7E0CB04-B73E-436D-842E-449AEF4E0222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7E0CB04-B73E-436D-842E-449AEF4E0222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D7AE2A-96CD-4347-A79F-DB3F55377D0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D7AE2A-96CD-4347-A79F-DB3F55377D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D7AE2A-96CD-4347-A79F-DB3F55377D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D7AE2A-96CD-4347-A79F-DB3F55377D0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
