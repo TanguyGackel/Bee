@@ -7,8 +7,8 @@
         x:Class="BeeClient.MainWindow"
         Title="BeeClient">
 
-        <Grid RowDefinitions="Auto, *,Auto" Background="White">
-                <views:Head Grid.Row="0"></views:Head>
+        
+        <views:Head Grid.Row="0"></views:Head>
                 
-        </Grid>
+ 
 </Window>
