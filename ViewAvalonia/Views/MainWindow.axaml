@@ -49,21 +49,15 @@
                             <Button Grid.Column="3" Classes="KillBackup" IsVisible="True" IsEnabled="True" Content="DELETE" Name="Delete" />
                         </Grid>
                         <Grid Row="1">
-                            <DataGrid Name="Backup" Items="{Binding Backups}" AutoGenerateColumns="False"
-                                      SelectedItem="{Binding SelectedBackup}">
+                            <DataGrid Name="Backup" Items="{Binding OCollection}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Name}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Source}" FontSize="8" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridTarget}" Binding="{Binding Target}" FontSize="8" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridType}" Binding="{Binding Type}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridState}" Binding="{Binding Etat}" />
-                                    <DataGridTemplateColumn IsReadOnly="True" Header="{Binding DataGridProgression}">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <ProgressBar Height="15" Width="5" Value="{Binding Progression}"
-                                                             Orientation="Horizontal" VerticalAlignment="Center"
-                                                             HorizontalAlignment="Stretch"/>
-                                            </DataTemplate>
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Id}" />
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
+                                    <DataGridTemplateColumn Header="Info">
+                                        <DataGridTemplateColumn.CellTemplate>   
+                                                <DataTemplate>
+                                                    <Button>+</Button>
+                                                </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
@@ -80,7 +74,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="Extension à chiffrer" FontSize="20" Margin="0,0,0,10" />
+                            <TextBlock Text="Extension ï¿½ chiffrer" FontSize="20" Margin="0,0,0,10" />
 
                             <ComboBox Width="200" Margin="0,0,0,10">
                                 <ComboBoxItem Content="Option 1" />
@@ -89,14 +83,14 @@
                             </ComboBox>
 
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Width="200" Watermark="Extension à chiffrer" />
+                                <TextBox Width="200" Watermark="Extension ï¿½ chiffrer" />
                                 <Button Content="+" Width="50" Margin="10,0,0,0" Background="#085343" />
                                 <Button Content="??" Width="50" Margin="10,0,0,0" Background="#800020" />
                             </StackPanel>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="Logiciel métier" FontSize="20" Margin="0,0,0,10" />
+                            <TextBlock Text="Logiciel mï¿½tier" FontSize="20" Margin="0,0,0,10" />
 
                             <ComboBox Width="200" Margin="0,0,0,10">
                                 <ComboBoxItem Content="Option 1" />
@@ -105,7 +99,7 @@
                             </ComboBox>
 
                             <StackPanel Orientation="Horizontal">
-                                <TextBox Width="200" Watermark="Logiciel métier" />
+                                <TextBox Width="200" Watermark="Logiciel mï¿½tier" />
                                 <Button Content="+" Width="50" Margin="10,0,0,0" Background="#085343" />
                                 <Button Content="??" Width="50" Margin="10,0,0,0" Background="#800020" />
                             </StackPanel>
