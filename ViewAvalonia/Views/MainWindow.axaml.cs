@@ -127,7 +127,7 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
 
-    private string _ingredientText = "Ingrédients";
+    private string _ingredientText = "Ingrï¿½dients";
 
     public string IngredientText
     {
@@ -139,7 +139,7 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
     
-    private string _procedeText = "Procédés de fabrication";
+    private string _procedeText = "Procï¿½dï¿½s de fabrication";
 
     public string ProcedeText
     {
@@ -253,6 +253,27 @@ public sealed class MainWindowViewModel : ViewModel
                 {
                     Ingredient f = Ingredient.Parser.ParseFrom(b);
                     OIngredient o = new OIngredient(f.Id, f.Name);
+                    OCollection.Add(o);
+                }
+            }
+        }
+    }
+    public async void LoadTest()
+    {
+        Packet packet =ProxyClient.PreparePacket("Test", "GetTests", "Test", new Ingredient());
+        SPPacket spPacket = ProxyClient.PrepareSPPacket("TEST", packet, Login, Password);
+        byte[]? resp = await ProxyClient.SendPacket(spPacket.ToByteArray());
+        if (resp != null)
+        {
+            Response r = Response.Parser.ParseFrom(resp);
+
+            if (r.StatusCode == 200 && r.BodyType == "Test")
+            {
+                OCollection = new ObservableCollection<ObservableObject>();
+                foreach (ByteString b in r.Body)
+                {
+                    Test t = Test.Parser.ParseFrom(b);
+                    OTest o = new OTest(t.IdTest, t.NameTest);
                     OCollection.Add(o);
                 }
             }
