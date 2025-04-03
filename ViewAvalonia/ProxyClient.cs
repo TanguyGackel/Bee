@@ -3,13 +3,16 @@ using System.Net.Sockets;
 using BEE;
 using Google.Protobuf;
 using MSLib.Proto;
+using ViewAvalonia;
 
 namespace Client;
 
 internal static class ProxyClient
 {
     private static List<Socket> proxys = new List<Socket>();
-
+    private static int count = 0;
+    
+    
     internal static void AddProxy(IPAddress ip, int port)
     {
         Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -18,12 +21,14 @@ internal static class ProxyClient
         proxys.Add(socket);
     }
 
-    internal static SPPacket PrepareSPPacket(string Msname, Packet packet)
+    internal static SPPacket PrepareSPPacket(string Msname, Packet packet, string username, string password)
     {
         return new SPPacket()
         {
             Msname = Msname,
-            Body = packet.ToByteString()
+            Body = packet.ToByteString(),
+            Username = username,
+            Password = password
         };
     }
 
@@ -38,19 +43,28 @@ internal static class ProxyClient
         };
     }
 
-    internal static async Task<byte[]> SendPacket(byte[] packet)
+    internal static async Task<byte[]?> SendPacket(byte[] packet)
     {
+
+        byte[] keyClient = AES.getKey("127.0.0.1");
+        byte[] cypher = AES.chiffre(packet,keyClient, AES.getIV(0));
+        
         foreach (Socket s in proxys)
         {
             try
             {
-                await s.SendAsync(packet);
-                return await retrieveResp(s);
+                await s.SendAsync(cypher);
+                byte[] resp = await retrieveResp(s);
+                IPEndPoint ipEndPoint = (IPEndPoint)s.RemoteEndPoint;
+                byte[] keyserver = AES.getKey(ipEndPoint.Address.ToString());
+                byte[] decypher = AES.dechiffre(resp, keyserver, AES.getIV(0));
+                count++;
+                
+                return decypher;
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine("Coulnd't send to proxy, trying another one");
-                throw;
             }
         }
 

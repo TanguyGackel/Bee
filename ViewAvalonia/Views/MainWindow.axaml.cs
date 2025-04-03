@@ -1,6 +1,11 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using BEE;
+using Client;
+using Google.Protobuf;
+using MSLib.Proto;
+using MSTest.Proto;
 using ViewAvalonia.ToolBox;
 
 namespace ViewAvalonia.Views;
@@ -44,6 +49,7 @@ public sealed class MainWindowViewModel : ViewModel
     public void Connection()
     {
         ConnectionPageVisible = !ConnectionPageVisible;
+        ListVisible = true;
     }
     
     private bool _connectionPageVisible = true;
@@ -71,115 +77,29 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
         }
     }
-    
-    private bool _gridvisible = true;
-    
-    public bool GridVisible
+
+    private ObservableObject _selectedObject;
+
+    public ObservableObject SelectedObject
     {
-        get => _gridvisible;
+        get => _selectedObject;
         set
         {
-            _gridvisible = value;
+            _selectedObject = value;
             OnPropertyChanged();
         }
     }
 
-    private bool _visible = true;
-    public bool Visible
+    public void SeeMore()
     {
-        get => _visible;
-        set
-        {
-            _visible = value;
-            OnPropertyChanged();
-        }
-    }
-    
-    private bool _buttonVisible = true;
-
-    public bool ButtonVisible
-    {
-        get => _buttonVisible;
-        set
-        {
-            _buttonVisible = value;
-            OnPropertyChanged();
-        }
+        ListVisible = !ListVisible;
+        DetailVisible = true;
     }
 
-    private Backup _selectedBackup;
-
-    public Backup SelectedBackup
+    public void Back()
     {
-        get => _selectedBackup;
-        set
-        {
-            _selectedBackup = value;
-            OnPropertyChanged();
-            if (_selectedBackup != null && _selectedBackup.Etat == State.INACTIVE)
-            {
-                StartAuth = true;
-                StopAuth = false;
-                RestartAuth = false;
-                ButtonVisible = true;
-            }
-            else if (_selectedBackup != null && _selectedBackup.Etat == State.ACTIVE)
-            {
-                StartAuth = false;
-                StopAuth = true;
-                RestartAuth = false;
-                ButtonVisible = true;
-            }
-            else if(_selectedBackup != null && _selectedBackup.Etat == State.PAUSED)
-            {
-                StartAuth = false;
-                StopAuth = false; 
-                RestartAuth = true;
-                ButtonVisible = false;
-            }
-            else
-            {
-                StartAuth = false;
-                StopAuth = false; 
-                RestartAuth = false;
-            }
-        }
-    }
-
-    private bool _startAuth;
-
-    public bool StartAuth
-    {
-        get => _startAuth;
-        set
-        {
-            _startAuth = value;
-            OnPropertyChanged();
-        }
-    }
-    
-    private bool _stopAuth;
-
-    public bool StopAuth
-    {
-        get => _stopAuth;
-        set
-        {
-            _stopAuth = value;
-            OnPropertyChanged();
-        }
-    }
-    
-    private bool _restartAuth;
-
-    public bool RestartAuth
-    {
-        get => _restartAuth;
-        set
-        {
-            _restartAuth = value;
-            OnPropertyChanged();
-        }
+        ListVisible = !ListVisible;
+        DetailVisible = !DetailVisible;
     }
 
     private string _welcomeText = "Connection";
@@ -241,54 +161,7 @@ public sealed class MainWindowViewModel : ViewModel
             OnPropertyChanged();
         }
     }
-
-    private string _name;
-
-    public string Name
-    {
-        get => _name;
-        set
-        {
-            _name = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _source;
-
-    public string Source
-    {
-        get => _source;
-        set
-        {
-            _source = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _target;
-
-    public string Target
-    {
-        get => _target;
-        set
-        {
-            _target = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _typeBackup;
-
-    public string TypeBackup
-    {
-        get => _typeBackup;
-        set
-        {
-            _typeBackup = value;
-            OnPropertyChanged();
-        }
-    }
+    
 
     private string _dataGridName = "Name";
     public string DataGridName
@@ -301,110 +174,65 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
     
-    private string _dataGridSource = "Source";
-    public string DataGridSource
+    private string _dataGridId = "ID";
+    public string DataGridId
     {
-        get => _dataGridSource;
+        get => _dataGridId;
         set
         {
-            _dataGridSource = value;
-            OnPropertyChanged();
-        }
-    }
-    private string _dataGridTarget = "Target";
-    public string DataGridTarget
-    {
-        get => _dataGridTarget;
-        set
-        {
-            _dataGridTarget = value;
-            OnPropertyChanged();
-        }
-    }
-    private string _dataGridType = "Type";
-    public string DataGridType
-    {
-        get => _dataGridType;
-        set
-        {
-            _dataGridType = value;
-            OnPropertyChanged();
-        }
-    }
-    private string _dataGridState = "State";
-    public string DataGridState
-    {
-        get => _dataGridState;
-        set
-        {
-            _dataGridState = value;
-            OnPropertyChanged();
-        }
-    }
-    private string _dataGridProgression = "Progress";
-    public string DataGridProgression
-    {
-        get => _dataGridProgression;
-        set
-        {
-            _dataGridProgression = value;
+            _dataGridId = value;
             OnPropertyChanged();
         }
     }
     public MainWindowViewModel()
     {
-        
-        ListTypeBackup = new List<string>()
-        {
-            "FullBackup", "DiffBackup"
-        };
 
         OCollection = new ObservableCollection<ObservableObject>();
-        Freezbee freezbee = new Freezbee(1, "Freezbee 1", "description", 5, "gamme");
-        OCollection.Add(freezbee);
     }
 
-    public List<string> ListTypeBackup { get; set; }
-    
-    
-    public void modifyVisible() => Visible = !Visible;
-    public void modifyButtonVisible() => ButtonVisible = !ButtonVisible;
-    
+    private bool _listVisible = false;
 
-    public void startBackup()
+    public bool ListVisible
     {
-        StartAuth = false;
-        StopAuth = true;
-        string s = "1&start&" + SelectedBackup.Name;
-        // Client.packets.Enqueue(s);
-        // Client.wait.Set();
-    }
-
-    public void stopBackup()
-    {
-        StopAuth = false;
-        RestartAuth = true;
-        modifyButtonVisible();
-        string s = "1&stop&" + SelectedBackup.Name;
-        // Client.packets.Enqueue(s);
-        // Client.wait.Set();
-    }
-    public void restartBackup()
-    {
-        StopAuth = true;
-        RestartAuth = false;
-        modifyButtonVisible();
-        string s = "1&restart&" + SelectedBackup.Name;
-        // Client.packets.Enqueue(s);
-        // Client.wait.Set();
+        get => _listVisible;
+        set
+        {
+            _listVisible = value;
+            OnPropertyChanged();
+        }
     }
     
-    public void leaveNewBackup()
+    private bool _detailVisible = false;
+
+    public bool DetailVisible
     {
-        Name = "";
-        Source = "";
-        Target = "";
-        TypeBackup = "";
-        modifyVisible();
+        get => _detailVisible;
+        set
+        {
+            _detailVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public async void LoadFreezbee()
+    {
+        Packet packet =ProxyClient.PreparePacket("Freezbee", "GetFreezbee", "Freezbee", new Freezbee());
+        SPPacket spPacket = ProxyClient.PrepareSPPacket("TEST", packet, Login, Password);
+        byte[]? resp = await ProxyClient.SendPacket(spPacket.ToByteArray());
+        if (resp != null)
+        {
+            Response r = Response.Parser.ParseFrom(resp);
+
+            if (r.StatusCode == 200 && r.BodyType == "Freezbee")
+            {
+                OCollection = new ObservableCollection<ObservableObject>();
+                foreach (ByteString b in r.Body)
+                {
+                    Freezbee f = Freezbee.Parser.ParseFrom(b);
+                    OFreezbee o = new OFreezbee(f.IdModele, f.NameModele, "", 0, "");
+                    OCollection.Add(o);
+                }
+            }
+        }
     }
 }

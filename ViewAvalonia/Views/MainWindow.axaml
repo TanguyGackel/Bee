@@ -20,7 +20,7 @@
     <Grid RowDefinitions="Auto, *,Auto" >
         <views:Header Grid.Row="0" />
 
-        <Grid Classes="MainWindow" Grid.Row="1" IsVisible="{Binding Visible}">
+        <Grid Classes="MainWindow" Grid.Row="1" IsVisible="True">
             <TabControl>
                 <TabItem Header="{Binding WelcomeText}" IsVisible="{Binding ConnectionPageVisible}">
                     <Grid Classes="MainWindow" IsVisible="{Binding ConnectionPageVisible}">
@@ -36,80 +36,78 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding FreezbeeText}" IsVisible="{Binding !ConnectionPageVisible}">
+                <TabItem Header="Détail" IsVisible="{Binding DetailVisible}">
                     <Grid RowDefinitions="Auto, *">
-                        <Grid Row="0">
-                            <DataGrid Name="Freezbeelist" Items="{Binding OCollection}" AutoGenerateColumns="False">
+                        <Grid Row="0" IsVisible="{Binding DetailVisible}">
+                            <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
+                                <Button Grid.Column="0" Classes="KillBackup" Command="{Binding Back}">Back</Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                
+                <TabItem Header="{Binding FreezbeeText}" IsVisible="{Binding ListVisible}">
+                    <Grid RowDefinitions="Auto, *">
+                        <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto " IsVisible="{Binding ListVisible}">
+                            <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadFreezbee}">Load</Button>
+                            <Button Grid.Column="1" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                        </Grid>
+                        <Grid Row="1" IsVisible="{Binding ListVisible}">
+                            <DataGrid Name="Freezbeelist" Items="{Binding OCollection}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedObject}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Id}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
-                                    <DataGridTemplateColumn Header="Info">
-                                        <DataGridTemplateColumn.CellTemplate>   
-                                                <DataTemplate>
-                                                    <Button>+</Button>
-                                                </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridId}" Binding="{Binding Id}" />
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Name}" FontSize="8" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding IngredientText}" IsVisible="{Binding !ConnectionPageVisible}">
+                <TabItem Header="{Binding IngredientText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
-                        <Grid Row="0">
+                        <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
+                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadIngredient}">Load</Button> -->
+                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                        </Grid>
+                        <Grid Row="1">
                             <DataGrid Name="Ingredientlist" Items="{Binding OCollection}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Id}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
-                                    <DataGridTemplateColumn Header="Info">
-                                        <DataGridTemplateColumn.CellTemplate>   
-                                                <DataTemplate>
-                                                    <Button Classes="Appliquer" Name="ApplyButton" Content="Connection" Command="{Binding GetInfoById}"/>
-                                                </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridId}" Binding="{Binding Id}" />
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Name}" FontSize="8" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding ProcedeText}" IsVisible="{Binding !ConnectionPageVisible}">
+                <TabItem Header="{Binding ProcedeText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
-                        <Grid Row="0">
+                        <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
+                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadProcede}">Load</Button> -->
+                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                        </Grid>
+                        <Grid Row="1">
                             <DataGrid Name="Procedelist" Items="{Binding OCollection}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Id}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
-                                    <DataGridTemplateColumn Header="Info">
-                                        <DataGridTemplateColumn.CellTemplate>   
-                                            <DataTemplate>
-                                                <Button>+</Button>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridId}" Binding="{Binding Id}" />
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Name}" FontSize="8" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding TestText}" IsVisible="{Binding !ConnectionPageVisible}">
+                <TabItem Header="{Binding TestText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
-                        <Grid Row="0">
+                        <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
+                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadTest}">Load</Button> -->
+                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                        </Grid>
+                        <Grid Row="1">
                             <DataGrid Name="Testlist" Items="{Binding OCollection}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Id}" />
-                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridSource}" Binding="{Binding Name}" FontSize="8" />
-                                    <DataGridTemplateColumn Header="Info">
-                                        <DataGridTemplateColumn.CellTemplate>   
-                                            <DataTemplate>
-                                                <Button>+</Button>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridId}" Binding="{Binding Id}" />
+                                    <DataGridTextColumn IsReadOnly="True" Header="{Binding DataGridName}" Binding="{Binding Name}" FontSize="8" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>

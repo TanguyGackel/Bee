@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace ViewAvalonia.ToolBox;
 
-public class Freezbee : ObservableObject
+public class OFreezbee : ObservableObject
 {
-    public Freezbee(int id, string name, string description, int puht, string gamme)
+    public OFreezbee(int id, string name, string description, int puht, string gamme)
     {
         Id = id;
         Name = name;

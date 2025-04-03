@@ -2,6 +2,8 @@ namespace ViewAvalonia.ToolBox;
 
 public class ObservableObject : ViewModel
 {
+    public string type;
+    
     private int _id;
 
     public int Id
@@ -13,7 +15,7 @@ public class ObservableObject : ViewModel
             OnPropertyChanged();
         }
     }
-    private string _name;
+    private string _name = "";
 
     public string Name
     {
@@ -23,10 +25,5 @@ public class ObservableObject : ViewModel
             _name = value;
             OnPropertyChanged();
         }
-    }
-
-    public void GetInfoById()
-    {
-        
     }
 }
