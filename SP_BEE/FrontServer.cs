@@ -132,38 +132,38 @@ internal class ThreadPoolFront
                     return;
                 }
                 
-                // Console.WriteLine("Debut Auth");
-                // Authentication authentication = Authentication.Instance;
-                // try
-                // {
-                //     Console.WriteLine("SearchAD");
-                //     User user = await authentication.searchAD(packet.Username);
-                //     
-                //     Console.WriteLine("CheckGroup");
-                //     if (!authentication.CheckGroup(packet.Msname, user.groups))
-                //     {
-                //         Console.Error.WriteLine("Client doesn't have the rights");
-                //         await client.SendAsync("On t as dit degage"u8.ToArray());
-                //         return;
-                //     }
-                //     Console.WriteLine("AuthenticateUser");
-                //     if (!await authentication.AuthenticateUser(user.sam, packet.Password))
-                //     {
-                //         await client.SendAsync("Oh eh oh"u8.ToArray());
-                //
-                //         Console.Error.WriteLine("Client not authenticated");
-                //         return;
-                //
-                //     }
-                //
-                // }
-                // catch(Exception e) 
-                // {
-                //     await client.SendAsync("GTFO"u8.ToArray());
-                //     Console.Error.WriteLine("Authentication failed " + e);
-                //     return;
-                // }
-                // Console.WriteLine("Fin Auth");
+                Console.WriteLine("Debut Auth");
+                Authentication authentication = Authentication.Instance;
+                try
+                {
+                    Console.WriteLine("SearchAD");
+                    User user = await authentication.searchAD(packet.Username);
+                    
+                    Console.WriteLine("CheckGroup");
+                    if (!authentication.CheckGroup(packet.Msname, user.groups))
+                    {
+                        Console.Error.WriteLine("Client doesn't have the rights");
+                        await client.SendAsync("On t as dit degage"u8.ToArray());
+                        return;
+                    }
+                    Console.WriteLine("AuthenticateUser");
+                    if (!await authentication.AuthenticateUser(user.sam, packet.Password))
+                    {
+                        await client.SendAsync("Oh eh oh"u8.ToArray());
+                
+                        Console.Error.WriteLine("Client not authenticated");
+                        return;
+                
+                    }
+                
+                }
+                catch(Exception e) 
+                {
+                    await client.SendAsync("GTFO"u8.ToArray());
+                    Console.Error.WriteLine("Authentication failed " + e);
+                    return;
+                }
+                Console.WriteLine("Fin Auth");
                 
                 
                 try
