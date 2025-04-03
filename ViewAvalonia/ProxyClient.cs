@@ -56,7 +56,7 @@ internal static class ProxyClient
             {
                 await s.SendAsync(cypher);
                 byte[] resp = await retrieveResp(s);
-                // Console.WriteLine(Encoding.UTF8.GetString(resp));
+                Console.WriteLine(Encoding.UTF8.GetString(resp));
                 IPEndPoint ipEndPoint = (IPEndPoint)s.RemoteEndPoint;
                 byte[] keyserver = AES.getKey(ipEndPoint.Address.ToString());
                 byte[] decypher = AES.dechiffre(resp, keyserver, AES.getIV(0));
