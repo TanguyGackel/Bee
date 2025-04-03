@@ -5,6 +5,7 @@ using BEE;
 using Client;
 using Google.Protobuf;
 using MSLib.Proto;
+using MSRD.Proto;
 using MSTest.Proto;
 using ViewAvalonia.ToolBox;
 
@@ -230,6 +231,28 @@ public sealed class MainWindowViewModel : ViewModel
                 {
                     Freezbee f = Freezbee.Parser.ParseFrom(b);
                     OFreezbee o = new OFreezbee(f.IdModele, f.NameModele, "", 0, "");
+                    OCollection.Add(o);
+                }
+            }
+        }
+    }
+    
+    public async void LoadIngredient()
+    {
+        Packet packet =ProxyClient.PreparePacket("Ingredient", "GetIngredients", "Ingredient", new Ingredient());
+        SPPacket spPacket = ProxyClient.PrepareSPPacket("RD", packet, Login, Password);
+        byte[]? resp = await ProxyClient.SendPacket(spPacket.ToByteArray());
+        if (resp != null)
+        {
+            Response r = Response.Parser.ParseFrom(resp);
+
+            if (r.StatusCode == 200 && r.BodyType == "Ingredient")
+            {
+                OCollection = new ObservableCollection<ObservableObject>();
+                foreach (ByteString b in r.Body)
+                {
+                    Ingredient f = Ingredient.Parser.ParseFrom(b);
+                    OIngredient o = new OIngredient(f.Id, f.Name);
                     OCollection.Add(o);
                 }
             }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using BEE;
 using Google.Protobuf;
 using MSLib.Proto;
@@ -10,14 +11,14 @@ namespace Client;
 internal static class ProxyClient
 {
     private static List<Socket> proxys = new List<Socket>();
-    private static int count = 0;
+    // private static int count = 0;
     
     
-    internal static void AddProxy(IPAddress ip, int port)
+    internal static async Task AddProxy(IPAddress ip, int port)
     {
         Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint ipEndPoint = new IPEndPoint(ip, port);
-        socket.Connect(ipEndPoint);
+        await socket.ConnectAsync(ipEndPoint);
         proxys.Add(socket);
     }
 
@@ -55,11 +56,11 @@ internal static class ProxyClient
             {
                 await s.SendAsync(cypher);
                 byte[] resp = await retrieveResp(s);
+                // Console.WriteLine(Encoding.UTF8.GetString(resp));
                 IPEndPoint ipEndPoint = (IPEndPoint)s.RemoteEndPoint;
                 byte[] keyserver = AES.getKey(ipEndPoint.Address.ToString());
                 byte[] decypher = AES.dechiffre(resp, keyserver, AES.getIV(0));
-                count++;
-                
+                // count++;
                 return decypher;
             }
             catch (Exception e)

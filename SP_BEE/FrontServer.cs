@@ -90,7 +90,7 @@ internal class ThreadPoolFront
         {
             while (client.Connected)
             {
-                byte[] iv = AES.getIV(count);
+                byte[] iv = AES.getIV(0);
 
                 byte[] buffer = new byte[512];
                 int length;
@@ -163,7 +163,7 @@ internal class ThreadPoolFront
                 //     Console.Error.WriteLine("Authentication failed " + e);
                 //     return;
                 // }
-                Console.WriteLine("Fin Auth");
+                // Console.WriteLine("Fin Auth");
                 
                 
                 try

@@ -46,6 +46,8 @@ internal class Program
         
         NetworkManager nm = NetworkManager.Instance;
         nm.AddRoute("Freezbee", new FreezbeeRoutes());
+        nm.AddRoute("Ingredient", new IngredientRoute());
+        // nm.AddRoute("ProcedeFabrication", new ProcedeFabricationRoute());
 
         List<Client> clients = new List<Client>();
         Dictionary<string, string> confClients = conf.Where(c => c.Key.Contains("clientConf")).ToDictionary();

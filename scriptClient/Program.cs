@@ -5,6 +5,7 @@ using BEE;
 using Google.Protobuf;
 using MS_Lib;
 using MSLib.Proto;
+using MSRD.Proto;
 using MSTest.Proto;
 
 namespace Machin;
@@ -50,19 +51,16 @@ internal class Program
         IPEndPoint ipEndPoint1 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9001);
         socket1.Connect(ipEndPoint1);
 
-        Freezbee f = new Freezbee()
+        Ingredient f = new Ingredient()
         {
-            IdModele = 1,
-            NameModele = "",
-            GammeModele = "Premium",
-            PUHT = 1500,
+
         };
         
         Packet packetGetFreezbee = new Packet()
         {
-            Route = "Freezbee",
-            Fonction = "",
-            BodyType = "Freezbee",
+            Route = "Ingredient",
+            Fonction = "GetIngredients",
+            BodyType = "Ingredient",
             Body = f.ToByteString()
         };
         

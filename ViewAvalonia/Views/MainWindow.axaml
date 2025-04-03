@@ -66,8 +66,8 @@
                 <TabItem Header="{Binding IngredientText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
-                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadIngredient}">Load</Button> -->
-                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                            <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadIngredient}">Load</Button>
+                            <Button Grid.Column="1" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
                         </Grid>
                         <Grid Row="1">
                             <DataGrid Name="Ingredientlist" Items="{Binding OCollection}" AutoGenerateColumns="False">
@@ -83,8 +83,8 @@
                 <TabItem Header="{Binding ProcedeText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
-                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadProcede}">Load</Button> -->
-                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                            <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadProcede}">Load</Button>
+                            <Button Grid.Column="1" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
                         </Grid>
                         <Grid Row="1">
                             <DataGrid Name="Procedelist" Items="{Binding OCollection}" AutoGenerateColumns="False">
@@ -100,8 +100,8 @@
                 <TabItem Header="{Binding TestText}" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
-                            <!-- <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadTest}">Load</Button> -->
-                            <Button Grid.Column="0" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
+                            <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadTest}">Load</Button>
+                            <Button Grid.Column="1" Classes="StartBackup" Command="{Binding SeeMore}">See More</Button>
                         </Grid>
                         <Grid Row="1">
                             <DataGrid Name="Testlist" Items="{Binding OCollection}" AutoGenerateColumns="False">
