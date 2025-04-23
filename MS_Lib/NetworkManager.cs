@@ -53,9 +53,9 @@ public class NetworkManager
             catch (Exception e)
             {
                 count++;
-                Console.Error.WriteLine(DateTime.Now + " " + e);
+                //Console.Error.WriteLine(DateTime.Now + " " + e);
+                Log.WriteLog(LogLevel.Error, "Handshake failed");
             }
-
             if (count >= clients.Count)
                 throw new Exception("Couldn't connect to any remote proxy");
         }
@@ -69,18 +69,21 @@ public class NetworkManager
         IPEndPoint localEndPoint = new IPEndPoint(ip, port);
         _self.Bind(localEndPoint);
         _self.Listen();
-        Console.WriteLine("Ready To Listen");
+        //Console.WriteLine("Ready To Listen");
+        Log.WriteLog(LogLevel.Info, "Server ready to listen");
 
         while (true)
         {
             try
             {
                 _threadPool.EnqueueTask(_self.Accept()); 
-                Console.WriteLine("Enqueued Task");
+                //Console.WriteLine("Enqueued Task");
+                Log.WriteLog(LogLevel.Info, "Enqueued task");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                //Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't enqueue a new task : " + e );
             }
             
         }
@@ -88,7 +91,8 @@ public class NetworkManager
     
     public void Handshake(Client c, ToRegister infos)
     {
-        Console.WriteLine("Doing a handshake");
+        //Console.WriteLine("Doing a handshake");
+        Log.WriteLog(LogLevel.Info, "Doing handshake");
         IPEndPoint ipEndPoint;
         
         if (c.ip != null)
@@ -189,12 +193,14 @@ internal class ThreadPool
         {
             try
             {
-                Console.WriteLine("Start new task");
+                //Console.WriteLine("Start new task");
+                Log.WriteLog(LogLevel.Info, "Start new task");
                 HandleRequest(task);
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e);
             }
         }
     }
@@ -238,10 +244,12 @@ internal class ThreadPool
 
             try
             {
-                Console.WriteLine("Received : ");
+                //Console.WriteLine("Received : ");
                 // foreach (byte b in body)
                 //     Console.Write(b);
                 // Console.WriteLine();
+                string bodyInLog = "Received: " + Convert.ToBase64String(body, 0, body.Length);
+                Log.WriteLog(LogLevel.Info, bodyInLog);
                 byte[] decyphered = AES.dechiffre(body, keyClient, iv);
 
                 packet = Packet.Parser.ParseFrom(decyphered);
@@ -261,10 +269,14 @@ internal class ThreadPool
             {
                 response = await NetworkManager.Instance._routes.First(r => r.Key.Equals(packet.Route)).Value
                     .Call(packet);
-                Console.WriteLine("Ready to send : ");
+                //Console.WriteLine("Ready to send : ");
                 // foreach (byte b in response)
                 //     Console.Write(b);
                 // Console.WriteLine();
+                
+                string respInLog = "Ready to send : " + Convert.ToBase64String(response, 0, response.Length);
+                Log.WriteLog(LogLevel.Info, respInLog);
+                
             }
             catch (Exception)
             {
@@ -282,8 +294,8 @@ internal class ThreadPool
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
-
+            //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e);
         }
         
     }

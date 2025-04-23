@@ -18,7 +18,8 @@ internal class MSRegister
 
     internal void RegisterNewMicroService(ToRegister register, byte[] cypherkey)
     {
-        Console.WriteLine("Registering a new micro service");
+        //Console.WriteLine("Registering a new micro service");
+        Log.WriteLog(LogLevel.Info, "Registering a new micro service");
         
         Register.Add(new MicroService()
         {

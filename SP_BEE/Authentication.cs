@@ -44,12 +44,14 @@ public class Authentication
         }
         catch(LdapException e)
         {
-            Console.WriteLine("Error:" + e.LdapErrorMessage);
+            //Console.WriteLine("Error:" + e.LdapErrorMessage);
+            Log.WriteLog(LogLevel.Error, "Couldn't connect to AD: " + e.LdapErrorMessage);
             throw;
         }
         catch(Exception e)
         {
-            Console.WriteLine("Error:" + e.Message);
+            //Console.WriteLine("Error:" + e.Message);
+            Log.WriteLog(LogLevel.Error, "Couldn't connect to AD: " + e.Message);
             throw;
         }
 
@@ -58,37 +60,39 @@ public class Authentication
 
     public async Task<User> searchAD(string username)
     {
-        Console.WriteLine("ConnecAD");
+        //Console.WriteLine("ConnecAD");
+        Log.WriteLog(LogLevel.Info, "Trying to connect to AD");
         LdapConnection ldap = await ConnectionAD();
         
         string searchBase = "OU=users,OU=lambda,DC=bee,DC=bee";
         string ldap_filter = String.Format("(&(objectClass=user)(sAMAccountName={0}))", username);
         string[] attrs = ["DistinguishedName", "SamAccountName", "memberOf"];
         
-        Console.WriteLine("SearchAsync");
+        //Console.WriteLine("SearchAsync");
         LdapSearchResults searchResult = (LdapSearchResults) await ldap.SearchAsync(searchBase, LdapConnection.ScopeSub, ldap_filter, attrs, false);
 
         LdapEntry nextEntry;
 
         try
         {
-            Console.WriteLine("NextAsync");
+            //Console.WriteLine("NextAsync");
             nextEntry = await searchResult.NextAsync();
         }
         catch(LdapException e) 
         {
-            await Console.Error.WriteLineAsync("Error: " + e.LdapErrorMessage);
+            Log.WriteLog(LogLevel.Error, "Unable to enumerate entries for user" + e.LdapErrorMessage);
+            //await Console.Error.WriteLineAsync("Error: " + e.LdapErrorMessage);
             throw;
         }
 
-        Console.WriteLine("Get");
+        //Console.WriteLine("Get");
 
         LdapAttribute dn = nextEntry.Get("DistinguishedName");
         LdapAttribute sam = nextEntry.Get("samAccountName");
         LdapAttribute groups = nextEntry.Get("memberOf");
 
         List<string> groupuser = new List<string>();
-        Console.WriteLine("GetGroup");
+        //Console.WriteLine("GetGroup");
 
         foreach (string value in groups.StringValueArray)
         {
@@ -137,12 +141,12 @@ public class Authentication
         }
         catch(LdapException e)
         {
-            Console.WriteLine("Error:" + e.LdapErrorMessage);
+            //Console.WriteLine("Error:" + e.LdapErrorMessage);
             return false;
         }
         catch(Exception e)
         {
-            Console.WriteLine("Error:" + e.Message);
+            //Console.WriteLine("Error:" + e.Message);
             return false;
         }
 

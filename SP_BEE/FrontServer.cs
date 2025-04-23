@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using BEE;
 
 namespace SP_BEE;
@@ -15,7 +17,7 @@ internal class FrontServer
     private static FrontServer? _instance;
     internal static FrontServer Instance => _instance ??= new FrontServer();
     private readonly ThreadPoolFront _threadPool;
-    
+        
     internal void Start(IPAddress ip, int port)
     {
         _threadPool.SetIP(ip.ToString());
@@ -25,18 +27,21 @@ internal class FrontServer
         
         server.Bind(localEndPoint);
         server.Listen();
-        Console.WriteLine("Ready To Listen");
+        //Console.WriteLine("Ready To Listen");
+        Log.WriteLog(LogLevel.Info, "Ready to listen");
         while (true)
         {
             try
             {
                 _threadPool.EnqueueTask(server.Accept());
-                Console.WriteLine("Enqueued Task");
+                //Console.WriteLine("Enqueued Task");
+                Log.WriteLog(LogLevel.Info, "Enqueue task");
 
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                //Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't enqueue a new task : " + e);
             }
         }
     }
@@ -68,12 +73,14 @@ internal class ThreadPoolFront
         {
             try
             {
-                Console.WriteLine("Start new task");
+                //Console.WriteLine("Start new task");
+                Log.WriteLog(LogLevel.Info, "Start new task");
                 HandleRequest(task);
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e );
             }
         }
     }
@@ -118,10 +125,12 @@ internal class ThreadPoolFront
 
                 try
                 {
-                    Console.WriteLine("Received : ");
-                    // foreach (byte b in body)
-                    //     Console.Write(b);
-                    // Console.WriteLine();
+                    //Console.WriteLine("Received : ");
+                    
+                    string bodyInLog = "Received: " + Convert.ToBase64String(body, 0, body.Length);
+                    
+                    Log.WriteLog(LogLevel.Info, bodyInLog);
+                    
                     byte[] decyphered = AES.dechiffre(body, keyClient, iv);
 
                     packet = SPPacket.Parser.ParseFrom(decyphered);
@@ -132,26 +141,33 @@ internal class ThreadPoolFront
                     return;
                 }
                 
-                Console.WriteLine("Debut Auth");
+                //Console.WriteLine("Debut Auth");
+                Log.WriteLog(LogLevel.Info, "Beginning AD auth part");
+                
                 Authentication authentication = Authentication.Instance;
                 try
                 {
-                    Console.WriteLine("SearchAD");
+                    //Console.WriteLine("SearchAD");
+                    Log.WriteLog(LogLevel.Info, "Enumerate AD users and groups");
                     User user = await authentication.searchAD(packet.Username);
                     
-                    Console.WriteLine("CheckGroup");
+                    //Console.WriteLine("CheckGroup");
+                    Log.WriteLog(LogLevel.Info, "Checking Groups");
                     if (!authentication.CheckGroup(packet.Msname, user.groups))
                     {
-                        Console.Error.WriteLine("Client doesn't have the rights");
+                        //Console.Error.WriteLine("Client doesn't have the rights");
+                        Log.WriteLog(LogLevel.Error, $"This user ({packet.Username}) doesn't have the rights access to the ERP");
                         await client.SendAsync("On t as dit degage"u8.ToArray());
                         return;
                     }
-                    Console.WriteLine("AuthenticateUser");
+                    //Console.WriteLine("AuthenticateUser");
+                    Log.WriteLog(LogLevel.Info, $"Begining the authentication of user {packet.Username}");
                     if (!await authentication.AuthenticateUser(user.sam, packet.Password))
                     {
                         await client.SendAsync("Oh eh oh"u8.ToArray());
                 
-                        Console.Error.WriteLine("Client not authenticated");
+                        //Console.Error.WriteLine("Client not authenticated");
+                        Log.WriteLog(LogLevel.Error, "user provides the wrong username or password");
                         return;
                 
                     }
@@ -160,19 +176,19 @@ internal class ThreadPoolFront
                 catch(Exception e) 
                 {
                     await client.SendAsync("GTFO"u8.ToArray());
-                    Console.Error.WriteLine("Authentication failed " + e);
+                    //Console.Error.WriteLine("Authentication failed " + e);
+                    Log.WriteLog(LogLevel.Error, $"Authentication of {packet.Username} failed" + e);
                     return;
                 }
-                Console.WriteLine("Fin Auth");
-                
+                //Console.WriteLine("Fin Auth");
+                Log.WriteLog(LogLevel.Info, "End of process of authentication");
                 
                 try
                 {
                     resp = LoadBalancer.SendRequest(packet);
-                    Console.WriteLine("Ready to send back : ");
-                    // foreach (byte b in resp)
-                    //     Console.Write(b);
-                    // Console.WriteLine();
+                    //Console.WriteLine("Ready to send back : ");
+                    string respInLog = "Ready to send back : " + Convert.ToBase64String(resp, 0, resp.Length);
+                    Log.WriteLog(LogLevel.Info, respInLog);
                 }
                 catch (Exception)
                 {
@@ -196,7 +212,8 @@ internal class ThreadPoolFront
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e );
         }
         finally
         {
