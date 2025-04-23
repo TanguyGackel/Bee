@@ -8,7 +8,6 @@ internal static class LoadBalancer
 {
     private static List<Count> Counts = new List<Count>();
     private static Mutex mut = new Mutex();
-    public static string ip;
 
     internal static void ReloadLB()
     {
@@ -46,10 +45,8 @@ internal static class LoadBalancer
     
     internal static byte[] SendRequest(SPPacket packet)
     {
-        byte[] keyClient = AES.getKey(ip);
         byte[] iv = AES.getIV("GetTheFOutOfMyNetwork" + DateTime.Now.Millisecond);
-        byte[] cyphered = AES.chiffre(packet.Body.ToByteArray(), keyClient, iv);
-        
+        byte[] decypherKey;
         Console.WriteLine("Searching a microservices to send data");
         mut.WaitOne();
         Count c = Counts.Find(p => p.type == packet.Msname);
@@ -65,6 +62,10 @@ internal static class LoadBalancer
                               throw new InvalidOperationException();
             Console.WriteLine("Ready to contact microservice " + ms.id + ", name : " + ms.name);
             c.count = (c.count + 1) / c.max;
+
+            byte[] cypherKey = ms.cypherKey;
+            decypherKey = ms.decypherKey;
+            byte[] cyphered = AES.chiffre(packet.Body.ToByteArray(), cypherKey, iv);
 
             try
             {
@@ -91,9 +92,7 @@ internal static class LoadBalancer
             Console.WriteLine("Need to reload LB config");
             ReloadLB();
         }
-
-        IPEndPoint end = (IPEndPoint) server.RemoteEndPoint;
-        byte[] serverKey = AES.getKey(end.Address.ToString());
+        
         
         byte[] buffer = new byte[512];
         int length = server.Receive(buffer, buffer.Length, SocketFlags.None);
@@ -116,7 +115,7 @@ internal static class LoadBalancer
         Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
         
         
-        return AES.dechiffre(body, serverKey, iv);
+        return AES.dechiffre(body, decypherKey, iv);
 
     }
     

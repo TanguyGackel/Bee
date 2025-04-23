@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using BEE;
+using Google.Protobuf;
 
 namespace SP_BEE;
 
@@ -72,58 +74,72 @@ internal class ThreadPoolMS
     {
         try
         {
-            byte[] buffer = new byte[512];
-            int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-            int maxLength = length;
-            byte[] bodyTemp = buffer.ToArray();
+            using RSA rsa = RSA.Create();
+            client.Send(rsa.ExportRSAPublicKey());
+            
+            byte[] rsaKey = receiveBytes(client);
+            rsa.ImportRSAPublicKey(rsaKey, out _);
 
-            while (length == 512)
-            {
-                length = client.Receive(buffer, buffer.Length, SocketFlags.None);
-
-                maxLength += length;
-                byte[] temp = new byte[bodyTemp.Length + length];
-                Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
-                Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
-                bodyTemp = temp;
-            }
-
-            byte[] body = new byte[maxLength];
-            Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
-
-            byte[] resp;
+            byte[] encryptedTr = receiveBytes(client);
+            byte[] decryptedTr = rsa.Decrypt(encryptedTr, RSAEncryptionPadding.Pkcs1);
+            
             ToRegister tr;
             try
             {
-                tr = ToRegister.Parser.ParseFrom(body);
+                tr = ToRegister.Parser.ParseFrom(decryptedTr);
             }
             catch (Exception)
             {
-                resp = "FO"u8.ToArray();
-                client.Send(resp);
+                client.Send("FO"u8.ToArray());
                 return;
             }
+            
+            using Aes aes = Aes.Create();
+            byte[] cypheredAesKey = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
 
+            client.Send(cypheredAesKey);
+            
             try
             {
-                MSRegister.Instance.RegisterNewMicroService(tr);
+                MSRegister.Instance.RegisterNewMicroService(tr, aes.Key);
                 LoadBalancer.ReloadLB();
             }
             catch (Exception)
             {
-                resp = "GTFO"u8.ToArray();
-                client.Send(resp);
+                client.Send("GTFO"u8.ToArray());
                 return;
             }
-
-            resp = "<|ACK|>"u8.ToArray();
-            client.Send(resp);
         }
         catch (Exception e)
         {
             Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
         }
         
+    }
+    
+    public byte[] receiveBytes(Socket client)
+    {
+        byte[] buffer = new byte[512];
+        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+        int maxLength = length;
+        byte[] bodyTemp = buffer.ToArray();
+            
+            
+        while (length == 512)
+        {
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+
+            maxLength += length;
+            byte[] temp = new byte[bodyTemp.Length + length];
+            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+            bodyTemp = temp;
+        }
+
+        byte[] body = new byte[maxLength];
+        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+        return body;
     }
     
     internal void EnqueueTask(Socket task)

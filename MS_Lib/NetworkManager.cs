@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 using BEE;
 using Google.Protobuf;
 using MSLib.Proto;
@@ -12,7 +14,6 @@ public class NetworkManager
     private NetworkManager()
     {
         _threadPool = new ThreadPool();
-        _threadPool.keycache = new AESKEYCache();
         _routes = new Dictionary<string, Route>();
         _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
@@ -61,16 +62,6 @@ public class NetworkManager
         
         CreateServer(ip, port);
     }
-
-    public void Authentication()
-    {
-        
-    }
-
-    public void Aes_key_exchange()
-    {
-        
-    }
     
     public void CreateServer(IPAddress ip, int port)
     {
@@ -110,9 +101,67 @@ public class NetworkManager
         Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         client.Connect(ipEndPoint);
 
-        client.Send(infos.ToByteArray());
+        try
+        {
 
+            byte[] rsaKey = receiveBytes(client);
+            using RSA rsa = RSA.Create();
+
+            client.Send(rsa.ExportRSAPublicKey());
+            rsa.ImportRSAPublicKey(rsaKey, out _);
+
+            using Aes aes = Aes.Create();
+            infos.Aes = ByteString.CopyFrom(aes.Key);
+
+            byte[] tr = infos.ToByteArray();
+            byte[] encryptedTr = rsa.Encrypt(tr, RSAEncryptionPadding.Pkcs1);
+            client.Send(encryptedTr);
+            infos.Aes = ByteString.Empty;
+
+            byte[] encryptedAesKey = receiveBytes(client);
+            byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+
+            Pair p = new Pair()
+            {
+                cypherKey = aes.Key,
+                decypherKey = aesKey,
+                ip = c.ip.ToString()
+            };
+
+            _threadPool.keysStore.Add(p);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("A loguer");
+        }
+        
     }
+
+    public byte[] receiveBytes(Socket client)
+    {
+        byte[] buffer = new byte[512];
+        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+        int maxLength = length;
+        byte[] bodyTemp = buffer.ToArray();
+            
+            
+        while (length == 512)
+        {
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+
+            maxLength += length;
+            byte[] temp = new byte[bodyTemp.Length + length];
+            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+            bodyTemp = temp;
+        }
+
+        byte[] body = new byte[maxLength];
+        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+        return body;
+    }
+    
 }
 
 internal class ThreadPool
@@ -120,7 +169,7 @@ internal class ThreadPool
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
     private string ip;
-    public AESKEYCache keycache;
+    public List<Pair> keysStore = new List<Pair>();
 
     internal ThreadPool()
     {
@@ -155,8 +204,10 @@ internal class ThreadPool
         int count = 0;
         IPEndPoint ipEndPointClient = (IPEndPoint) client.RemoteEndPoint;
         string clientIp = ipEndPointClient.Address.ToString();
-        byte[] keyClient = AES.getKey(clientIp);
-        byte[] keyServer = AES.getKey(this.ip);
+
+        Pair p = keysStore.Find(p => p.ip == clientIp);
+        byte[] keyClient = p.decypherKey;
+        byte[] keyServer = p.cypherKey;
         
         try
         {
@@ -262,14 +313,9 @@ public class Client
     public string? domainName;
 }
 
-public class AESKEYCache()
-{
-    public List<Pair> keysStore = new List<Pair>();
-}
-
 public class Pair()
 {
     public byte[] cypherKey;
     public byte[] decypherKey;
-    public IPAddress ip;
+    public string ip;
 }

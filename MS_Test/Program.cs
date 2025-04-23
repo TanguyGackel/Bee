@@ -57,8 +57,12 @@ internal class Program
             string[] s = v.Split(",");  //hostname,ip,port
 
             IPAddress cip = null;
-            if (s[0].IsNullOrEmpty())
+            if (s[0].IsNullOrEmpty() || !s[1].IsNullOrEmpty())
                 IPAddress.TryParse(s[1], out cip);
+            else
+            {
+                cip = Dns.GetHostAddresses(s[0])[0];
+            }
             int.TryParse(s[2], out int cport);
             
             clients.Add(new Client(s[0], cip, cport));

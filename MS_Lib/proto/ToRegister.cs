@@ -24,13 +24,14 @@ namespace BEE {
     static ToRegisterReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiBDb25maWcvUHJvdG8vU1AvVG9SZWdpc3Rlci5wcm90bxIDQkVFIlEKClRv",
+            "CiBDb25maWcvUHJvdG8vU1AvVG9SZWdpc3Rlci5wcm90bxIDQkVFIl4KClRv",
             "UmVnaXN0ZXISDAoEbmFtZRgBIAEoCRIMCgR0eXBlGAIgASgJEgwKBHBvcnQY",
-            "AyABKAUSCgoCaXAYBCABKAkSDQoFZ3JvdXAYBSABKAliBnByb3RvMw=="));
+            "AyABKAUSCgoCaXAYBCABKAkSDQoFZ3JvdXAYBSABKAkSCwoDYWVzGAYgASgM",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::BEE.ToRegister), global::BEE.ToRegister.Parser, new[]{ "Name", "Type", "Port", "Ip", "Group" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::BEE.ToRegister), global::BEE.ToRegister.Parser, new[]{ "Name", "Type", "Port", "Ip", "Group", "Aes" }, null, null, null, null)
           }));
     }
     #endregion
@@ -77,6 +78,7 @@ namespace BEE {
       port_ = other.port_;
       ip_ = other.ip_;
       group_ = other.group_;
+      aes_ = other.aes_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -146,6 +148,18 @@ namespace BEE {
       }
     }
 
+    /// <summary>Field number for the "aes" field.</summary>
+    public const int AesFieldNumber = 6;
+    private pb::ByteString aes_ = pb::ByteString.Empty;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString Aes {
+      get { return aes_; }
+      set {
+        aes_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -166,6 +180,7 @@ namespace BEE {
       if (Port != other.Port) return false;
       if (Ip != other.Ip) return false;
       if (Group != other.Group) return false;
+      if (Aes != other.Aes) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -178,6 +193,7 @@ namespace BEE {
       if (Port != 0) hash ^= Port.GetHashCode();
       if (Ip.Length != 0) hash ^= Ip.GetHashCode();
       if (Group.Length != 0) hash ^= Group.GetHashCode();
+      if (Aes.Length != 0) hash ^= Aes.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -216,6 +232,10 @@ namespace BEE {
         output.WriteRawTag(42);
         output.WriteString(Group);
       }
+      if (Aes.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(Aes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -246,6 +266,10 @@ namespace BEE {
         output.WriteRawTag(42);
         output.WriteString(Group);
       }
+      if (Aes.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(Aes);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -270,6 +294,9 @@ namespace BEE {
       }
       if (Group.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Group);
+      }
+      if (Aes.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Aes);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -297,6 +324,9 @@ namespace BEE {
       }
       if (other.Group.Length != 0) {
         Group = other.Group;
+      }
+      if (other.Aes.Length != 0) {
+        Aes = other.Aes;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -337,6 +367,10 @@ namespace BEE {
             Group = input.ReadString();
             break;
           }
+          case 50: {
+            Aes = input.ReadBytes();
+            break;
+          }
         }
       }
     #endif
@@ -374,6 +408,10 @@ namespace BEE {
           }
           case 42: {
             Group = input.ReadString();
+            break;
+          }
+          case 50: {
+            Aes = input.ReadBytes();
             break;
           }
         }

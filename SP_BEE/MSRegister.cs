@@ -16,7 +16,7 @@ internal class MSRegister
     private static MSRegister? _instance;
     internal static MSRegister Instance => _instance ??= new MSRegister();
 
-    internal void RegisterNewMicroService(ToRegister register)
+    internal void RegisterNewMicroService(ToRegister register, byte[] cypherkey)
     {
         Console.WriteLine("Registering a new micro service");
         
@@ -27,7 +27,9 @@ internal class MSRegister
             ip = IPAddress.Parse(register.Ip),
             port = register.Port,
             group = register.Group,
-            id = -1
+            id = -1,
+            cypherKey = cypherkey,
+            decypherKey = register.Aes.ToByteArray()
         });
     }
 
@@ -50,4 +52,6 @@ internal class MicroService
     internal IPAddress ip;
     internal int port;
     internal int id;
+    public byte[] cypherKey;
+    public byte[] decypherKey;
 }
