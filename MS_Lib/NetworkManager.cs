@@ -136,7 +136,7 @@ public class NetworkManager
         }
         catch (Exception e)
         {
-            Console.WriteLine("A loguer");
+            Log.WriteLog(LogLevel.Error, "Keys exchange failed in network manager " + e);
         }
         
     }

@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.JavaScript;
+using System.Security.Cryptography;
 using System.Text;
 using BEE;
 
@@ -52,6 +53,8 @@ internal class ThreadPoolFront
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
     private string ip;
+    
+    public List<Pair> keystore = new List<Pair>();
     
     internal ThreadPoolFront()
     {
@@ -120,6 +123,13 @@ internal class ThreadPoolFront
                 byte[] body = new byte[maxLength];
                 Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
 
+                if (Encoding.UTF8.GetString(body) == "Handshake")
+                {
+                    KeyExchange(client);
+                    continue;
+                }
+                
+                
                 SPPacket packet;
                 byte[] resp;
 
@@ -232,4 +242,68 @@ internal class ThreadPoolFront
     {
         _tasksQueue.CompleteAdding();
     }
+
+    internal void KeyExchange(Socket s)
+    {
+        try
+        {
+            using RSA rsa = RSA.Create();
+            s.Send(rsa.ExportRSAPublicKey());
+
+            byte[] rsaKey = receiveBytes(s);
+            rsa.ImportRSAPublicKey(rsaKey, out _);
+
+            using Aes aes = Aes.Create();
+
+            byte[] encryptedAesKey = receiveBytes(s);
+            byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+
+            byte[] encryptedKey = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
+            s.Send(encryptedKey);
+
+            Pair p = new Pair()
+            {
+                cypherKey = aes.Key,
+                decypherKey = aesKey,
+                ip = ((IPEndPoint)s.RemoteEndPoint).Address.ToString()
+            };
+            keystore.Add(p);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("");
+        }
+    }
+    
+    public byte[] receiveBytes(Socket client)
+    {
+        byte[] buffer = new byte[512];
+        int length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+        int maxLength = length;
+        byte[] bodyTemp = buffer.ToArray();
+            
+            
+        while (length == 512)
+        {
+            length = client.Receive(buffer, buffer.Length, SocketFlags.None);
+
+            maxLength += length;
+            byte[] temp = new byte[bodyTemp.Length + length];
+            Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
+            Buffer.BlockCopy(buffer, 0, temp, bodyTemp.Length, buffer.Length);
+            bodyTemp = temp;
+        }
+
+        byte[] body = new byte[maxLength];
+        Buffer.BlockCopy(bodyTemp, 0, body, 0, maxLength);
+
+        return body;
+    }
+}
+
+internal class Pair
+{
+    internal byte[] cypherKey;
+    internal byte[] decypherKey;
+    internal string ip;
 }

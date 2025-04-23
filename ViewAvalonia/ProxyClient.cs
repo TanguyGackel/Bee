@@ -1,8 +1,12 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
 using System.Text;
+using Avalonia.Logging;
 using BEE;
 using Google.Protobuf;
+using MS_Lib;
 using MSLib.Proto;
 using ViewAvalonia;
 
@@ -12,7 +16,8 @@ internal static class ProxyClient
 {
     private static List<Socket> proxys = new List<Socket>();
     // private static int count = 0;
-    
+
+    public static List<Pair> keystore = new List<Pair>();
     
     internal static async Task AddProxy(IPAddress ip, int port)
     {
@@ -20,6 +25,40 @@ internal static class ProxyClient
         IPEndPoint ipEndPoint = new IPEndPoint(ip, port);
         await socket.ConnectAsync(ipEndPoint);
         proxys.Add(socket);
+
+        try
+        {
+
+            socket.Send("Handshake"u8.ToArray());
+            
+            byte[] rsaKey = await retrieveResp(socket);
+            using RSA rsa = RSA.Create();
+
+            socket.Send(rsa.ExportRSAPublicKey());
+            rsa.ImportRSAPublicKey(rsaKey, out _);
+
+            using Aes aes = Aes.Create();
+
+            byte[] encryptedAes = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
+            socket.Send(encryptedAes);
+
+            byte[] encryptedAesKey = await retrieveResp(socket);
+            byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+
+            Pair p = new Pair()
+            {
+                cypherKey = aes.Key,
+                decypherKey = aesKey,
+                ip = ip.ToString()
+            };
+            keystore.Add(p);
+        }
+        catch (Exception e)
+        {
+            Log.WriteLog(LogLevel.Error, "Keys exchange failed " + e);
+        }
+
+
     }
 
     internal static SPPacket PrepareSPPacket(string Msname, Packet packet, string username, string password)
@@ -100,4 +139,11 @@ internal static class ProxyClient
 
         return body;
     }
+}
+
+internal class Pair
+{
+    internal byte[] cypherKey;
+    internal byte[] decypherKey;
+    internal string ip;
 }
