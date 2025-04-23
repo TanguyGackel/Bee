@@ -5,6 +5,9 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        Log.Info = ""; //TODO
+        Log.Error = ""; //TODO
+        
         using StreamReader reader = new StreamReader("./.config");
         LoadBalancer.ip = reader.ReadLine();
         IPAddress ipMS = IPAddress.Parse(LoadBalancer.ip);

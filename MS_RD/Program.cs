@@ -40,7 +40,8 @@ internal class Program
         db.DB = conf["db"];
         db.Encryption = false;
         db.ConstructConnectionString();
-        Console.WriteLine("Passé");
+        //Console.WriteLine("Passé");
+        Log.WriteLog(LogLevel.Info, "BDD successful login");
         Console.SetOut(Output);
         Console.SetError(Error);
         

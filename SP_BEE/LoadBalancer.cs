@@ -50,12 +50,13 @@ internal static class LoadBalancer
         byte[] iv = AES.getIV("GetTheFOutOfMyNetwork" + DateTime.Now.Millisecond);
         byte[] cyphered = AES.chiffre(packet.Body.ToByteArray(), keyClient, iv);
         
-        Console.WriteLine("Searching a microservices to send data");
+        //Console.WriteLine("Searching a microservices to send data");
+        Log.WriteLog(LogLevel.Info, "Searching a microservices to send data");
         mut.WaitOne();
         Count c = Counts.Find(p => p.type == packet.Msname);
         mut.ReleaseMutex();
-        Console.WriteLine("Found" + c.max + " microservices");
-        
+        //Console.WriteLine("Found" + c.max + " microservices");
+        Log.WriteLog(LogLevel.Info, "Found" + c.max + " microservices" );
         bool flag = false;
 
         Socket server;
@@ -63,7 +64,8 @@ internal static class LoadBalancer
         {
             MicroService ms = MSRegister.Instance.Register.Find(p => p.type == packet.Msname && p.id == c.count) ??
                               throw new InvalidOperationException();
-            Console.WriteLine("Ready to contact microservice " + ms.id + ", name : " + ms.name);
+            //Console.WriteLine("Ready to contact microservice " + ms.id + ", name : " + ms.name);
+            Log.WriteLog(LogLevel.Info, "Ready to contact microservice " + ms.id + ", name : " + ms.name );
             c.count = (c.count + 1) / c.max;
 
             try
@@ -71,8 +73,8 @@ internal static class LoadBalancer
                 IPEndPoint ipEndPoint = new IPEndPoint(ms.ip, ms.port);
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(ipEndPoint);
-                Console.WriteLine("Sending packet");
-
+                //Console.WriteLine("Sending packet");
+                Log.WriteLog(LogLevel.Info, "Sending packet");
                 socket.Send(iv);
                 socket.Send(cyphered);
                 server = socket;
@@ -80,7 +82,8 @@ internal static class LoadBalancer
             }
             catch (Exception)
             {
-                Console.Error.WriteLine("Micro service couldn't be contacted, deleting it from the list");
+                //Console.Error.WriteLine("Micro service couldn't be contacted, deleting it from the list");
+                Log.WriteLog(LogLevel.Error, $"Micro service ({ms.ip} + : + {ms.port}) couldn't be contacted, deleting it from the list");
                 MSRegister.Instance.DeleteMicroService(ms.name);
                 flag = true;
             }
@@ -88,7 +91,8 @@ internal static class LoadBalancer
 
         if (flag)
         {
-            Console.WriteLine("Need to reload LB config");
+            //Console.WriteLine("Need to reload LB config");
+            Log.WriteLog(LogLevel.Warning, "Need to reload LB config" );
             ReloadLB();
         }
 

@@ -1,21 +1,15 @@
-namespace MS_Lib;
+namespace SP_BEE;
 
-[Flags]
-public enum LogLevel
-{
-    Info,
-    Warning,
-    Error
-}
 
-public static class Log
+
+public class Log
 {
     public static string dir_path;
 
     private static StreamWriter? default_path_info;
 
     private static StreamWriter? default_path_error;
-
+    
     public static string Info
     {
         set
@@ -100,7 +94,14 @@ public static class Log
     {
         return writer != null && writer.BaseStream != null && writer.BaseStream.CanWrite;
     }
-    
+}
 
+
+[Flags]
+public enum LogLevel
+{
+    Info,
+    Warning,
+    Error
 }
 

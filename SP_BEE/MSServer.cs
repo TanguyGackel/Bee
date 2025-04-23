@@ -29,11 +29,13 @@ internal class MSServer
             try
             {
                 _threadPool.EnqueueTask(server.Accept());
-                Console.WriteLine("Proxy has been contacted by a new microservice");
+                //Console.WriteLine("Proxy has been contacted by a new microservice");
+                Log.WriteLog(LogLevel.Info, "Proxy has been contacted by a new microservice" );
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                //Console.Error.WriteLine("Couldn't enqueue a new task : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't enqueue a new task : " + e);
             }
         }
     }
@@ -63,7 +65,8 @@ internal class ThreadPoolMS
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+                Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e);
             }
         }
     }
@@ -121,7 +124,8 @@ internal class ThreadPoolMS
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            //Console.Error.WriteLine("Couldn't process an incoming connection : " + e);
+            Log.WriteLog(LogLevel.Error, "Couldn't process an incoming connection : " + e);
         }
         
     }
