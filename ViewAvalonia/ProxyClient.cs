@@ -47,7 +47,11 @@ internal static class ProxyClient
     internal static async Task<byte[]?> SendPacket(byte[] packet)
     {
 
-        byte[] keyClient = AES.getKey("10.0.10.21");
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        var ipAddress = host.AddressList.First(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+        // Console.WriteLine("My ip" + ipAddress);
+        
+        byte[] keyClient = AES.getKey(ipAddress.ToString());
         byte[] cypher = AES.chiffre(packet,keyClient, AES.getIV(0));
         
         foreach (Socket s in proxys)
@@ -56,7 +60,7 @@ internal static class ProxyClient
             {
                 await s.SendAsync(cypher);
                 byte[] resp = await retrieveResp(s);
-                Console.WriteLine(Encoding.UTF8.GetString(resp));
+                // Console.WriteLine(Encoding.UTF8.GetString(resp));
                 IPEndPoint ipEndPoint = (IPEndPoint)s.RemoteEndPoint;
                 byte[] keyserver = AES.getKey(ipEndPoint.Address.ToString());
                 byte[] decypher = AES.dechiffre(resp, keyserver, AES.getIV(0));
@@ -65,7 +69,7 @@ internal static class ProxyClient
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("Coulnd't send to proxy, trying another one");
+                // Console.Error.WriteLine("Coulnd't send to proxy, trying another one");
             }
         }
 

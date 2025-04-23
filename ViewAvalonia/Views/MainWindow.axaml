@@ -3,11 +3,11 @@
         xmlns:views="clr-namespace:ViewAvalonia.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:ViewAvalonia.Views"
+        xmlns:vm="clr-namespace:ViewAvalonia.Views"
         mc:Ignorable="d"
         x:Class="ViewAvalonia.Views.MainWindow"
-        Title="EasySave "
-        Icon="../Assets/smaller_version.png">
+        Title="KillerBee"
+        >
 
     <Window.Styles>
         <StyleInclude Source="../Styles.axaml"/>
@@ -21,8 +21,8 @@
         <views:Header Grid.Row="0" />
 
         <Grid Classes="MainWindow" Grid.Row="1" IsVisible="True">
-            <TabControl>
-                <TabItem Header="{Binding WelcomeText}" IsVisible="{Binding ConnectionPageVisible}">
+            <TabControl SelectedIndex="{Binding SelectedTab}">
+                <TabItem Header="Connection" IsVisible="{Binding ConnectionPageVisible}">
                     <Grid Classes="MainWindow" IsVisible="{Binding ConnectionPageVisible}">
                         <StackPanel Classes="NewBackup First">
                             <StackPanel Classes="NewBackup Second">
@@ -46,7 +46,7 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding FreezbeeText}" IsVisible="{Binding ListVisible}">
+                <TabItem Header="Freezbee" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto " IsVisible="{Binding ListVisible}">
                             <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadFreezbee}">Load</Button>
@@ -63,7 +63,7 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding IngredientText}" IsVisible="{Binding ListVisible}">
+                <TabItem Header="Ingrédient" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
                             <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadIngredient}">Load</Button>
@@ -80,7 +80,7 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding ProcedeText}" IsVisible="{Binding ListVisible}">
+                <TabItem Header="Procédé" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
                             <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadProcede}">Load</Button>
@@ -97,7 +97,7 @@
                     </Grid>
                 </TabItem>
                 
-                <TabItem Header="{Binding TestText}" IsVisible="{Binding ListVisible}">
+                <TabItem Header="Test" IsVisible="{Binding ListVisible}">
                     <Grid RowDefinitions="Auto, *">
                         <Grid Row="0" ColumnDefinitions="Auto, Auto, Auto, Auto ">
                             <Button Grid.Column="0" Classes="AddBackup" Command="{Binding LoadTest}">Load</Button>
