@@ -12,6 +12,7 @@ public class NetworkManager
     private NetworkManager()
     {
         _threadPool = new ThreadPool();
+        _threadPool.keycache = new AESKEYCache();
         _routes = new Dictionary<string, Route>();
         _self = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
@@ -61,6 +62,16 @@ public class NetworkManager
         CreateServer(ip, port);
     }
 
+    public void Authentication()
+    {
+        
+    }
+
+    public void Aes_key_exchange()
+    {
+        
+    }
+    
     public void CreateServer(IPAddress ip, int port)
     {
         
@@ -113,6 +124,7 @@ internal class ThreadPool
     private readonly BlockingCollection<Socket> _tasksQueue = new BlockingCollection<Socket>();
     private readonly Thread[] _threads = new Thread[Environment.ProcessorCount];
     private string ip;
+    public AESKEYCache keycache;
 
     internal ThreadPool()
     {
@@ -260,4 +272,16 @@ public class Client
     public IPAddress? ip;
     public int port;
     public string? domainName;
+}
+
+public class AESKEYCache()
+{
+    public List<Pair> keysStore = new List<Pair>();
+}
+
+public class Pair()
+{
+    public byte[] cypherKey;
+    public byte[] decypherKey;
+    public IPAddress ip;
 }

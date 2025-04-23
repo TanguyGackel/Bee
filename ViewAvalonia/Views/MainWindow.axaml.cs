@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BEE;
 using Client;
@@ -51,6 +52,7 @@ public sealed class MainWindowViewModel : ViewModel
     {
         ConnectionPageVisible = !ConnectionPageVisible;
         ListVisible = true;
+        SelectedTab = 2;
     }
     
     private bool _connectionPageVisible = true;
@@ -91,78 +93,34 @@ public sealed class MainWindowViewModel : ViewModel
         }
     }
 
+    private int _selectedTab;
+
+    public int SelectedTab
+    {
+        get => _selectedTab;
+        set
+        {
+            _selectedTab = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private int tempTab = 0;
+    
     public void SeeMore()
     {
         ListVisible = !ListVisible;
         DetailVisible = true;
+        tempTab = SelectedTab;
+        SelectedTab = 1;
     }
 
     public void Back()
     {
         ListVisible = !ListVisible;
         DetailVisible = !DetailVisible;
+        SelectedTab = tempTab;
     }
-
-    private string _welcomeText = "Connection";
-
-    public string WelcomeText
-    {
-        get => _welcomeText;
-        set
-        {
-            _welcomeText = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _freezbeeText = "Freezbees";
-
-    public string FreezbeeText
-    {
-        get => _freezbeeText;
-        set
-        {
-            _freezbeeText = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private string _ingredientText = "Ingr�dients";
-
-    public string IngredientText
-    {
-        get => _ingredientText;
-        set
-        {
-            _ingredientText = value;
-            OnPropertyChanged();
-        }
-    }
-    
-    private string _procedeText = "Proc�d�s de fabrication";
-
-    public string ProcedeText
-    {
-        get => _procedeText;
-        set
-        {
-            _procedeText = value;
-            OnPropertyChanged();
-        }
-    }
-    
-    private string _testText = "Tests";
-
-    public string TestText
-    {
-        get => _testText;
-        set
-        {
-            _testText = value;
-            OnPropertyChanged();
-        }
-    }
-    
 
     private string _dataGridName = "Name";
     public string DataGridName
@@ -187,7 +145,7 @@ public sealed class MainWindowViewModel : ViewModel
     }
     public MainWindowViewModel()
     {
-
+        
         OCollection = new ObservableCollection<ObservableObject>();
     }
 
