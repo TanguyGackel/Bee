@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
 using BEE;
 using Google.Protobuf;
 
@@ -25,7 +26,7 @@ internal class MSServer
         
         server.Bind(localEndPoint);
         server.Listen();
-
+        Log.WriteLog(LogLevel.Info, "Ready to listen incoming microservices handshake requests");
         while (true)
         {
             try
@@ -75,16 +76,22 @@ internal class ThreadPoolMS
 
     private void HandleRequest(Socket client)
     {
+        Log.WriteLog(LogLevel.Info, "Start exchanging keys");
+        
         try
         {
             using RSA rsa = RSA.Create();
             client.Send(rsa.ExportRSAPublicKey());
+            Log.WriteLog(LogLevel.Info, "Created and sent the RSA public key : " + Convert.ToBase64String(rsa.ExportRSAPublicKey()));
             
             byte[] rsaKey = receiveBytes(client);
-            rsa.ImportRSAPublicKey(rsaKey, out _);
+            Log.WriteLog(LogLevel.Info, "Received a RSA public key : " + Convert.ToBase64String(rsaKey));
 
             byte[] encryptedTr = receiveBytes(client);
+            Log.WriteLog(LogLevel.Info, "Encrypted tr" + Convert.ToBase64String(encryptedTr));
             byte[] decryptedTr = rsa.Decrypt(encryptedTr, RSAEncryptionPadding.Pkcs1);
+            
+            Log.WriteLog(LogLevel.Info, "Received and decrypted TR : " + Encoding.UTF8.GetString(decryptedTr));
             
             ToRegister tr;
             try
@@ -93,15 +100,21 @@ internal class ThreadPoolMS
             }
             catch (Exception)
             {
+                Log.WriteLog(LogLevel.Warning, "Couldn't parse TR");
                 client.Send("FO"u8.ToArray());
                 return;
             }
-            
+            Log.WriteLog(LogLevel.Info, "Received AES key : " + Convert.ToBase64String(tr.Aes.ToByteArray()));
+
             using Aes aes = Aes.Create();
-            byte[] cypheredAesKey = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
+
+            using RSA rsa2 = RSA.Create();
+            rsa2.ImportRSAPublicKey(rsaKey, out _);
+            byte[] cypheredAesKey = rsa2.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
 
             client.Send(cypheredAesKey);
-            
+            Log.WriteLog(LogLevel.Info, "Created and sent the AES key : " + Convert.ToBase64String(aes.Key));
+
             try
             {
                 MSRegister.Instance.RegisterNewMicroService(tr, aes.Key);
@@ -109,6 +122,8 @@ internal class ThreadPoolMS
             }
             catch (Exception)
             {
+                Log.WriteLog(LogLevel.Warning, "Couldn't register new MS");
+
                 client.Send("GTFO"u8.ToArray());
                 return;
             }

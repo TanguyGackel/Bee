@@ -93,9 +93,10 @@ internal class ThreadPoolFront
         int count = 0;
         IPEndPoint ipEndPointClient = (IPEndPoint) client.RemoteEndPoint;
         string clientIp = ipEndPointClient.Address.ToString();
-        byte[] keyClient = AES.getKey(clientIp);
-        byte[] keyServer = AES.getKey(this.ip);
+
         
+        Log.WriteLog(LogLevel.Info, "Ready to handle client's requests :" + clientIp);
+
         try
         {
             while (client.Connected)
@@ -104,15 +105,23 @@ internal class ThreadPoolFront
 
                 byte[] buffer = new byte[512];
                 int length;
+                
+                Log.WriteLog(LogLevel.Info, "Ready to receive message from client");
 
                 length = await client.ReceiveAsync(buffer, SocketFlags.None);
+                
+                Log.WriteLog(LogLevel.Info, "Received message length: " + length);
+                
                 int maxLength = length;
                 byte[] bodyTemp = buffer.ToArray();
 
                 while (length == 512)
                 {
+                    Log.WriteLog(LogLevel.Info, "Waiting for the entire message");
                     length = await client.ReceiveAsync(buffer, SocketFlags.None);
-
+                    
+                    Log.WriteLog(LogLevel.Info, "Processing the rest of the message");
+                    
                     maxLength += length;
                     byte[] temp = new byte[bodyTemp.Length + length];
                     Buffer.BlockCopy(bodyTemp, 0, temp, 0, bodyTemp.Length);
@@ -125,6 +134,7 @@ internal class ThreadPoolFront
 
                 if (Encoding.UTF8.GetString(body) == "Handshake")
                 {
+                    Log.WriteLog(LogLevel.Info, "Client wants to do a handshake");
                     KeyExchange(client);
                     continue;
                 }
@@ -132,16 +142,18 @@ internal class ThreadPoolFront
                 
                 SPPacket packet;
                 byte[] resp;
+                Pair p = keystore.Find(p => p.ip == clientIp);
 
                 try
                 {
                     //Console.WriteLine("Received : ");
+                    Log.WriteLog(LogLevel.Info, "Decypher key used : " + Convert.ToBase64String(p.decypherKey));
                     
                     string bodyInLog = "Received: " + Convert.ToBase64String(body, 0, body.Length);
                     
                     Log.WriteLog(LogLevel.Info, bodyInLog);
                     
-                    byte[] decyphered = AES.dechiffre(body, keyClient, iv);
+                    byte[] decyphered = AES.dechiffre(body, p.decypherKey, iv);
 
                     packet = SPPacket.Parser.ParseFrom(decyphered);
                 }
@@ -154,42 +166,42 @@ internal class ThreadPoolFront
                 //Console.WriteLine("Debut Auth");
                 Log.WriteLog(LogLevel.Info, "Beginning AD auth part");
                 
-                Authentication authentication = Authentication.Instance;
-                try
-                {
-                    //Console.WriteLine("SearchAD");
-                    Log.WriteLog(LogLevel.Info, "Enumerate AD users and groups");
-                    User user = await authentication.searchAD(packet.Username);
-                    
-                    //Console.WriteLine("CheckGroup");
-                    Log.WriteLog(LogLevel.Info, "Checking Groups");
-                    if (!authentication.CheckGroup(packet.Msname, user.groups))
-                    {
-                        //Console.Error.WriteLine("Client doesn't have the rights");
-                        Log.WriteLog(LogLevel.Error, $"This user ({packet.Username}) doesn't have the rights access to the ERP");
-                        await client.SendAsync("On t as dit degage"u8.ToArray());
-                        return;
-                    }
-                    //Console.WriteLine("AuthenticateUser");
-                    Log.WriteLog(LogLevel.Info, $"Begining the authentication of user {packet.Username}");
-                    if (!await authentication.AuthenticateUser(user.sam, packet.Password))
-                    {
-                        await client.SendAsync("Oh eh oh"u8.ToArray());
-                
-                        //Console.Error.WriteLine("Client not authenticated");
-                        Log.WriteLog(LogLevel.Error, "user provides the wrong username or password");
-                        return;
-                
-                    }
-                
-                }
-                catch(Exception e) 
-                {
-                    await client.SendAsync("GTFO"u8.ToArray());
-                    //Console.Error.WriteLine("Authentication failed " + e);
-                    Log.WriteLog(LogLevel.Error, $"Authentication of {packet.Username} failed" + e);
-                    return;
-                }
+                // Authentication authentication = Authentication.Instance;
+                // try
+                // {
+                //     //Console.WriteLine("SearchAD");
+                //     Log.WriteLog(LogLevel.Info, "Enumerate AD users and groups");
+                //     User user = await authentication.searchAD(packet.Username);
+                //     
+                //     //Console.WriteLine("CheckGroup");
+                //     Log.WriteLog(LogLevel.Info, "Checking Groups");
+                //     if (!authentication.CheckGroup(packet.Msname, user.groups))
+                //     {
+                //         //Console.Error.WriteLine("Client doesn't have the rights");
+                //         Log.WriteLog(LogLevel.Error, $"This user ({packet.Username}) doesn't have the rights access to the ERP");
+                //         await client.SendAsync("On t as dit degage"u8.ToArray());
+                //         return;
+                //     }
+                //     //Console.WriteLine("AuthenticateUser");
+                //     Log.WriteLog(LogLevel.Info, $"Begining the authentication of user {packet.Username}");
+                //     if (!await authentication.AuthenticateUser(user.sam, packet.Password))
+                //     {
+                //         await client.SendAsync("Oh eh oh"u8.ToArray());
+                //
+                //         //Console.Error.WriteLine("Client not authenticated");
+                //         Log.WriteLog(LogLevel.Error, "user provides the wrong username or password");
+                //         return;
+                //
+                //     }
+                //
+                // }
+                // catch(Exception e) 
+                // {
+                //     await client.SendAsync("GTFO"u8.ToArray());
+                //     //Console.Error.WriteLine("Authentication failed " + e);
+                //     Log.WriteLog(LogLevel.Error, $"Authentication of {packet.Username} failed" + e);
+                //     return;
+                // }
                 //Console.WriteLine("Fin Auth");
                 Log.WriteLog(LogLevel.Info, "End of process of authentication");
                 
@@ -205,8 +217,8 @@ internal class ThreadPoolFront
                     await client.SendAsync("GTFO"u8.ToArray());
                     return;
                 }
-
-                byte[] cypher = AES.chiffre(resp, keyServer, iv);
+                Log.WriteLog(LogLevel.Info, "Cypher key used : " + Convert.ToBase64String(p.cypherKey));
+                byte[] cypher = AES.chiffre(resp, p.cypherKey, iv);
                 
                 await client.SendAsync(cypher);
 
@@ -249,16 +261,21 @@ internal class ThreadPoolFront
         {
             using RSA rsa = RSA.Create();
             s.Send(rsa.ExportRSAPublicKey());
+            Log.WriteLog(LogLevel.Info, "Exporting public key to client : " + Convert.ToBase64String(rsa.ExportRSAPublicKey()));
 
             byte[] rsaKey = receiveBytes(s);
-            rsa.ImportRSAPublicKey(rsaKey, out _);
 
             using Aes aes = Aes.Create();
-
+            Log.WriteLog(LogLevel.Info, "Creating AES key : " + Convert.ToBase64String(aes.Key));
+            
             byte[] encryptedAesKey = receiveBytes(s);
             byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+            Log.WriteLog(LogLevel.Info, "Received AES key : " + Convert.ToBase64String(aesKey));
 
-            byte[] encryptedKey = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
+            Log.WriteLog(LogLevel.Info, "Importing public key from client : " + Convert.ToBase64String(rsaKey));
+            using RSA rsa2 = RSA.Create();
+            rsa2.ImportRSAPublicKey(rsaKey, out _);
+            byte[] encryptedKey = rsa2.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
             s.Send(encryptedKey);
 
             Pair p = new Pair()

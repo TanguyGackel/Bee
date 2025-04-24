@@ -9,14 +9,8 @@ internal class Program
     {
         DateTime d = DateTime.Now;
         
-        StreamWriter Output = new StreamWriter("./Output." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
-        {
-            AutoFlush = true
-        };
-        StreamWriter Error = new StreamWriter("./Error." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
-        {
-            AutoFlush = true
-        };
+        Log.Info = "./LogsInfo"; //TODO
+        Log.Error = "./LogsError"; //TODO
         
         
         Dictionary<string, string> conf = new Dictionary<string, string>();
@@ -42,13 +36,11 @@ internal class Program
         db.ConstructConnectionString();
         //Console.WriteLine("Passé");
         Log.WriteLog(LogLevel.Info, "BDD successful login");
-        Console.SetOut(Output);
-        Console.SetError(Error);
         
         NetworkManager nm = NetworkManager.Instance;
-        nm.AddRoute("Freezbee", new FreezbeeRoutes());
+        // nm.AddRoute("Freezbee", new FreezbeeRoutes());
         nm.AddRoute("Ingredient", new IngredientRoute());
-        // nm.AddRoute("ProcedeFabrication", new ProcedeFabricationRoute());
+        nm.AddRoute("ProcedeFabrication", new ProcedeFabricationRoute());
 
         List<Client> clients = new List<Client>();
         Dictionary<string, string> confClients = conf.Where(c => c.Key.Contains("clientConf")).ToDictionary();

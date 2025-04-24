@@ -12,6 +12,7 @@ public class Program
     [STAThread]
     static void Main(string[] args)
     {
+        
         try
         {
             ProxyClient.AddProxy(IPAddress.Parse("127.0.0.1"), 9001);
@@ -19,12 +20,12 @@ public class Program
         }
         catch (Exception e)
         {
-            // Console.WriteLine("Problem in adding new proxy : " + e);
+            Console.WriteLine("Problem in adding new proxy : " + e);
             // Console.WriteLine("New proxy added");
         }
         try
         {
-            ProxyClient.AddProxy(IPAddress.Parse("10.0.50.23"), 9001);
+            // ProxyClient.AddProxy(IPAddress.Parse("10.0.50.23"), 9001);
             // Console.WriteLine("New proxy added");
         }
         catch (Exception e)
@@ -34,7 +35,7 @@ public class Program
         try
         {
         
-            ProxyClient.AddProxy(IPAddress.Parse("10.0.50.24"), 9001);
+            // ProxyClient.AddProxy(IPAddress.Parse("10.0.50.24"), 9001);
             // Console.WriteLine("New proxy added");
         }
         catch (Exception e)

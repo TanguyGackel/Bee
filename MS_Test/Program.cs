@@ -9,16 +9,8 @@ internal class Program
     {
         DateTime d = DateTime.Now;
         
-        StreamWriter Output = new StreamWriter("./Output." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
-        {
-            AutoFlush = true
-        };
-        StreamWriter Error = new StreamWriter("./Error." + d.Day + d.Hour + d.Minute + d.Second + ".txt")
-        {
-            AutoFlush = true
-        };
-
-
+        Log.Info = "./LogsInfo"; //TODO
+        Log.Error = "./LogsError"; //TODO
         
         Dictionary<string, string> conf = new Dictionary<string, string>();
 
@@ -43,9 +35,7 @@ internal class Program
         db.ConstructConnectionString();
         //Console.WriteLine("Passé");
         Log.WriteLog(LogLevel.Info, "BDD login successful");
-        Console.SetOut(Output);
-        Console.SetError(Error);
-        
+
         NetworkManager nm = NetworkManager.Instance;
         nm.AddRoute("Freezbee", new FreezbeeRoutes());
         nm.AddRoute("Test", new TestRoutes());

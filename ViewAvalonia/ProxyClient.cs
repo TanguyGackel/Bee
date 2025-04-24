@@ -35,15 +35,18 @@ internal static class ProxyClient
             using RSA rsa = RSA.Create();
 
             socket.Send(rsa.ExportRSAPublicKey());
-            rsa.ImportRSAPublicKey(rsaKey, out _);
 
             using Aes aes = Aes.Create();
+            Console.WriteLine("Sending AES key : " + Convert.ToBase64String(aes.Key));
 
-            byte[] encryptedAes = rsa.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
+            using RSA rsa2 = RSA.Create();
+            rsa2.ImportRSAPublicKey(rsaKey, out _);
+            byte[] encryptedAes = rsa2.Encrypt(aes.Key, RSAEncryptionPadding.Pkcs1);
             socket.Send(encryptedAes);
 
             byte[] encryptedAesKey = await retrieveResp(socket);
             byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+            Console.WriteLine("Received AES key : " + Convert.ToBase64String(aesKey));
 
             Pair p = new Pair()
             {
@@ -55,10 +58,12 @@ internal static class ProxyClient
         }
         catch (Exception e)
         {
+            Console.WriteLine("BAAAAAA");
+
             Log.WriteLog(LogLevel.Error, "Keys exchange failed " + e);
         }
 
-
+        Console.WriteLine("Did a handshake");
     }
 
     internal static SPPacket PrepareSPPacket(string Msname, Packet packet, string username, string password)
@@ -85,32 +90,37 @@ internal static class ProxyClient
 
     internal static async Task<byte[]?> SendPacket(byte[] packet)
     {
-
-        var host = Dns.GetHostEntry(Dns.GetHostName());
-        var ipAddress = host.AddressList.First(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-        // Console.WriteLine("My ip" + ipAddress);
-        
-        byte[] keyClient = AES.getKey(ipAddress.ToString());
-        byte[] cypher = AES.chiffre(packet,keyClient, AES.getIV(0));
         
         foreach (Socket s in proxys)
         {
             try
             {
+                IPEndPoint ipEndPointserver = (IPEndPoint) s.RemoteEndPoint;
+                string serverIp = ipEndPointserver.Address.ToString();
+                
+                Console.WriteLine("Server ip : " + serverIp);
+
+
+                Pair p = keystore.Find(p => p.ip == serverIp);
+                byte[] cypher = AES.chiffre(packet, p.cypherKey, AES.getIV(0));
+                
+                Console.WriteLine("Cypher's size : " + cypher.Length);
                 await s.SendAsync(cypher);
                 byte[] resp = await retrieveResp(s);
-                // Console.WriteLine(Encoding.UTF8.GetString(resp));
-                IPEndPoint ipEndPoint = (IPEndPoint)s.RemoteEndPoint;
-                byte[] keyserver = AES.getKey(ipEndPoint.Address.ToString());
-                byte[] decypher = AES.dechiffre(resp, keyserver, AES.getIV(0));
+
+                
+                byte[] decypher = AES.dechiffre(resp, p.decypherKey, AES.getIV(0));
                 // count++;
                 return decypher;
             }
             catch (Exception e)
             {
+                
+                Console.WriteLine("Error my captain");
                 // Console.Error.WriteLine("Coulnd't send to proxy, trying another one");
             }
         }
+        Console.WriteLine("Returning null");
 
         return null;
     }

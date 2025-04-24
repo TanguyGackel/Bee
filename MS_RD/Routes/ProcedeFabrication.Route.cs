@@ -1,4 +1,5 @@
 using MS_Lib;
+using MS_RD.Controllers;
 using MS_RD.Models;
 using MSRD.Proto;
 
@@ -8,7 +9,7 @@ internal class ProcedeFabricationRoute : Route
 {
     internal ProcedeFabricationRoute() : base(new Router())
     {
-        Add(typeof(ProcedeFabricationModel));
+        Add(typeof(ProcedeFabricationControllers));
         Router.AddType("ProcedeFabrication", typeof(ProcedeFabrication));
     }
 }

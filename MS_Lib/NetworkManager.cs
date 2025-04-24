@@ -109,21 +109,31 @@ public class NetworkManager
         {
 
             byte[] rsaKey = receiveBytes(client);
+            Log.WriteLog(LogLevel.Info, "Received a RSA public key : " + Convert.ToBase64String(rsaKey));
+
             using RSA rsa = RSA.Create();
 
             client.Send(rsa.ExportRSAPublicKey());
-            rsa.ImportRSAPublicKey(rsaKey, out _);
-
+            Log.WriteLog(LogLevel.Info, "Created and sent the RSA public key : " + Convert.ToBase64String(rsa.ExportRSAPublicKey()));
+            
             using Aes aes = Aes.Create();
+            Log.WriteLog(LogLevel.Info, "Created the AES key : " + Convert.ToBase64String(aes.Key));
+
             infos.Aes = ByteString.CopyFrom(aes.Key);
 
             byte[] tr = infos.ToByteArray();
-            byte[] encryptedTr = rsa.Encrypt(tr, RSAEncryptionPadding.Pkcs1);
+            Log.WriteLog(LogLevel.Info, "Ready to send TR : " + Encoding.UTF8.GetString(tr));
+
+            using RSA rsa2 = RSA.Create();
+            rsa2.ImportRSAPublicKey(rsaKey, out _);
+            byte[] encryptedTr = rsa2.Encrypt(tr, RSAEncryptionPadding.Pkcs1);
+            Log.WriteLog(LogLevel.Info, "Encrypted tr" + Convert.ToBase64String(encryptedTr));
             client.Send(encryptedTr);
             infos.Aes = ByteString.Empty;
 
             byte[] encryptedAesKey = receiveBytes(client);
             byte[] aesKey = rsa.Decrypt(encryptedAesKey, RSAEncryptionPadding.Pkcs1);
+            Log.WriteLog(LogLevel.Info, "Received AES key : " + Convert.ToBase64String(aesKey));
 
             Pair p = new Pair()
             {

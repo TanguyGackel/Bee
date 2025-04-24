@@ -69,16 +69,25 @@ public static class Log
         {
             switch (level)
             {
-                case LogLevel.Info | LogLevel.Warning:
+                case LogLevel.Info:
                     if (default_path_info == null)
                         throw new NullReferenceException("Info log path is null");
                     default_path_info.WriteLine(FormatMessage(level, message));
+                    default_path_info.Flush();
                     break;
-                
+                case LogLevel.Warning:
+                    if (default_path_info == null)
+                        throw new NullReferenceException("Info log path is null");
+                    default_path_info.WriteLine(FormatMessage(level, message));
+                    default_path_info.Flush();
+
+                    break;
                 case LogLevel.Error:
                     if (default_path_error == null)
                         throw new NullReferenceException("Info log path is null");
                     default_path_error.WriteLine(FormatMessage(level, message));
+                    default_path_error.Flush();
+
                     break;
             }
         }

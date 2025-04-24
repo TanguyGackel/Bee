@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using BEE;
 using Client;
@@ -175,15 +174,28 @@ public sealed class MainWindowViewModel : ViewModel
 
     public async void LoadFreezbee()
     {
+        Console.WriteLine("Yo we need to load the freezbees");
+        
         Packet packet =ProxyClient.PreparePacket("Freezbee", "GetFreezbee", "Freezbee", new Freezbee());
         SPPacket spPacket = ProxyClient.PrepareSPPacket("TEST", packet, Login, Password);
+        
+        Console.WriteLine("sppacket : " + spPacket.ToString());
+
+        Console.WriteLine("Loading");
+
         byte[]? resp = await ProxyClient.SendPacket(spPacket.ToByteArray());
         if (resp != null)
         {
             Response r = Response.Parser.ParseFrom(resp);
+            
+            Console.WriteLine("Trying to parse the response");
+            Console.WriteLine("resp : " + Convert.ToBase64String(resp));
 
             if (r.StatusCode == 200 && r.BodyType == "Freezbee")
             {
+                
+                Console.WriteLine("Everything's good");
+
                 OCollection = new ObservableCollection<ObservableObject>();
                 foreach (ByteString b in r.Body)
                 {
@@ -192,6 +204,10 @@ public sealed class MainWindowViewModel : ViewModel
                     OCollection.Add(o);
                 }
             }
+        }
+        else
+        {
+            Console.WriteLine("Why are you null ?");
         }
     }
     
@@ -232,6 +248,28 @@ public sealed class MainWindowViewModel : ViewModel
                 {
                     Test t = Test.Parser.ParseFrom(b);
                     OTest o = new OTest(t.IdTest, t.NameTest);
+                    OCollection.Add(o);
+                }
+            }
+        }
+    }
+
+    public async void LoadProcede()
+    {
+        Packet packet =ProxyClient.PreparePacket("ProcedeFabrication", "GetProcedeFabrications", "ProcedeFabrication", new ProcedeFabrication());
+        SPPacket spPacket = ProxyClient.PrepareSPPacket("RD", packet, Login, Password);
+        byte[]? resp = await ProxyClient.SendPacket(spPacket.ToByteArray());
+        if (resp != null)
+        {
+            Response r = Response.Parser.ParseFrom(resp);
+
+            if (r.StatusCode == 200 && r.BodyType == "ProcedeFabrication")
+            {
+                OCollection = new ObservableCollection<ObservableObject>();
+                foreach (ByteString b in r.Body)
+                {
+                    ProcedeFabrication t = ProcedeFabrication.Parser.ParseFrom(b);
+                    OProcedeFabrication o = new OProcedeFabrication(t.Id, t.Name);
                     OCollection.Add(o);
                 }
             }
